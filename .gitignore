@@ -1,0 +1,10 @@
+*.class
+*.log
+*.jar
+
+.DS_Store
+.vscode
+
+target/
+/public
+/MCSRPaceWidget
