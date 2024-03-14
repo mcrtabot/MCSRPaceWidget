@@ -1,0 +1,23 @@
+{
+    "//": "label for timeline item type",
+    "label": {
+        "enter_nether": "Nether",
+        "enter_bastion": "Bastion",
+        "enter_fortress": "Fortress",
+        "first_portal": "Portal",
+        "enter_stronghold": "Stronghold",
+        "enter_end": "End",
+        "credits": "Finish"
+    },
+
+    "//": "title for PB timeline",
+    "pbTimelineTitle": "PB Timeline",
+
+    "//": "title for Pace timeline",
+    "paceTimelineTitle": "Current",
+
+    "//": "hyphen: --:--, random: **:** (*: random number)",
+    "nextItemStyle": "hyphen",
+
+    "//": ""
+}
