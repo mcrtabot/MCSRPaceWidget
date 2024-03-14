@@ -1,0 +1,9 @@
+[
+    { "type": "enter_nether", "igt": "00:00" },
+    { "type": "enter_bastion", "igt": "00:00" },
+    { "type": "enter_fortress", "igt": "00:00" },
+    { "type": "first_portal", "igt": "00:00" },
+    { "type": "enter_stronghold", "igt": "00:00" },
+    { "type": "enter_end", "igt": "00:00" },
+    { "type": "credits", "igt": "00:00" }
+]
