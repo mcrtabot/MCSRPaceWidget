@@ -7,6 +7,7 @@ Minecraft Speedrunning pace widget tool that displays your pace in real time.
 ## Requirement
 
 - SpeedRunIGT 14.0 or later (use event log feature)
+  - **Set "Auto Save Interval" ( in SpeedRunIGT Option > Timer) to `Ticks` for realtime update!**
 
 ## Features
 
