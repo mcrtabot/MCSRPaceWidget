@@ -110,11 +110,15 @@ body {
 }
 
 .timeline__item--todo {
-  color: transparent;
+  color: var(--text-color);
 }
 
 .timeline__item__cell {
   vertical-align: middle;
+}
+
+.timeline__item__cell__icon {
+  width: var(--icon-size);
 }
 
 .timeline__item__cell__time,

@@ -1,49 +1,43 @@
 :root {
   /* base text color */
-  --text-color: rgb(156, 163, 175);
+  --text-color: rgba(255, 255, 255, 1);
 
   /* highlighted text color for items faster than PB pace */
   --highlighted-text-color: rgba(255, 128, 128, 1);
 
   /* timeline's background (color) */
-  --timeline-background: rgba(31, 41, 55, 0.95);
+  --timeline-background: rgba(0, 0, 0, 0.95);
 
-  --font: normal bold 18px/1 ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
-    Noto Color Emoji;
-  --digits-font: normal normal 18px/1 ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
-    Noto Color Emoji;
+  --font: normal bold 18px/1 sans-serif;
+  --digits-font: normal normal 18px/1 Minecraft, monospace, sans-serif;
   --icon-size: 24px;
 
-  --pb-timeline-width: 290px;
-  --pace-timeline-width: 360px;
+  --pb-timeline-width: 1080px;
+  --pace-timeline-width: 1080px;
 
   /*  If you want to hide an item, uncomment it (--display-*: none;). */
 
-  --display-pb-timeline: none;
-  /* --display-pb-timeline-empty: none; */
+  /* --display-pb-timeline: none; */
+  --display-pb-timeline-empty: none;
   /* --display-pb-timeline-title: none; */
-  /* --display-pb-timeline-separator: none; */
+  --display-pb-timeline-separator: none;
   /* --display-pb-timeline-item-icon: none; */
-  /* --display-pb-timeline-item-label: none; */
+  --display-pb-timeline-item-label: none;
   /* --display-pb-timeline-item-time: none; */
   --display-pb-timeline-item-diff: none;
 
   /* --display-pace-timeline: none; */
-  --display-pace-timeline-empty: none;
-  --display-pace-timeline-title: none;
+  /* --display-pace-timeline-empty: none; */
+  /* --display-pace-timeline-title: none; */
   --display-pace-timeline-separator: none;
   /* --display-pace-timeline-item-icon: none; */
-  /* --display-pace-timeline-item-label: none; */
+  --display-pace-timeline-item-label: none;
   /* --display-pace-timeline-item-time: none; */
-  /* --display-pace-timeline-item-diff: none; */
+  --display-pace-timeline-item-diff: none;
 
-  --display-pace-timeline-item-status-done: none;
+  /* --display-pace-timeline-item-status-done: none; */
   /* --display-pace-timeline-item-status-current: none; */
-  --display-pace-timeline-item-status-next: none;
+  /* --display-pace-timeline-item-status-next: none; */
   --display-pace-timeline-item-status-todo: none;
 }
 
@@ -77,18 +71,23 @@ body {
 
 .mcsr-widget-container {
   display: flex;
+  flex-direction: column;
 }
 
 .timeline {
   color: var(--text-color);
   background: var(--timeline-background);
-  margin-right: 4px;
-  margin-bottom: 4px;
-  padding: 8px;
+  margin-right: 0;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 .timeline__title {
   text-align: center;
+  width: 160px;
+  height: 24px;
+  line-height: 24px;
+  display: inline-block;
 }
 
 .timeline__separator {
@@ -98,13 +97,28 @@ body {
 }
 
 .timeline__container {
-  margin: 4px 0;
   width: 100%;
+
+  display: block;
+}
+
+.timeline__container > tbody {
+  display: flex;
 }
 
 .timeline__item {
   padding: 0 8px;
   height: 24px;
+  width: 130px;
+  position: relative;
+}
+.timeline__item:not(:first-of-type)::before {
+  content: "〉";
+  display: inline-block;
+  position: absolute;
+  left: -4px;
+  top: 4px;
+  color: var(--text-color);
 }
 
 .timeline__item--highlighted {
@@ -141,6 +155,9 @@ body {
 
 .timeline__item__time {
   font: var(--digits-font);
+  height: 22px;
+  display: block;
+  margin-left: 4px;
 }
 
 .timeline__item__diff {
@@ -150,10 +167,11 @@ body {
 
 .timeline--pb {
   width: var(--pb-timeline-width);
-  display: var(--display-pb-timeline, block);
+  display: flex;
+  padding: 4px 4px 0 4px;
 }
 .timeline--pb.timeline--empty {
-  display: var(--display-pb-timeline-empty, block);
+  display: var(--display-pb-timeline-empty, flex);
 }
 .timeline--pb .timeline__title {
   display: var(--display-pb-timeline-title, block);
@@ -176,10 +194,11 @@ body {
 
 .timeline--pace {
   width: var(--pace-timeline-width);
-  display: var(--display-pace-timeline, block);
+  display: flex;
+  padding: 0 4px 4px 4px;
 }
 .timeline--pace.timeline--empty {
-  display: var(--display-pace-timeline-empty, block);
+  display: var(--display-pace-timeline-empty, flex);
 }
 .timeline--pace .timeline__title {
   display: var(--display-pace-timeline-title, block);
@@ -192,15 +211,12 @@ body {
 }
 .timeline--pace .timeline__item__cell__label {
   display: var(--display-pace-timeline-item-label, table-cell);
-  width: 180px;
 }
 .timeline--pace .timeline__item__cell__time {
   display: var(--display-pace-timeline-item-time, table-cell);
-  width: 64px;
 }
 .timeline--pace .timeline__item__cell__diff {
   display: var(--display-pace-timeline-item-diff, table-cell);
-  width: 56px;
 }
 .timeline--pace .timeline__item--done {
   display: var(--display-pace-timeline-item-status-done, table-row);

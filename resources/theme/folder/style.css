@@ -1,50 +1,44 @@
 :root {
   /* base text color */
-  --text-color: rgb(156, 163, 175);
+  --text-color: rgba(255, 255, 255, 1);
 
   /* highlighted text color for items faster than PB pace */
   --highlighted-text-color: rgba(255, 128, 128, 1);
 
   /* timeline's background (color) */
-  --timeline-background: rgba(31, 41, 55, 0.95);
+  --timeline-background: rgba(0, 0, 0, 0.95);
 
-  --font: normal bold 18px/1 ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
-    Noto Color Emoji;
-  --digits-font: normal normal 18px/1 ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
-    Noto Color Emoji;
+  --font: normal bold 14px/1 sans-serif;
+  --digits-font: normal normal 16px/1 Minecraft, monospace, sans-serif;
   --icon-size: 24px;
 
-  --pb-timeline-width: 290px;
-  --pace-timeline-width: 360px;
+  --pb-timeline-width: 248px;
+  --pace-timeline-width: 154px;
 
   /*  If you want to hide an item, uncomment it (--display-*: none;). */
 
-  --display-pb-timeline: none;
-  /* --display-pb-timeline-empty: none; */
+  /* --display-pb-timeline: none; */
+  /* --display-pace-timeline-empty: none; */
   /* --display-pb-timeline-title: none; */
-  /* --display-pb-timeline-separator: none; */
+  --display-pb-timeline-separator: none;
   /* --display-pb-timeline-item-icon: none; */
   /* --display-pb-timeline-item-label: none; */
   /* --display-pb-timeline-item-time: none; */
   --display-pb-timeline-item-diff: none;
 
   /* --display-pace-timeline: none; */
-  --display-pace-timeline-empty: none;
-  --display-pace-timeline-title: none;
+  /* --display-pace-timeline-empty: none; */
+  /* --display-pace-timeline-title: none; */
   --display-pace-timeline-separator: none;
   /* --display-pace-timeline-item-icon: none; */
-  /* --display-pace-timeline-item-label: none; */
+  --display-pace-timeline-item-label: none;
   /* --display-pace-timeline-item-time: none; */
   /* --display-pace-timeline-item-diff: none; */
 
-  --display-pace-timeline-item-status-done: none;
+  /* --display-pace-timeline-item-status-done: none; */
   /* --display-pace-timeline-item-status-current: none; */
-  --display-pace-timeline-item-status-next: none;
-  --display-pace-timeline-item-status-todo: none;
+  /* --display-pace-timeline-item-status-next: none; */
+  /* --display-pace-timeline-item-status-todo: none; */
 }
 
 html {
@@ -77,6 +71,7 @@ body {
 
 .mcsr-widget-container {
   display: flex;
+  margin-top: 24px;
 }
 
 .timeline {
@@ -85,10 +80,22 @@ body {
   margin-right: 4px;
   margin-bottom: 4px;
   padding: 8px;
+  position: relative;
+  border-top-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .timeline__title {
   text-align: center;
+  position: absolute;
+  background: var(--timeline-background);
+  height: 24px;
+  top: -24px;
+  left: 0;
+  padding: 8px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 .timeline__separator {
@@ -137,6 +144,10 @@ body {
   height: var(--icon-size);
   background-size: var(--icon-size);
   background-repeat: no-repeat;
+}
+
+.timeline__item__label {
+  color: #ddd;
 }
 
 .timeline__item__time {
@@ -192,15 +203,12 @@ body {
 }
 .timeline--pace .timeline__item__cell__label {
   display: var(--display-pace-timeline-item-label, table-cell);
-  width: 180px;
 }
 .timeline--pace .timeline__item__cell__time {
   display: var(--display-pace-timeline-item-time, table-cell);
-  width: 64px;
 }
 .timeline--pace .timeline__item__cell__diff {
   display: var(--display-pace-timeline-item-diff, table-cell);
-  width: 56px;
 }
 .timeline--pace .timeline__item--done {
   display: var(--display-pace-timeline-item-status-done, table-row);

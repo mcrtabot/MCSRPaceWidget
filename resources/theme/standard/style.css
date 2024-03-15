@@ -13,7 +13,7 @@
   --icon-size: 24px;
 
   --pb-timeline-width: 290px;
-  --pace-timeline-width: 360px;
+  --pace-timeline-width: 380px;
 
   /*  If you want to hide an item, uncomment it (--display-*: none;). */
 
@@ -27,7 +27,7 @@
   /* --display-pb-timeline-item-diff: none; */
 
   /* --display-pace-timeline: none; */
-  --display-pace-timeline-empty: none;
+  /* --display-pace-timeline-empty: none; */
   --display-pace-timeline-title: none;
   --display-pace-timeline-separator: none;
   /* --display-pace-timeline-item-icon: none; */
@@ -37,7 +37,7 @@
 
   /* --display-pace-timeline-item-status-done: none; */
   /* --display-pace-timeline-item-status-current: none; */
-  --display-pace-timeline-item-status-next: none;
+  /* --display-pace-timeline-item-status-next: none; */
   --display-pace-timeline-item-status-todo: none;
 }
 
@@ -110,7 +110,7 @@ body {
 }
 
 .timeline__item--todo {
-  color: transparent;
+  color: var(--text-color);
 }
 
 .timeline__item__cell {
