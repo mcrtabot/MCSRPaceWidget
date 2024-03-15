@@ -21,7 +21,8 @@ public class MCSRPaceServer extends NanoHTTPD {
         if (uri.startsWith("/api/")) {
             if (uri.equals("/api/timeline")) {
                 try {
-                    EventList events = EventList.load();
+                    // EventList events = EventList.load();
+                    EventList events = EventList.loadFromTimerIGT();
                     return newFixedLengthResponse(Response.Status.OK, "application/json", events.toJson());
                 } catch (Exception e) {
                     System.out.println("load events failed.");
