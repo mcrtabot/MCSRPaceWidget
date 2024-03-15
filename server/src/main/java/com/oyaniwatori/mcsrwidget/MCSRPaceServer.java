@@ -26,7 +26,8 @@ public class MCSRPaceServer extends NanoHTTPD {
                     return newFixedLengthResponse(Response.Status.OK, "application/json", events.toJson());
                 } catch (Exception e) {
                     System.out.println("load events failed.");
-                    return newFixedLengthResponse(Response.Status.OK, "application/json", "[]");
+                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
+                            "{\"error\": \"load events failed.\"}");
                 }
             }
         } else if (uri.startsWith("/setting/") || uri.startsWith("/theme/")) {

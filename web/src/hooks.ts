@@ -8,6 +8,9 @@ const TIMELINE_REFRESH_INTERVAL = 500;
 
 const fetcher = async (path: string) => {
   const response = await fetch(path, { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error('');
+  }
   return await response.json();
 };
 
@@ -50,13 +53,10 @@ export const useSetting = (theme: string | null) => {
 
 export const useTimeline = (isDemoMode: boolean) => {
   const path = !isDemoMode ? '/api/timeline' : '/demo/timeline.json';
-  const {
-    isLoading,
-    data: timeline = [],
-    error,
-  } = useSWR<TimelineItem[]>(path, fetcher, {
+  const { isLoading, data: timeline = [] } = useSWR<TimelineItem[]>(path, fetcher, {
     refreshInterval: TIMELINE_REFRESH_INTERVAL,
     dedupingInterval: TIMELINE_REFRESH_INTERVAL,
+    errorRetryInterval: TIMELINE_REFRESH_INTERVAL,
   });
 
   // whether user left from world
@@ -68,7 +68,7 @@ export const useTimeline = (isDemoMode: boolean) => {
   const enableCheatsIndex = timeline.findLastIndex((item) => item.type === 'enable_cheats');
   const data = left ? [] : enableCheatsIndex >= 0 ? timeline.slice(0, enableCheatsIndex) : timeline;
 
-  return { isLoading, data, hasError: !!error };
+  return { isLoading, data, hasError: false };
 };
 
 export const usePBTimeline = (isDemoMode: boolean) => {

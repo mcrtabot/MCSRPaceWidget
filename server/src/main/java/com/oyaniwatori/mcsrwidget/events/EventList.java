@@ -70,7 +70,6 @@ public class EventList {
         List<Event> items = new ArrayList<Event>();
         if (json.get("status").asText().equals("LEAVE")) {
             return new EventList(new ArrayList<Event>(items));
-
         }
 
         for (JsonNode item : json.get("timelines")) {
