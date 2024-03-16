@@ -80,10 +80,8 @@ public class EventList {
             String type;
             if (name.startsWith("enter_")) {
                 type = name;
-            } else if (name.equals("portal_no_1")) {
+            } else if (name.equals("nether_travel")) {
                 type = "first_portal";
-            } else if (name.equals("portal_no_2")) {
-                type = "second_portal";
             } else {
                 type = name;
             }
