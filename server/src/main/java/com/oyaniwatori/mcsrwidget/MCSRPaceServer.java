@@ -1,9 +1,12 @@
 package com.oyaniwatori.mcsrwidget;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import com.oyaniwatori.mcsrwidget.events.EventList;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oyaniwatori.mcsrwidget.gui.AppFrame;
+import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -29,10 +32,26 @@ public class MCSRPaceServer extends NanoHTTPD {
                     return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
                             "{\"error\": \"load events failed.\"}");
                 }
+            } else if (uri.equals("/api/themes")) {
+                Theme[] themes = Utils.getThemes();
+
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return newFixedLengthResponse(Response.Status.OK, "application/json",
+                            mapper.writeValueAsString(Arrays.asList(themes)));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
+                            "{\"error\": \"load themes failed.\"}");
+                }
+
             }
         } else if (uri.startsWith("/setting/") || uri.startsWith("/theme/")) {
             return this.responseFromStaticFile("", uri);
         } else {
+            if (uri.startsWith("/timeline") || uri.startsWith("/indicator")) {
+                uri = "/";
+            }
             if (uri.equals("/")) {
                 uri += "index.html";
             }

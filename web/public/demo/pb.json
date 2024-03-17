@@ -1,9 +1,0 @@
-[
-    { "type": "enter_nether", "igt": "04:00" },
-    { "type": "enter_bastion", "igt": "05:00" },
-    { "type": "enter_fortress", "igt": "10:00" },
-    { "type": "first_portal", "igt": "12:00" },
-    { "type": "enter_stronghold", "igt": "15:00" },
-    { "type": "enter_end", "igt": "16:00" },
-    { "type": "credits", "igt": "17:30" }
-]

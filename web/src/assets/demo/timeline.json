@@ -1,0 +1,48 @@
+{
+    "igt": null,
+    "timelines":
+    [
+        {
+            "id": "rsg.enter_nether",
+            "type": "enter_nether",
+            "rta": 176000,
+            "igt": 176000
+        },
+        {
+            "id": "rsg.enter_bastion",
+            "type": "enter_bastion",
+            "rta": 303000,
+            "igt": 303000
+        },
+        {
+            "id": "rsg.enter_fortress",
+            "type": "enter_fortress",
+            "rta": 610000,
+            "igt": 610000
+        },
+        {
+            "id": "rsg.first_portal",
+            "type": "first_portal",
+            "rta": 781000,
+            "igt": 781000
+        },
+        {
+            "id": "rsg.enter_stronghold",
+            "type": "enter_stronghold",
+            "rta": 860000,
+            "igt": 860000
+        },
+        {
+            "id": "rsg.enter_end",
+            "type": "enter_end",
+            "rta": 929000,
+            "igt": 929000
+        },
+        {
+            "id": "rsg.credits",
+            "type": "credits",
+            "rta": 1200000,
+            "igt": 1200000
+        }
+    ]
+}

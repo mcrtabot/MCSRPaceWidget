@@ -20,11 +20,13 @@ mkdir -p ${TARGET_NAME}
 
 # build web app
 cd web
+rm -rf build
 yarn build
 rm -rf build/theme build/setting
 cd -
 
 # build server
+rm -rf server/target
 "${MVN_PATH}" package -f "./server/pom.xml"
 
 cp -pr server/target/mcsr-pace-widget-jar-with-dependencies.jar ${TARGET_NAME}/mcsr-pace-widget.jar

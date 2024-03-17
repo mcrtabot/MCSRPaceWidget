@@ -1,0 +1,19 @@
+html {
+  color: #333;
+  background-color: transparent;
+}
+
+body {
+  font: normal bold 18px/1 sans-serif;
+  color: #fff;
+  padding: 0;
+}
+
+.warning {
+  background-color: rgba(0, 0, 0, 0.98);
+  padding: 8px;
+  color: #fff;
+  font-weight: bold;
+  margin: 8px;
+  border-radius: 8px;
+}

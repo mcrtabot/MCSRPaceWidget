@@ -35,3 +35,24 @@ const parseTime = (value: number) => {
     ms: Math.round((value * 1000) % 1000),
   };
 };
+
+type DiffTimeProps = {
+  time?: number;
+  pbTime?: number;
+  displayDiff?: boolean;
+};
+
+export const DiffTime = ({ time, pbTime, displayDiff = true }: DiffTimeProps) => {
+  return (
+    <>
+      {time && pbTime && displayDiff ? (
+        <Time value={time - pbTime} displaySign={true} />
+      ) : (
+        <>
+          <span style={{ opacity: 0 }}>+</span>
+          --:--
+        </>
+      )}
+    </>
+  );
+};

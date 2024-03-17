@@ -16,7 +16,7 @@
     "//": "title for Pace timeline",
     "paceTimelineTitle": "Current",
 
-    "//": "hyphen: --:--, random: **:** (*: random number)",
+    "//": "hyphen: --:--, random: **:** (*: random number), igt: in-game-time",
     "nextItemStyle": "hyphen",
 
     "//": ""
