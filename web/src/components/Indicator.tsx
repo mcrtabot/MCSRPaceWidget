@@ -57,7 +57,7 @@ export const Indicator = () => {
 
       const pbItem = pbTimeline[pbItemIndex];
       const pbNextItem = pbTimeline[pbItemIndex + 1];
-      if (faceStatusEnabled && latestItem.igt < (pbItem.igt || 0) && igt < (pbNextItem.igt || 0)) {
+      if (faceStatusEnabled && latestItem.igt < (pbItem?.igt || 0) && igt < (pbNextItem?.igt || 0)) {
         faceStatus = 'smile';
       }
     }
