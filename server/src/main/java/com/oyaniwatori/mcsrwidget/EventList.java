@@ -18,9 +18,9 @@ import com.oyaniwatori.mcsrwidget.utils.Crypto;
 
 public class EventList {
     public List<Event> timelines;
-    public Integer igt = null;
+    public Long igt = null;
 
-    public EventList(List<Event> timelines, Integer igt) {
+    public EventList(List<Event> timelines, Long igt) {
         this.timelines = timelines;
         this.igt = igt;
     }
@@ -71,14 +71,14 @@ public class EventList {
         }
 
         List<Event> items = new ArrayList<Event>();
-        if (json.get("leaveTime").asInt() > 0) {
+        if (json.get("leaveTime").asLong() > 0) {
             return new EventList(items, null);
         }
 
         for (JsonNode item : json.get("timelines")) {
             String name = item.get("name").asText();
-            int rta = item.get("rta").asInt();
-            int igt = item.get("igt").asInt();
+            long rta = item.get("rta").asLong();
+            long igt = item.get("igt").asLong();
 
             String type;
             if (name.startsWith("enter_")) {
@@ -93,17 +93,17 @@ public class EventList {
         }
         if (json.get("isCompleted").asBoolean(false)) {
             JsonNode record = mapper.readTree(json.get("resultRecord").asText());
-            int rta = record.get("final_rta").asInt();
-            int igt = record.get("final_igt").asInt();
+            long rta = record.get("final_rta").asLong();
+            long igt = record.get("final_igt").asLong();
 
             String type = "credits";
             String id = "rsg." + type;
 
             items.add(new Event(id, type, rta, igt));
         }
-        if (json.get("lanOpenedTime").asInt() > 0) {
-            int rta = json.get("lanOpenedTime").asInt();
-            int igt = 0;
+        if (json.get("lanOpenedTime").asLong() > 0) {
+            long rta = json.get("lanOpenedTime").asLong();
+            long igt = 0;
 
             String type = "enable_cheats";
             String id = "common." + type;
@@ -121,11 +121,11 @@ public class EventList {
 
                 });
 
-        int activateTicks = json.get("activateTicks").asInt();
-        int rebaseIGTime = json.get("rebaseIGTime").asInt();
-        int excludedIGT = json.get("excludedIGT").asInt();
-        int endIGTTime = json.get("endIGTTime").asInt();
-        int igt = activateTicks * 50 - rebaseIGTime - excludedIGT + endIGTTime;
+        long activateTicks = json.get("activateTicks").asLong();
+        long rebaseIGTime = json.get("rebaseIGTime").asLong();
+        long excludedIGT = json.get("excludedIGT").asLong();
+        long endIGTTime = json.get("endIGTTime").asLong();
+        long igt = activateTicks * 50 - rebaseIGTime - excludedIGT + endIGTTime;
 
         return new EventList(items, igt);
     }
