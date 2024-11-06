@@ -51,7 +51,11 @@ If you want to see the difference from PB, edit `setting/pb.json`.
 
 ## Themes
 
-- standard (default)
+- texture-bar
+
+  <img src="docs/indicator_texture-bar.png">
+
+- standard
 
   <img src="docs/timeline_standard.gif">
   <img src="docs/indicator_standard.gif">
