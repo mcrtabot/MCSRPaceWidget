@@ -3,6 +3,7 @@ import { useTimelineInfo } from '../hooks';
 import { TimelineIcon } from './TimelineIcon';
 import { DiffTime, Time } from './Time';
 import { AppContext } from '../context';
+import { TimelineItem } from '../types';
 
 export const Indicator = () => {
   const { timeline: timelineData, pbTimeline, theme, setting } = useContext(AppContext);
@@ -63,8 +64,6 @@ export const Indicator = () => {
     }
   }
 
-  const paceLineLength = useMemo(() => calcPosition(paceIGT, pbFinalIGT), [paceIGT, pbFinalIGT]);
-
   const classNames: string[] = [
     'mcsr-indicator',
     `mcsr-indicator--${timelineMap.has('credits') ? 'completed' : 'running'}`,
@@ -73,31 +72,42 @@ export const Indicator = () => {
     classNames.push('mcsr-indicator--empty');
   }
 
+  const pbLineItems = getTimelineLineItems(pbTimeline, pbFinalIGT, pbFinalIGT);
+  const lineItems = getTimelineLineItems(timeline, paceIGT || 0, pbFinalIGT);
+
   return (
     <div className={classNames.join(' ')}>
       <div className="mcsr-indicator__line-container">
-        <div className="mcsr-indicator__line" />
-        <div className="mcsr-indicator__line mcsr-indicator__line--pace" style={{ width: paceLineLength }} />
+        {pbLineItems.map((lineItem) => (
+          <div
+            key={lineItem.type}
+            className={`mcsr-indicator__line mcsr-indicator__line--pb mcsr-indicator__line--${lineItem.type}`}
+            style={{ left: lineItem.left, width: lineItem.width }}
+          />
+        ))}
+        {lineItems.map((lineItem) => (
+          <div
+            key={lineItem.type}
+            className={`mcsr-indicator__line mcsr-indicator__line--pace mcsr-indicator__line--${lineItem.type}`}
+            style={{ left: lineItem.left, width: lineItem.width }}
+          />
+        ))}
       </div>
       <div className="mcsr-indicator__dot-container">
-        {range(1, Math.floor(pbFinalIGT / 60000)).map((minute: number) => {
-          return (
-            <div
-              key={minute}
-              className="mcsr-indicator__dot"
-              style={{ left: calcPosition(minute * 60000, pbFinalIGT) }}
-            />
-          );
-        })}
-        {range(1, Math.floor(paceIGT / 60000)).map((minute: number) => {
-          return (
-            <div
-              key={minute}
-              className="mcsr-indicator__dot mcsr-indicator__dot--pace"
-              style={{ left: calcPosition(minute * 60000, pbFinalIGT) }}
-            />
-          );
-        })}
+        {getTimelineDotItems(pbTimeline, pbFinalIGT, pbFinalIGT).map((dotItem, index) => (
+          <div
+            key={`${dotItem.type}_${index}`}
+            className={`mcsr-indicator__dot mcsr-indicator__dot--pb mcsr-indicator__dot--${dotItem.type}`}
+            style={{ left: dotItem.left }}
+          />
+        ))}
+        {getTimelineDotItems(timeline, paceIGT || 0, pbFinalIGT).map((dotItem, index) => (
+          <div
+            key={`${dotItem.type}_${index}`}
+            className={`mcsr-indicator__dot mcsr-indicator__dot--pace mcsr-indicator__dot--${dotItem.type}`}
+            style={{ left: dotItem.left }}
+          />
+        ))}
       </div>
       <div className="mcsr-indicator__timeline-container mcsr-indicator__timeline-container--pb">
         {displayItemTypes.map((itemType) => {
@@ -178,4 +188,62 @@ const calcPosition = (igt?: number | null, pbFinalIGT?: number | null) => {
 
   return `${((igt || 0) / pbFinalIGT) * 100}%`;
 };
+
+type TimelineLineItemType = {
+  type: string;
+  left: string;
+  width: string;
+};
+
+const getTimelineLineItems = (timeline: TimelineItem[], igt: number, pbFinalIGT: number): TimelineLineItemType[] => {
+  let itemType = 'overworld';
+  let itemStartIGT = 0;
+  const lineItems: TimelineLineItemType[] = [];
+  if (!igt) {
+    return lineItems;
+  }
+  if (timeline.length > 0) {
+    for (let i = 0; i < timeline.length; i++) {
+      const left = calcPosition(itemStartIGT, pbFinalIGT);
+      const width = calcPosition(timeline[i].igt - itemStartIGT, pbFinalIGT);
+
+      lineItems.push({ left, width, type: itemType });
+
+      itemType = timeline[i].type;
+      itemStartIGT = timeline[i].igt;
+    }
+  }
+
+  const left = calcPosition(itemStartIGT, pbFinalIGT);
+  const width = calcPosition(igt - itemStartIGT, pbFinalIGT);
+  lineItems.push({ left, width, type: itemType });
+
+  return lineItems;
+};
+
+type TimelineDotItemType = {
+  type: string;
+  left: string;
+};
+
+const getTimelineDotItems = (timeline: TimelineItem[], igt: number, pbFinalIGT: number): TimelineDotItemType[] => {
+  const dotItems: TimelineDotItemType[] = [];
+  if (!igt) {
+    return dotItems;
+  }
+
+  return range(1, Math.floor(igt / 60000)).map((minute: number) => {
+    let itemType = 'overworld';
+    if (timeline.length > 0) {
+      for (let i = 0; i < timeline.length; i++) {
+        if (timeline[i].igt > minute * 60000) {
+          return { left: calcPosition(minute * 60000, pbFinalIGT), type: itemType };
+        }
+        itemType = timeline[i].type;
+      }
+    }
+    return { left: calcPosition(minute * 60000, pbFinalIGT), type: itemType };
+  });
+};
+
 export const range = (start: number, end: number) => Array.from({ length: end - start + 1 }, (v, k) => k + start);
