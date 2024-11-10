@@ -159,6 +159,11 @@ const Wrapper = styled.div`
   color: #000;
   font: normal normal 18px / 1 Arial, Helvetica, sans-serif;
   padding: 32px;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #111;
+    color: #fff;
+  }
 `;
 
 const Title = styled.h1`
