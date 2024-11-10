@@ -36,6 +36,9 @@ Minecraft Speedrun pace widget tool that displays your pace in real time.
 
 ### Settings
 
+- The `setting` directory and `theme` directory are located either within the mcsrpacewidget directory in the home directory or in the same directory as `mcsr-pace-widget.jar`.
+- If these directories exist within the mcsrpacewidget directory in the home directory, they will be given priority.
+
 #### PB Time
 
 If you want to see the difference from PB, edit `setting/pb.json`.
