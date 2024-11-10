@@ -10,8 +10,17 @@ import com.oyaniwatori.mcsrwidget.Theme;
 
 public class Utils {
     public static Theme[] getThemes() {
+        File themeDir;
+
+        File homeThemeDir = getHomeResourceDir("theme");
+        if (homeThemeDir.exists()) {
+            themeDir = homeThemeDir;
+        } else {
+            themeDir = new File("theme");
+        }
         List<Theme> themes = new ArrayList<Theme>();
-        File[] files = new File("theme").listFiles();
+
+        File[] files = themeDir.listFiles();
         if (files == null) {
             return new Theme[] {};
         }
@@ -30,5 +39,18 @@ public class Utils {
         });
 
         return themes.toArray(new Theme[themes.size()]);
+    }
+
+    public static File getHomeResourceDir(String path) {
+        // ホームディレクトリ(~/mcsrpacewidget)に対象パスがあればそちらを優先
+        // If there is a target path in the home directory (~/mcsrpacewidget),
+        // prioritize it
+        String separator = File.separator;
+        String homeWidgetPath = System.getProperty("user.home") + separator + "mcsrpacewidget";
+        if (path != null) {
+            homeWidgetPath += separator + path;
+        }
+
+        return new File(homeWidgetPath);
     }
 }
