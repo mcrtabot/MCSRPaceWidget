@@ -71,12 +71,20 @@ export const TopPage = () => {
 
   return (
     <Wrapper>
-      <Title>MCSR (Minecraft Speedrun) Pace Widget</Title>
+      <Title>
+        MCSR (Minecraft Speedrun) Pace Widget
+        <CodeLink>
+          <a href="https://github.com/mcrtabot/MCSRPaceWidget" target="_blank" rel="noreferrer">
+            {'</>'} Github
+          </a>
+        </CodeLink>
+      </Title>
       <DescriptionContainer>
         <ControlContainer>
           <h2>How to use</h2>
           <Description>
             <Ol>
+              <Li>Edit your personal best data (setting/pb.json)</Li>
               <Li>Select theme from drop down box.</Li>
               <Li>Copy widget url.</Li>
               <Li>Use widget. (e.g., in the OBS browser source) </Li>
@@ -168,6 +176,12 @@ const Wrapper = styled.div`
 
 const Title = styled.h1`
   font-family: Minecraft, Arial, Helvetica, sans-serif;
+`;
+
+const CodeLink = styled.span`
+  display: inline-block;
+  margin-left: 32px;
+  font-size: 0.6em;
 `;
 
 const DescriptionContainer = styled.div`
