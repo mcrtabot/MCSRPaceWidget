@@ -67,6 +67,18 @@ public class MCSRPaceServer extends NanoHTTPD {
                 getClass().getResourceAsStream(dir + path));
     }
 
+    // for jingle plugin
+    public static String start4Jingle() {
+        final int PORT = 1161;
+        try {
+            MCSRPaceServer server = new MCSRPaceServer(PORT);
+            server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            return "Server started on port " + PORT;
+        } catch (IOException ioe) {
+            return "Couldn't start server:\n" + ioe;
+        }
+    }
+
     public static void main(String[] args) {
         int port = 1161;
         try {

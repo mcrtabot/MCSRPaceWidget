@@ -1,0 +1,6 @@
+{
+    "name": "MCSR Pace Widget",
+    "id": "mcsr-pace-widget",
+    "version": "2.2.0",
+    "initializer": "com.oyaniwatori.mcsrwidget.JinglePluginInit::initialize"
+}
