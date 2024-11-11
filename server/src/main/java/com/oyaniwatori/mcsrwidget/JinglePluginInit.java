@@ -24,7 +24,7 @@ public class JinglePluginInit {
 
     public static void initialize() {
         // プラグイン読み込み用
-        JingleGUI.addPluginTab("MCSR Pace Widget", new PluginGUI().mainPanel);
+        JingleGUI.addPluginTab("MCSR Pace Widget", new PluginGUI().contentPane);
         final String RESPONCE = MCSRPaceServer.start4Jingle();
         Jingle.log(Level.INFO, "(MCSR Pace Widget) " + RESPONCE);
     }
