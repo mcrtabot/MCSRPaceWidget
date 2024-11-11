@@ -1,6 +1,9 @@
 package com.oyaniwatori.mcsrwidget;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,8 +49,10 @@ public class MCSRPaceServer extends NanoHTTPD {
                 }
 
             }
-        } else if (uri.startsWith("/setting/") || uri.startsWith("/theme/")) {
-            return this.responseFromStaticFile("", uri);
+        } else if (uri.startsWith("/setting/")) {
+            return this.responseFromStaticFile("/setting", uri.substring("/setting".length()));
+        } else if (uri.startsWith("/theme/")) {
+            return this.responseFromStaticFile("/theme", uri.substring("/theme".length()));
         } else {
             if (uri.startsWith("/timeline") || uri.startsWith("/indicator")) {
                 uri = "/";
@@ -63,8 +68,28 @@ public class MCSRPaceServer extends NanoHTTPD {
     }
 
     private Response responseFromStaticFile(String dir, String path) {
+        File homeResourceDir = Utils.getHomeResourceDir(dir);
+        if (homeResourceDir.exists()) {
+            File file = new File(homeResourceDir, path);
+
+            if (file.exists()) {
+                // ファイルをストリームにして返す
+                // Return the file as a stream
+                try {
+                    return newChunkedResponse(Response.Status.OK, getMimeTypeForFile(path),
+                            new FileInputStream(file.getAbsolutePath()));
+                } catch (IOException ioe) {
+                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "");
+                }
+            }
+        }
+        InputStream is = getClass().getResourceAsStream(dir + path);
+        if (is == null) {
+            return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
+        }
         return newChunkedResponse(Response.Status.OK, getMimeTypeForFile(path),
                 getClass().getResourceAsStream(dir + path));
+
     }
 
     // for jingle plugin

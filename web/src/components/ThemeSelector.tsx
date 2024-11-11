@@ -130,7 +130,6 @@ export const ThemeSelectorCondition = ({
 };
 
 const Wrapper = styled.div`
-  color: #000;
   padding: 16px;
   font: normal normal 18px / 1 sans-serif;
 `;
@@ -159,6 +158,10 @@ const UrlText = styled.div`
   border: 1px solid black;
   line-height: 32px;
   cursor: text;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: #999;
+  }
 `;
 
 const CopyButton = styled.button`
