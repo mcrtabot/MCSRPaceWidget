@@ -1,11 +1,15 @@
 package com.oyaniwatori.mcsrwidget.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oyaniwatori.mcsrwidget.PaceItem;
 import com.oyaniwatori.mcsrwidget.Theme;
 
 public class Utils {
@@ -52,5 +56,32 @@ public class Utils {
         }
 
         return new File(homeWidgetPath);
+    }
+
+    // for pace settings utils
+    // PB.jsonのロケーションを特定
+    public static File getPbJsonLocation() {
+        File location;
+
+        File homeSettingFile = new File (getHomeResourceDir("setting").toString() + File.separator + "pb.json");
+        if (homeSettingFile.exists()) {
+            location = homeSettingFile;
+        } else {
+            location = new File("setting" + File.separator + "pb.json");
+        }
+
+        return location;
+    }
+
+    // PB.jsonから現在のペースの設定を取得
+    public static List<PaceItem> getPaceItems(File location) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(location, new TypeReference<List<PaceItem>>() {});
+    }
+
+    // PB.jsonに新しいペースの設定を保存
+    public static void savePbJson(File location, List<PaceItem> paceItems) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(location, paceItems);
     }
 }

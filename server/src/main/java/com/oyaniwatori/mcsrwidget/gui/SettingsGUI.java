@@ -9,6 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +20,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import com.oyaniwatori.mcsrwidget.PaceItem;
+import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 public class SettingsGUI extends JFrame {
     private static SettingsGUI instance = null;
@@ -36,6 +43,7 @@ public class SettingsGUI extends JFrame {
 	private JTextField creditField;
 
     public SettingsGUI() {
+		// frame / panel config
         setTitle("Pace Settings");
 		this.addWindowListener(new WindowAdapter() {
             @Override
@@ -54,6 +62,17 @@ public class SettingsGUI extends JFrame {
 		gblFormPanel.columnWeights = new double[]{0.0, 1.0};
 		gblFormPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		formPanel.setLayout(gblFormPanel);
+
+		// window init
+		final File LOCATION = Utils.getPbJsonLocation();
+		List<PaceItem> paceItems;
+		try {
+			paceItems = Utils.getPaceItems(LOCATION);
+		} catch (IOException e) {
+			paceItems = null;
+			e.printStackTrace();
+		}
+
 		{
 			JLabel enterNetherLabel = new JLabel("Enter Nether");
 			GridBagConstraints gbc_enterNetherLabel = new GridBagConstraints();
@@ -64,7 +83,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(enterNetherLabel, gbc_enterNetherLabel);
 		}
 		{
-			enterNetherFileld = new JTextField();
+			enterNetherFileld = new JTextField(paceItems.get(0).getIgt());
 			GridBagConstraints gbc_enterNetherFileld = new GridBagConstraints();
 			gbc_enterNetherFileld.insets = new Insets(0, 0, 5, 0);
 			gbc_enterNetherFileld.fill = GridBagConstraints.HORIZONTAL;
@@ -83,7 +102,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(enterBastionLabel, gbc_enterBastionLabel);
 		}
 		{
-			enterBastionField = new JTextField();
+			enterBastionField = new JTextField(paceItems.get(1).getIgt());
 			GridBagConstraints gbc_enterBastionField = new GridBagConstraints();
 			gbc_enterBastionField.insets = new Insets(0, 0, 5, 0);
 			gbc_enterBastionField.fill = GridBagConstraints.HORIZONTAL;
@@ -102,7 +121,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(enterFortlessLabel, gbc_enterFortlessLabel);
 		}
 		{
-			enterFortlessField = new JTextField();
+			enterFortlessField = new JTextField(paceItems.get(2).getIgt());
 			GridBagConstraints gbc_enterFortlessField = new GridBagConstraints();
 			gbc_enterFortlessField.insets = new Insets(0, 0, 5, 0);
 			gbc_enterFortlessField.fill = GridBagConstraints.HORIZONTAL;
@@ -121,7 +140,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(firstPortalLabel, gbc_firstPortalLabel);
 		}
 		{
-			firstPortalField = new JTextField();
+			firstPortalField = new JTextField(paceItems.get(3).getIgt());
 			GridBagConstraints gbc_firstPortalField = new GridBagConstraints();
 			gbc_firstPortalField.insets = new Insets(0, 0, 5, 0);
 			gbc_firstPortalField.fill = GridBagConstraints.HORIZONTAL;
@@ -140,7 +159,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(enterStrongholdLabel, gbc_enterStrongholdLabel);
 		}
 		{
-			enterStrongholdField = new JTextField();
+			enterStrongholdField = new JTextField(paceItems.get(4).getIgt());
 			GridBagConstraints gbc_enterStrongholdField = new GridBagConstraints();
 			gbc_enterStrongholdField.insets = new Insets(0, 0, 5, 0);
 			gbc_enterStrongholdField.fill = GridBagConstraints.HORIZONTAL;
@@ -159,7 +178,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(enterEndLabel, gbc_enterEndLabel);
 		}
 		{
-			enterEndField = new JTextField();
+			enterEndField = new JTextField(paceItems.get(5).getIgt());
 			GridBagConstraints gbc_enterEndField = new GridBagConstraints();
 			gbc_enterEndField.insets = new Insets(0, 0, 5, 0);
 			gbc_enterEndField.fill = GridBagConstraints.HORIZONTAL;
@@ -169,7 +188,7 @@ public class SettingsGUI extends JFrame {
 			enterEndField.setColumns(10);
 		}
 		{
-			creditLabel = new JLabel("GG");
+			creditLabel = new JLabel("Finish");
 			GridBagConstraints gbc_creditLabel = new GridBagConstraints();
 			gbc_creditLabel.anchor = GridBagConstraints.EAST;
 			gbc_creditLabel.insets = new Insets(0, 0, 0, 5);
@@ -178,7 +197,7 @@ public class SettingsGUI extends JFrame {
 			formPanel.add(creditLabel, gbc_creditLabel);
 		}
 		{
-			creditField = new JTextField();
+			creditField = new JTextField(paceItems.get(6).getIgt());
 			GridBagConstraints gbc_creditField = new GridBagConstraints();
 			gbc_creditField.fill = GridBagConstraints.HORIZONTAL;
 			gbc_creditField.gridx = 1;
@@ -196,6 +215,7 @@ public class SettingsGUI extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// save process
+						SettingsGUI.save(LOCATION);
 					}
 				});
 				buttonPane.add(okButton);
@@ -224,6 +244,29 @@ public class SettingsGUI extends JFrame {
 		}
         return instance;
     }
+
+	private static void save(File location) {
+		final String[] TYPES = {"enter_nether", "enter_bastion", "enter_fortress", "first_portal", "enter_stronghold", "enter_end", "credits"};
+		List<PaceItem> paceItems = new ArrayList<PaceItem>();
+		for (int i = 0; i < 7; i++) {
+			paceItems.add(new PaceItem());
+			paceItems.get(i).setType(TYPES[i]);
+		}
+		paceItems.get(0).setIgt(instance.enterNetherFileld.getText());
+		paceItems.get(1).setIgt(instance.enterBastionField.getText());
+		paceItems.get(2).setIgt(instance.enterFortlessField.getText());
+		paceItems.get(3).setIgt(instance.firstPortalField.getText());
+		paceItems.get(4).setIgt(instance.enterStrongholdField.getText());
+		paceItems.get(5).setIgt(instance.enterEndField.getText());
+		paceItems.get(6).setIgt(instance.creditField.getText());
+
+		try {
+			Utils.savePbJson(location, paceItems);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		onClose();
+	}
 
 	private static void close() {
 		onClose();
