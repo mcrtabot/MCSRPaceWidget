@@ -1,39 +1,30 @@
 package com.oyaniwatori.mcsrwidget.gui;
 
 import java.net.URL;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JComponent;
 
-public class AppFrame extends JFrame {
-    JComboBox<String> themeCombo;
-    private JPanel contentPane;
+// The basic part of the code refers to 
+// https://github.com/DuncanRuns/Jingle-Example-Plugin/blob/main/src/main/java/xyz/duncanruns/jingle/exampleplugin/gui/ExamplePluginPanel.java
+public class PluginGUI {
+    public JPanel contentPane;
 
-    public AppFrame() {
-        super("MCSR Pace Widget Server");
+    {
+        $$$setupUI$$$();
+    }
 
-        this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 312, 160);
-		contentPane = new JPanel();
-		// contentPane.setBackground(new Color(240, 240, 240));
+    private void $$$setupUI$$$() {
+        contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		setContentPane(contentPane);
 		GridBagLayout gblContentPane = new GridBagLayout();
 		gblContentPane.columnWidths = new int[] {255};
 		gblContentPane.rowHeights = new int[] {32, 32, 32};
@@ -47,7 +38,7 @@ public class AppFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String url = "http://127.0.0.1:1161/";
                 try {
-                    openWebpage(new URL(url).toURI());
+                    AppFrame.openWebpage(new URL(url).toURI());
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "can not open: " + url);
                 }
@@ -75,16 +66,8 @@ public class AppFrame extends JFrame {
 		contentPane.add(settingsButton, gbcSettingsButton);
     }
 
-    public static boolean openWebpage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(uri);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
     }
+
 }

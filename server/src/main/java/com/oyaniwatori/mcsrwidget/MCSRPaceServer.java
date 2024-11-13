@@ -12,6 +12,7 @@ import com.oyaniwatori.mcsrwidget.gui.AppFrame;
 import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 import fi.iki.elonen.NanoHTTPD;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 public class MCSRPaceServer extends NanoHTTPD {
 
@@ -92,8 +93,21 @@ public class MCSRPaceServer extends NanoHTTPD {
 
     }
 
+    // for jingle plugin
+    public static String start4Jingle() {
+        final int PORT = 1161;
+        try {
+            MCSRPaceServer server = new MCSRPaceServer(PORT);
+            server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            return "Server started on port " + PORT;
+        } catch (IOException ioe) {
+            return "Couldn't start server:\n" + ioe;
+        }
+    }
+
     public static void main(String[] args) {
         int port = 1161;
+        FlatMacLightLaf.setup();
         try {
             MCSRPaceServer server = new MCSRPaceServer(port);
             server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
