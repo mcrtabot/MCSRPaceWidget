@@ -1,10 +1,12 @@
 package com.oyaniwatori.mcsrwidget.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -52,7 +54,6 @@ public class SettingsGUI extends JFrame {
             }
         });
 		this.setResizable(false);
-		setBounds(100, 100, 270, 270);
 		getContentPane().setLayout(new BorderLayout());
 		formPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 		getContentPane().add(formPanel, BorderLayout.CENTER);
@@ -233,6 +234,11 @@ public class SettingsGUI extends JFrame {
 				buttonPane.add(cancelButton);
 			}
 		}
+		pack();
+
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		this.setLocation((screenSize.width - this.getWidth()) / 2, (screenSize.height - this.getHeight()) / 2);
 	}
 
     public static SettingsGUI open() {
