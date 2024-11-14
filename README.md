@@ -1,92 +1,111 @@
-# MCSR (Minecraft Speedruning) Pace Widget
+# MCSR (Minecraft Speedrunning) Pace Widget
 
 ## About
 
-Minecraft Speedrun pace widget tool that displays your pace in real time.
+A Minecraft Speedrun pace widget tool that displays your pace in real time.
 
-## Requirement
+## Requirements
 
-- SpeedRunIGT 14.0 or later (use event log feature)
-  - **Set "Auto Save Interval" ( in SpeedRunIGT Option > Timer) to `Ticks` for realtime update!**
+- SpeedRunIGT 14.0 or later
+  - **Set "Auto Save Interval" (in SpeedRunIGT Option > Timer) to `Ticks` for real-time updates!**
 
 ## Features
 
-- Display current run pace and time difference from PB.
-- Display PB timeline.
-- Display time indicator.
-- Customizable themes.
-- Real-time updates, multi-instance support.
-- Easily displayed on OBS by using browser source.
-
 ### Timeline
 
-<img src="docs/timeline_standard.gif">
+- Displays your current pace and the difference from your personal best time.
 
-### Indicator
+<img src="docs/timeline_texture-bar.gif" alt="Timeline displaying current pace and personal best difference">
 
-<img src="docs/indicator_standard.gif">
+### Visual Timeline (Old name: Indicator)
 
-## How to use
+- A visually intuitive timeline representation.
 
-1. download from [Release Page](https://github.com/mcrtabot/MCSRPaceWidget/releases) and extract zip file.
-2. execute `mcsr-pace-widget.jar`
-3. click `open MCSR Pace Widget` (will open http://127.0.0.1:1161 on browser)
-4. select theme and copy widget url.
-5. use widget (e.g., in the OBS browser source)
+<img src="docs/indicator_texture-bar.gif" alt="Visual timeline with a graphical representation">
+
+### Other
+
+- Customizable themes.
+- Real-time updates.
+- Easily displayed on OBS using a browser source.
+
+## How to Use
+
+### Standalone Execution
+
+1. Download from the [Release Page](https://github.com/mcrtabot/MCSRPaceWidget/releases) and extract the zip file.
+2. (Optional) Create a `.config/MCSRPaceWidget` directory within your home directory (Windows: `C:\Users\[username]`, Mac: `/Users/[username]`) and copy the `theme` and `setting` from the extracted directory.
+3. Execute `mcsr-pace-widget.jar`.
+4. Click `open MCSR Pace Widget` (this will open http://127.0.0.1:1161 in a browser).
+5. Select a theme and copy the widget URL.
+6. Use the widget (e.g., in the OBS browser source).
+7. Set "Auto Save Interval" (in SpeedRunIGT Option > Timer) to `Ticks`.
+
+### Execution as a Jingle Plugin
+
+1. Download from the [Release Page](https://github.com/mcrtabot/MCSRPaceWidget/releases) and extract the zip file.
+2. (Mandatory!) Create a `.config/MCSRPaceWidget` directory within your home directory (Windows: `C:\Users\[username]`) and copy the `theme` and `setting` from the extracted directory.
+3. Copy `mcsr-pace-widget.jar` to the Jingle plugin directory (`C:\Users\[username]\.config\Jingle\plugins`).
+4. Restart Jingle.
+5. Open the Plugins -> MCSR Pace Widget tab.
+6. Click `open MCSR Pace Widget` (this will open http://127.0.0.1:1161 in a browser).
+7. Select a theme and copy the widget URL.
+8. Use the widget (e.g., in the OBS browser source).
+9. Set "Auto Save Interval" (in SpeedRunIGT Option > Timer) to `Ticks`.
 
 ### Settings
 
-- The `setting` directory and `theme` directory are located either within the mcsrpacewidget directory in the home directory or in the same directory as `mcsr-pace-widget.jar`.
-- If these directories exist within the mcsrpacewidget directory in the home directory, they will be given priority.
+- The `setting` directory and `theme` directory are located either within the `.config/MCSRPaceWidget` directory in the home directory or in the same directory as `mcsr-pace-widget.jar`.
+- If these directories exist within the `.config/MCSRPaceWidget` directory in the home directory, they will be given priority.
 
-#### PB Time
+#### PB Time Setting
 
-If you want to see the difference from PB, edit `setting/pb.json`.
+To see the difference from your personal best (PB), edit the PB Time Setting.
 
-- The `type` can be the type of `event.log` output by SpeedrunIGT.
-  - (ex `rsg.enter_nether`, use after the dot like `enter_nether`)
-- `igt` is the `12:34` (12m34s) or `12:34.567` (12m34.567s) format of In-game Time
+- Click `Pace Settings...` within the MCSRPaceWidget window (or the tab in Jingle) and enter your time.
+- Enter the time in the format `12:34` (12m34s) or `12:34.567` (12m34.567s).
 
 #### Custom Theme
 
-- copy base theme (ex. default) and rename in `theme` directory
-- edit `setting.json` and stylecsheet `timeline.css` / `indicator.css`
+- Copy a base theme (e.g., default) and rename it in the `theme` directory.
+- Edit the `setting.json` and stylesheets `timeline.css` / `indicator.css`.
 
 ## Themes
 
-- texture-bar
+- Default / Texture-bar
 
-  <img src="docs/indicator_texture-bar.png">
+  <img src="docs/timeline_texture-bar.gif" alt="Default / Texture-bar theme timeline">
+  <img src="docs/indicator_texture-bar.gif" alt="Default / Texture-bar theme indicator">
 
-- standard
+- Standard
 
-  <img src="docs/timeline_standard.gif">
-  <img src="docs/indicator_standard.gif">
+  <img src="docs/timeline_standard.gif" alt="Standard theme timeline">
+  <img src="docs/indicator_standard.gif" alt="Standard theme indicator">
 
-- standard-full
+- Standard-full
 
-  <img src="docs/timeline_standard-full.gif">
-  <img src="docs/indicator_standard-full.gif">
+  <img src="docs/timeline_standard-full.gif" alt="Standard-full theme timeline">
+  <img src="docs/indicator_standard-full.gif" alt="Standard-full theme indicator">
 
-- paceman (display latest event only)
+- Paceman (display latest event only)
 
-  <img src="docs/timeline_paceman.gif">
-  <img src="docs/indicator_paceman.gif">
+  <img src="docs/timeline_paceman.gif" alt="Paceman theme timeline">
+  <img src="docs/indicator_paceman.gif" alt="Paceman theme indicator">
 
-- paceman-list
+- Paceman-list
 
-  <img src="docs/timeline_paceman-list.gif">
-  <img src="docs/indicator_paceman-list.gif">
+  <img src="docs/timeline_paceman-list.gif" alt="Paceman-list theme timeline">
+  <img src="docs/indicator_paceman-list.gif" alt="Paceman-list theme indicator">
 
-- horizontal
+- Horizontal
 
-  <img src="docs/timeline_horizontal.gif">
+  <img src="docs/timeline_horizontal.gif" alt="Horizontal theme timeline">
 
-- niwatori
+- Niwatori
 
-  <img src="docs/timeline_niwatori.gif">
-  <img src="docs/indicator_niwatori.gif">
+  <img src="docs/timeline_niwatori.gif" alt="Niwatori theme timeline">
+  <img src="docs/indicator_niwatori.gif" alt="Niwatori theme indicator">
 
-and, your customize themes!
+And your customized themes can be added!
 
 [Minecraft fonts](https://fontmeme.com/jfont/minecraft-font/) can be used for a more Minecraft-like look.

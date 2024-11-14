@@ -84,7 +84,7 @@ export const TopPage = () => {
           <h2>How to use</h2>
           <Description>
             <Ol>
-              <Li>Edit your personal best data (setting/pb.json)</Li>
+              <Li>Edit your personal best data</Li>
               <Li>Select theme from drop down box.</Li>
               <Li>Copy widget url.</Li>
               <Li>Use widget. (e.g., in the OBS browser source) </Li>
