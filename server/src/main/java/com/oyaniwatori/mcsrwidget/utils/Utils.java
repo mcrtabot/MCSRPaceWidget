@@ -50,7 +50,8 @@ public class Utils {
         // If there is a target path in the home directory (~/mcsrpacewidget),
         // prioritize it
         String separator = File.separator;
-        String homeWidgetPath = System.getProperty("user.home") + separator + "mcsrpacewidget";
+        String homeWidgetPath = System.getProperty("user.home") + separator + ".config" + separator
+                + "mcsrpacewidget";
         if (path != null) {
             homeWidgetPath += separator + path;
         }
@@ -63,7 +64,7 @@ public class Utils {
     public static File getPbJsonLocation() {
         File location;
 
-        File homeSettingFile = new File (getHomeResourceDir("setting").toString() + File.separator + "pb.json");
+        File homeSettingFile = new File(getHomeResourceDir("setting").toString() + File.separator + "pb.json");
         if (homeSettingFile.exists()) {
             location = homeSettingFile;
         } else {
@@ -76,7 +77,8 @@ public class Utils {
     // PB.jsonから現在のペースの設定を取得
     public static List<PaceItem> getPaceItems(File location) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(location, new TypeReference<List<PaceItem>>() {});
+        return mapper.readValue(location, new TypeReference<List<PaceItem>>() {
+        });
     }
 
     // PB.jsonに新しいペースの設定を保存
