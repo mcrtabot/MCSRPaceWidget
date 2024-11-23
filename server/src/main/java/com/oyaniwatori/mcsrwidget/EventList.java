@@ -75,6 +75,14 @@ public class EventList {
             return new EventList(items, null);
         }
 
+        long activateTicks = json.get("activateTicks").asLong();
+        long rebaseIGTime = json.get("rebaseIGTime").asLong();
+        long excludedIGT = json.get("excludedIGT").asLong();
+        long endIGTTime = json.get("endIGTTime").asLong();
+        long currentIgt = activateTicks * 50 - rebaseIGTime - excludedIGT + endIGTTime;
+
+        // クリア判定をするかどうかのために、エンドインしているかを保持しておく
+        boolean isEnteredEnd = false;
         for (JsonNode item : json.get("timelines")) {
             String name = item.get("name").asText();
             long rta = item.get("rta").asLong();
@@ -90,6 +98,11 @@ public class EventList {
             }
             String id = "rsg." + type;
             items.add(new Event(id, type, rta, igt));
+
+            // エンドインしてる場合、isEnteredEndをtrueにしておく
+            if (type.equals("enter_end")) {
+                isEnteredEnd = true;
+            }
         }
         if (json.get("isCompleted").asBoolean(false)) {
             JsonNode record = mapper.readTree(json.get("resultRecord").asText());
@@ -100,7 +113,28 @@ public class EventList {
             String id = "rsg." + type;
 
             items.add(new Event(id, type, rta, igt));
+        } else if (isEnteredEnd) {
+            // event.log からイベントリストを取得
+            try {
+                EventList eventList = EventList.load();
+                Event creditEvent = eventList.getEvent("credits");
+
+                if (creditEvent != null) {
+                    // ここに来るのはエンドロール表示中のみ
+                    long rta = creditEvent.rta;
+                    long igt = currentIgt;
+
+                    String type = "credits";
+                    String id = "rsg." + type;
+
+                    items.add(new Event(id, type, rta, igt));
+                }
+            } catch (IOException e) {
+                // event.log が読み込めない場合はクリティカルではないため、何もしない
+                System.err.println("Failed to load event.log");
+            }
         }
+
         if (json.get("lanOpenedTime").asLong() > 0) {
             long rta = json.get("lanOpenedTime").asLong();
             long igt = 0;
@@ -121,13 +155,17 @@ public class EventList {
 
                 });
 
-        long activateTicks = json.get("activateTicks").asLong();
-        long rebaseIGTime = json.get("rebaseIGTime").asLong();
-        long excludedIGT = json.get("excludedIGT").asLong();
-        long endIGTTime = json.get("endIGTTime").asLong();
-        long igt = activateTicks * 50 - rebaseIGTime - excludedIGT + endIGTTime;
+        return new EventList(items, currentIgt);
+    }
 
-        return new EventList(items, igt);
+    private Event getEvent(String type) {
+        // timer.igt ではエンドロールに入っているか判別できないため、event.log に credits があるかどうかを確認する
+        for (Event event : this.timelines) {
+            if (event.type.equals(type)) {
+                return event;
+            }
+        }
+        return null;
     }
 
     public String toJson() throws JsonProcessingException {
