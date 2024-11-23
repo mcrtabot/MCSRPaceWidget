@@ -4,6 +4,7 @@ import { usePBTimeline, useSetting, useTimeline } from '../hooks';
 import { useSearchParams } from 'react-router-dom';
 import { Indicator } from '../components/Indicator';
 import { AppContext } from '../context';
+import { DemoWarning } from '../components/DemoWarning';
 
 export const IndicatorPage = () => {
   const [searchParams] = useSearchParams({ theme: 'default' });
@@ -34,6 +35,7 @@ export const IndicatorPage = () => {
 
   return (
     <AppContext.Provider value={{ timeline, pbTimeline, theme, setting }}>
+      {isDemo && <DemoWarning />}
       <Indicator />
     </AppContext.Provider>
   );
