@@ -1,5 +1,7 @@
 # MCSR (Minecraft Speedrunning) Pace Widget
 
+[日本語の README はこちら](README.ja.md)
+
 ## About
 
 A Minecraft Speedrun pace widget tool that displays your pace in real time.
