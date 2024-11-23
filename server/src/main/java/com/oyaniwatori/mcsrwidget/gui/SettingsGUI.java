@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -27,8 +28,8 @@ import com.oyaniwatori.mcsrwidget.PaceItem;
 import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 public class SettingsGUI extends JFrame {
-    private static SettingsGUI instance = null;
-    private static final long serialVersionUID = 1L;
+	private static SettingsGUI instance = null;
+	private static final long serialVersionUID = 1L;
 	private final JPanel formPanel = new JPanel();
 	private JTextField enterNetherFileld;
 	private JTextField enterBastionField;
@@ -44,24 +45,24 @@ public class SettingsGUI extends JFrame {
 	private JLabel creditLabel;
 	private JTextField creditField;
 
-    public SettingsGUI() {
+	public SettingsGUI() throws WindowFailedException {
 		// frame / panel config
-        setTitle("Pace Settings");
+		setTitle("Pace Settings");
 		this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                SettingsGUI.onClose();
-            }
-        });
+			@Override
+			public void windowClosing(WindowEvent e) {
+				SettingsGUI.onClose();
+			}
+		});
 		this.setResizable(false);
 		getContentPane().setLayout(new BorderLayout());
 		formPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 		getContentPane().add(formPanel, BorderLayout.CENTER);
 		GridBagLayout gblFormPanel = new GridBagLayout();
-		gblFormPanel.columnWidths = new int[] {96, 64};
-		gblFormPanel.rowHeights = new int[] {24, 24, 24, 24, 24, 24, 24};
-		gblFormPanel.columnWeights = new double[]{0.0, 1.0};
-		gblFormPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		gblFormPanel.columnWidths = new int[] { 96, 64 };
+		gblFormPanel.rowHeights = new int[] { 24, 24, 24, 24, 24, 24, 24 };
+		gblFormPanel.columnWeights = new double[] { 0.0, 1.0 };
+		gblFormPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		formPanel.setLayout(gblFormPanel);
 
 		// window init
@@ -71,9 +72,9 @@ public class SettingsGUI extends JFrame {
 			paceItems = Utils.getPaceItems(LOCATION);
 		} catch (IOException e) {
 			paceItems = null;
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(rootPane, "Could not load PB.json!");
+			throw new WindowFailedException("Could not load PB.json!");
 		}
-
 		{
 			JLabel enterNetherLabel = new JLabel("Enter Nether");
 			GridBagConstraints gbc_enterNetherLabel = new GridBagConstraints();
@@ -241,18 +242,24 @@ public class SettingsGUI extends JFrame {
 		this.setLocation((screenSize.width - this.getWidth()) / 2, (screenSize.height - this.getHeight()) / 2);
 	}
 
-    public static SettingsGUI open() {
-        if (instance == null) {
-            instance = new SettingsGUI();
-			instance.setVisible(true);
-        } else {
+	public static SettingsGUI open() {
+		if (instance == null) {
+			try {
+				instance = new SettingsGUI();
+				instance.setVisible(true);
+			} catch (WindowFailedException e) {
+				instance = null;
+				System.err.println(e);
+			}
+		} else {
 			instance.requestFocus();
 		}
-        return instance;
-    }
+		return instance;
+	}
 
 	private static void save(File location) {
-		final String[] TYPES = {"enter_nether", "enter_bastion", "enter_fortress", "first_portal", "enter_stronghold", "enter_end", "credits"};
+		final String[] TYPES = { "enter_nether", "enter_bastion", "enter_fortress", "first_portal", "enter_stronghold",
+				"enter_end", "credits" };
 		List<PaceItem> paceItems = new ArrayList<PaceItem>();
 		for (int i = 0; i < 7; i++) {
 			paceItems.add(new PaceItem());
@@ -270,6 +277,7 @@ public class SettingsGUI extends JFrame {
 			Utils.savePbJson(location, paceItems);
 		} catch (IOException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(instance, "Failed to save...");
 		}
 		onClose();
 	}
@@ -281,5 +289,14 @@ public class SettingsGUI extends JFrame {
 	public static void onClose() {
 		instance.setVisible(false);
 		instance = null;
+	}
+
+	// PB.jsonが開けないときにスローされる例外
+	private class WindowFailedException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public WindowFailedException(String msg) {
+			super(msg);
+		}
 	}
 }
