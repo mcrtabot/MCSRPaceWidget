@@ -44,9 +44,9 @@ export const Indicator = () => {
 
   const latestItem = timeline[timeline.length - 1];
   let faceStatus: 'normal' | 'smile' | 'sad' = 'normal';
-  if (!igt || !latestItem) {
+  if (!paceIGT || !latestItem) {
     faceStatus = 'normal';
-  } else if (igt > pbFinalIGT) {
+  } else if (paceIGT > pbFinalIGT) {
     faceStatus = 'sad';
   } else {
     const pbItemIndex = pbTimeline.findIndex((item) => item.type === latestItem.type);
@@ -58,7 +58,7 @@ export const Indicator = () => {
 
       const pbItem = pbTimeline[pbItemIndex];
       const pbNextItem = pbTimeline[pbItemIndex + 1];
-      if (faceStatusEnabled && latestItem.igt < (pbItem?.igt || 0) && igt < (pbNextItem?.igt || 0)) {
+      if (faceStatusEnabled && latestItem.igt < (pbItem?.igt || 0) && paceIGT < (pbNextItem?.igt || 0)) {
         faceStatus = 'smile';
       }
     }
