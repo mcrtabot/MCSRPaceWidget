@@ -140,7 +140,7 @@ export const TopPage = () => {
       </WidgetTypeContainer>
       <hr />
       <WidgetTypeContainer>
-        <h2>Indicator Theme</h2>
+        <h2>Visual Timeline Theme</h2>
         <ControlContainer>
           <ThemeSelector
             type="indicator"
