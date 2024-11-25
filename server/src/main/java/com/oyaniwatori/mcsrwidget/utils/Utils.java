@@ -1,13 +1,19 @@
 package com.oyaniwatori.mcsrwidget.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oyaniwatori.mcsrwidget.PaceItem;
 import com.oyaniwatori.mcsrwidget.Theme;
@@ -46,12 +52,12 @@ public class Utils {
     }
 
     public static File getHomeResourceDir(String path) {
-        // ホームディレクトリ(~/mcsrpacewidget)に対象パスがあればそちらを優先
-        // If there is a target path in the home directory (~/mcsrpacewidget),
-        // prioritize it
+        // ホームディレクトリのコンフィグフォルダに(~/.config/MCSRPaceWidget)に対象パスがあればそちらを優先
+        // If there is a target path in the home config directory
+        // (~/.config/MCSRPaceWidget), prioritize it
         String separator = File.separator;
         String homeWidgetPath = System.getProperty("user.home") + separator + ".config" + separator
-                + "mcsrpacewidget";
+                + "MCSRPaceWidget";
         if (path != null) {
             homeWidgetPath += separator + path;
         }
@@ -85,5 +91,25 @@ public class Utils {
     public static void savePbJson(File location, List<PaceItem> paceItems) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(location, paceItems);
+    }
+
+    public static String getInstancePath() throws IOException {
+        String separator = File.separator;
+        String latestWorldFilePath = System.getProperty("user.home") + separator + "speedrunigt" + separator
+                + "latest_world.json";
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode latestWorldData = mapper.readTree(Paths.get(latestWorldFilePath).toFile());
+            return latestWorldData.get("world_path").textValue();
+        } catch (JsonParseException e) {
+            // 暫定対応
+            // JSONパースに失敗する場合は、latest_world.jsonがShift-JISだとして読み込みを試みる
+            try (InputStreamReader reader = new InputStreamReader(
+                    new FileInputStream(Paths.get(latestWorldFilePath).toFile()), Charset.forName("Shift-JIS"))) {
+                JsonNode latestWorldData = mapper.readTree(reader);
+                return latestWorldData.get("world_path").textValue();
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oyaniwatori.mcsrwidget.utils.Crypto;
+import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 public class EventList {
     public List<Event> timelines;
@@ -39,13 +40,7 @@ public class EventList {
 
     public static EventList load() throws IOException {
         String separator = File.separator;
-        String latestWorldFilePath = System.getProperty("user.home") + separator + "speedrunigt" + separator
-                + "latest_world.json";
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode latestWorldData = mapper.readTree(Paths.get(latestWorldFilePath).toFile());
-
-        String instancePath = latestWorldData.get("world_path").textValue();
+        String instancePath = Utils.getInstancePath();
         String eventLogFilePath = instancePath + separator + "speedrunigt" + separator + "events.log";
 
         String eventsString = Files.readString(Paths.get(eventLogFilePath));
@@ -55,12 +50,9 @@ public class EventList {
 
     public static EventList loadFromTimerIGT() throws IOException {
         String separator = File.separator;
-        String latestWorldFilePath = System.getProperty("user.home") + separator + "speedrunigt" + separator
-                + "latest_world.json";
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode latestWorldData = mapper.readTree(Paths.get(latestWorldFilePath).toFile());
 
-        String instancePath = latestWorldData.get("world_path").textValue();
+        String instancePath = Utils.getInstancePath();
         JsonNode json;
         try {
             String path = instancePath + separator + "speedrunigt" + separator + "data" + separator + "timer.igt";
