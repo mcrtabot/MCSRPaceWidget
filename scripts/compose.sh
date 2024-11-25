@@ -37,5 +37,7 @@ cp -pr resources/setting ${TARGET_NAME}/setting
 rm -rf ${TARGET_NAME}/public/theme
 cp -pr resources/theme ${TARGET_NAME}/theme
 
+find ${TARGET_NAME} -name .DS_Store | xargs rm
+
 zip -r ${TARGET_NAME}.zip ${TARGET_NAME}/
 rm -rf ${TARGET_NAME}
