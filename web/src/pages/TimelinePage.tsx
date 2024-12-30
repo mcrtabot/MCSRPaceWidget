@@ -1,10 +1,10 @@
-import React from 'react';
-
 import { usePBTimeline, useSetting, useTimeline } from '../hooks';
-import { useSearchParams } from 'react-router-dom';
-import { Timelines } from '../components/Timelines';
+
 import { AppContext } from '../context';
-import { DemoWarning } from '../components/DemoWarning';
+import { DemoWarning } from '../components/indicator/DemoWarning';
+import React from 'react';
+import { Timelines } from '../components/timeline/Timelines';
+import { useSearchParams } from 'react-router-dom';
 
 export const TimelinePage = () => {
   const [searchParams] = useSearchParams({ theme: 'default', demo: '0' });

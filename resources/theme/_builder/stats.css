@@ -1,0 +1,82 @@
+:root {
+  /* base text color */
+  --st-text-color: rgba(255, 255, 255, 1);
+
+  /* timeline's background (color) */
+  --st-background: transparent;
+
+  --st-font: normal normal 22px/1 "Minecraft-Regular", sans-serif;
+  --st-digits-font: normal normal 22px/1 "Minecraft-Regular", monospace,
+    sans-serif;
+
+  --st-width: 240px;
+}
+
+.mcsr-stats {
+  width: var(--st-width);
+  padding-top: var(--st-offset);
+  font: var(--st-font);
+  color: var(--st-text-color);
+  background: var(--st-background);
+  padding-left: calc(var(--st-face-icon-size) / 2);
+  user-select: none;
+}
+
+.mcsr-stats__item {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.mcsr-stats__item--blinded {
+  border-bottom: 2px solid var(--st-text-color);
+}
+
+.mcsr-stats__item-icon {
+  width: 24px;
+  height: 24px;
+  border: #fff 2px solid;
+  background: #666;
+  margin-right: 8px;
+
+  background-size: 60px;
+  background-repeat: repeat;
+  border: 2px solid var(--id-text-color);
+}
+.mcsr-stats__item-icon--total {
+  visibility: hidden;
+}
+
+.mcsr-stats__item-label {
+  width: 150px;
+}
+
+.mcsr-stats__item-time {
+  text-align: right;
+  margin-left: auto;
+  font: var(--st-digits-font);
+}
+
+.mcsr-stats__item-icon--overworld {
+  background-image: url(texture/overworld.png);
+}
+.mcsr-stats__item-icon--nether,
+.mcsr-stats__item-icon--nether_move {
+  background-image: url(texture/netherrack.png);
+}
+.mcsr-stats__item-icon--bastion {
+  background-image: url(texture/gilded_blackstone.png);
+}
+.mcsr-stats__item-icon--fortress {
+  background-image: url(texture/nether_bricks.png);
+}
+.mcsr-stats__item-icon--blinded,
+.mcsr-stats__item-icon--blinded_move {
+  background-image: url(texture/nerthergate.png);
+}
+.mcsr-stats__item-icon--stronghold {
+  background-image: url(texture/cracked_stone_bricks.png);
+}
+.mcsr-stats__item-icon--end {
+  background-image: url(texture/end_stone.png);
+}

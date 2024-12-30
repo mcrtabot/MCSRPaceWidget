@@ -1,19 +1,26 @@
-import React, { useContext, useEffect, useMemo } from 'react';
-import { useTimelineInfo } from '../hooks';
-import { TimelineIcon } from './TimelineIcon';
-import { DiffTime, Time } from './Time';
-import { AppContext } from '../context';
-import { TimelineItem } from '../types';
+import { DiffTime, Time } from '../common/Time';
+import React, { useContext, useLayoutEffect, useMemo } from 'react';
+
+import { AppContext } from '../../context';
+import { TimelineIcon } from '../timeline/TimelineIcon';
+import { TimelineItem } from '../../types';
+import { useTimelineInfo } from '../../hooks';
 
 export const Indicator = () => {
-  const { timeline: timelineData, pbTimeline, theme, setting } = useContext(AppContext);
-  useEffect(() => {
+  const {
+    timeline: timelineData,
+    pbTimeline,
+    theme,
+    setting,
+    detailMode = false, // 詳細モード(leave_bastionなどを表示)で表示するかどうか
+  } = useContext(AppContext);
+  useLayoutEffect(() => {
     const head = document.head;
     const link = document.createElement('link');
 
     link.type = 'text/css';
     link.rel = 'stylesheet';
-    link.href = `/theme/${theme}/indicator.css`;
+    link.href = `${process.env.REACT_APP_PATH_PREFIX}/theme/${theme}/indicator.css`;
 
     head.appendChild(link);
 
@@ -32,7 +39,7 @@ export const Indicator = () => {
   const timelineMap = useMemo(() => new Map(timeline.map((item) => [item.type, item])), [timeline]);
   const pbTimelineMap = useMemo(() => new Map(pbTimeline.map((item) => [item.type, item])), [pbTimeline]);
 
-  const pbFinalIGT = useMemo(() => pbTimeline.find((item) => item.type === 'credits')?.igt ?? 0, [pbTimeline]);
+  const pbFinalIGT = useMemo(() => Math.max(...timeline.map((item) => item.igt ?? 0)), [timeline]);
   const paceIGT = useMemo(() => {
     const finalIGT = timeline.find((item) => item.type === 'credits')?.igt;
     if (finalIGT) {
@@ -67,31 +74,36 @@ export const Indicator = () => {
   const classNames: string[] = [
     'mcsr-indicator',
     `mcsr-indicator--${timelineMap.has('credits') ? 'completed' : 'running'}`,
+    `mcsr-indicator--${detailMode ? 'detail' : 'simple'}`,
   ];
   if (timeline.length === 0) {
     classNames.push('mcsr-indicator--empty');
   }
 
   const pbLineItems = getTimelineLineItems(pbTimeline, pbFinalIGT, pbFinalIGT);
-  const lineItems = getTimelineLineItems(timeline, paceIGT || 0, pbFinalIGT);
+  let lineItems = getTimelineLineItems(timeline, paceIGT || 0, pbFinalIGT);
 
   return (
     <div className={classNames.join(' ')}>
       <div className="mcsr-indicator__line-container">
-        {pbLineItems.map((lineItem) => (
-          <div
-            key={lineItem.type}
-            className={`mcsr-indicator__line mcsr-indicator__line--pb mcsr-indicator__line--${lineItem.type}`}
-            style={{ left: lineItem.left, width: lineItem.width }}
-          />
-        ))}
-        {lineItems.map((lineItem) => (
-          <div
-            key={lineItem.type}
-            className={`mcsr-indicator__line mcsr-indicator__line--pace mcsr-indicator__line--${lineItem.type}`}
-            style={{ left: lineItem.left, width: lineItem.width }}
-          />
-        ))}
+        {pbLineItems
+          .filter((lineItem) => lineItem.type !== 'credits')
+          .map((lineItem) => (
+            <div
+              key={lineItem.type}
+              className={`mcsr-indicator__line mcsr-indicator__line--pb mcsr-indicator__line--${lineItem.type}`}
+              style={{ left: lineItem.left, width: lineItem.width }}
+            />
+          ))}
+        {lineItems
+          .filter((lineItem) => lineItem.type !== 'credits')
+          .map((lineItem) => (
+            <div
+              key={lineItem.type}
+              className={`mcsr-indicator__line mcsr-indicator__line--pace mcsr-indicator__line--${lineItem.type}`}
+              style={{ left: lineItem.left, width: lineItem.width }}
+            />
+          ))}
       </div>
       <div className="mcsr-indicator__dot-container">
         {getTimelineDotItems(pbTimeline, pbFinalIGT, pbFinalIGT).map((dotItem, index) => (

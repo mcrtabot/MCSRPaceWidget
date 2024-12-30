@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { TimelineItem, TimelineNextItemStyle } from '../types';
+import { TimelineItem, TimelineNextItemStyle } from '../../types';
 import { RandomTime } from './RandomTime';
-import { DiffTime, Time } from './Time';
+import { DiffTime, Time } from '../common/Time';
 import { TimelineIcon as TLIcon } from './TimelineIcon';
-import { useTimelineInfo } from '../hooks';
+import { useTimelineInfo } from '../../hooks';
 
 type TimelineProps = {
   className?: string;

@@ -1,10 +1,10 @@
-import React from 'react';
-
 import { usePBTimeline, useSetting, useTimeline } from '../hooks';
-import { useSearchParams } from 'react-router-dom';
-import { Indicator } from '../components/Indicator';
+
 import { AppContext } from '../context';
-import { DemoWarning } from '../components/DemoWarning';
+import { DemoWarning } from '../components/indicator/DemoWarning';
+import { Indicator } from '../components/indicator/Indicator';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 export const IndicatorPage = () => {
   const [searchParams] = useSearchParams({ theme: 'default' });

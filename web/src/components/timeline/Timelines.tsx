@@ -1,17 +1,17 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useLayoutEffect } from 'react';
 
-import { Timeline } from '../components/Timeline';
-import { AppContext } from '../context';
+import { Timeline } from './Timeline';
+import { AppContext } from '../../context';
 
 export const Timelines = () => {
   const { timeline, pbTimeline, theme, setting } = useContext(AppContext);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const head = document.head;
     const link = document.createElement('link');
 
     link.type = 'text/css';
     link.rel = 'stylesheet';
-    link.href = `/theme/${theme}/timeline.css`;
+    link.href = `${process.env.REACT_APP_PATH_PREFIX}/theme/${theme}/timeline.css`;
 
     head.appendChild(link);
 

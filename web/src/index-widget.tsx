@@ -1,5 +1,4 @@
 import 'dayjs/locale/ja';
-import 'dayjs/locale/ja';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 

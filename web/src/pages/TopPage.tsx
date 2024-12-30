@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
+import { ThemeSelector, ThemeSelectorCondition } from '../components/selector/ThemeSelector';
 import { usePBTimeline, useSetting, useTimeline } from '../hooks';
-import { useSearchParams } from 'react-router-dom';
-import { ThemeSelectorCondition, ThemeSelector } from '../components/ThemeSelector';
-import { Timelines } from '../components/Timelines';
-import { Indicator } from '../components/Indicator';
-import styled from 'styled-components';
+
 import { AppContext } from '../context';
+import { Indicator } from '../components/indicator/Indicator';
+import { Timelines } from '../components/timeline/Timelines';
+import styled from 'styled-components';
+import { useSearchParams } from 'react-router-dom';
 
 export const TopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams({ timeline: 'default', indicator: 'default', data: 'demo' });

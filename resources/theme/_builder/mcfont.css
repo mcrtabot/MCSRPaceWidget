@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "Minecraft-Regular";
+  src: url("../../font/minecraft/Minecraft-Regular.ttf.woff") format("woff"),
+    url("../../font/minecraft/Minecraft-Regular.ttf.svg#Minecraft-Regular")
+      format("svg"),
+    url("../../font/minecraft/Minecraft-Regular.ttf.eot"),
+    url("../../font/minecraft/Minecraft-Regular.ttf.eot?#iefix")
+      format("embedded-opentype");
+  font-weight: normal;
+  font-style: normal;
+}

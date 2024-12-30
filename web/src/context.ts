@@ -7,6 +7,8 @@ export const AppContext = createContext<{
   setting: Setting;
   timeline: TimelineData;
   pbTimeline: TimelineItem[];
+  pixelsPerMinute?: number | null;
+  detailMode?: boolean;
 }>({
   theme: 'default',
   setting: defaultSetting,

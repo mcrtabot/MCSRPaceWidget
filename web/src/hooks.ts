@@ -5,6 +5,7 @@ import { Setting, Theme, TimelineData, TimelineItem } from './types';
 import demoTimelineData from './assets/demo/timeline.json';
 import demoPBTimeline from './assets/demo/pb.json';
 import { useMemo } from 'react';
+import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
 const TIMELINE_REFRESH_INTERVAL = 500;
@@ -17,28 +18,8 @@ const fetcher = async (path: string) => {
   return await response.json();
 };
 
-const convertTimeToMilliSeconds = (time?: string) => {
-  if (!time) {
-    return undefined;
-  }
-  const match = time.match(/(?:(\d+):)?(\d{1,2}):(\d{1,2})(?:\.(\d+))?/);
-  if (!match) {
-    return undefined;
-  }
-  const h = match.at(1);
-  const m = match.at(2);
-  const s = match.at(3);
-  const ms = match.at(4);
-  return (
-    (h ? parseInt(h, 10) * 60 * 60 * 1000 : 0) +
-    (m ? parseInt(m, 10) * 60 * 1000 : 0) +
-    (s ? parseInt(s, 10) * 1000 : 0) +
-    (ms ? parseInt(ms, 10) : 0)
-  );
-};
-
 export const useSetting = (theme: string | null, isDemo: boolean) => {
-  const path = `/theme/${theme}/setting.json`;
+  const path = `${process.env.REACT_APP_PATH_PREFIX}/theme/${theme}/setting.json`;
   const refreshInterval = isDemo ? 500 : REFRESH_INTERVAL;
   const {
     isLoading,
@@ -122,7 +103,7 @@ export const usePBTimeline = (demo?: boolean) => {
 };
 
 export const useThemes = () => {
-  const path = `/api/themes`;
+  const path = `${process.env.REACT_APP_PATH_PREFIX}/api/themes`;
   const {
     isLoading,
     data: themes,

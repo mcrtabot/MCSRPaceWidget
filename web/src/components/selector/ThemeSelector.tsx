@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
-import { useThemes } from '../hooks';
-import { Time } from './Time';
+
+import { Theme } from '../../types';
+import { Time } from '../common/Time';
 import styled from 'styled-components';
-import { Theme } from '../types';
+import { useThemes } from '../../hooks';
 
 type ThemeSelectorProps = {
   type: 'timeline' | 'indicator';

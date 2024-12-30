@@ -1,10 +1,10 @@
-import React from 'react';
-
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import { ImageBuilderPage } from './pages/ImageBuilderPage';
+import { IndicatorPage } from './pages/IndicatorPage';
+import React from 'react';
 import { TimelinePage } from './pages/TimelinePage';
 import { TopPage } from './pages/TopPage';
-import { IndicatorPage } from './pages/IndicatorPage';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +18,14 @@ const router = createBrowserRouter([
   {
     path: '/indicator',
     element: <IndicatorPage />,
+  },
+  {
+    path: '/visualtimeline',
+    element: <IndicatorPage />,
+  },
+  {
+    path: '/image/builder',
+    element: <ImageBuilderPage />,
   },
 ]);
 

@@ -1,8 +1,12 @@
+export type StringTimelineItem = {
+  type: string;
+  igt: string; // mm:ss.fff
+};
+
 export type TimelineItem = {
   type: string;
   igt: number;
 };
-
 export type TimelineData = {
   timelines: TimelineItem[];
   igt: number | null;
@@ -24,3 +28,33 @@ export type Theme = {
   timeline: boolean;
   indicator: boolean;
 };
+
+export const TIMELINE_EVENTS = [
+  'overworld',
+  'enter_nether',
+  'enter_bastion',
+  'enter_fortress',
+  'first_portal',
+  'enter_stronghold',
+  'enter_end',
+  'credits',
+  'leave_bastion',
+  'leave_fortress',
+  'second_portal',
+  'enter_nether2',
+  'enter_bastion2',
+  'enter_fortress2',
+];
+export type TimelineEvent = (typeof TIMELINE_EVENTS)[number];
+
+export const SIMPLE_MODE_TIMELINE_EVENTS = [
+  'overworld',
+  'enter_nether',
+  'enter_bastion',
+  'enter_fortress',
+  'first_portal',
+  'enter_stronghold',
+  'enter_end',
+  'credits',
+] as const;
+export type SimpleModeTimelineEvent = (typeof SIMPLE_MODE_TIMELINE_EVENTS)[number];
