@@ -1,0 +1,174 @@
+:root {
+  /* base text color */
+  --id-text-color: rgba(255, 255, 255, 1);
+
+  /* timeline's background (color) */
+  --id-background: transparent;
+
+  --id-font: normal bold 18px/1 sans-serif;
+  --id-digits-font: normal normal 22px/1 "Minecraft-Regular", monospace,
+    sans-serif;
+  --id-width: 1280px;
+  --id-offset: 80px;
+
+  --id-line-size: 24px;
+  --id-dot-size: 8px;
+  --id-face-icon-size: 0;
+  --id-pb-icon-size: 48px;
+  --id-pace-icon-size: 48px;
+
+  --id-pb-icon-offset: -48px;
+  --id-pace-icon-offset: -48px;
+
+  /* --id-display-indicator-empty: none; */
+  /* --id-display-done-pb-item: none; */
+  --id-done-pb-icon-size: 0;
+
+  --id-highlighted-shadow-color: rgba(255, 128, 128, 1);
+
+  /* --id-display-pace-text: none; */
+  --id-display-pace-text-rotate: 32deg;
+  --id-display-pace-text-label: none;
+  /* --id-display-pace-text-time: none; */
+  --id-display-pace-text-diff: none;
+}
+
+.mcsr-indicator {
+  /* width: var(--id-width); */
+  padding-top: var(--id-offset);
+  font: var(--id-font);
+  color: var(--id-text-color);
+  background: var(--id-background);
+  padding-left: calc(var(--id-face-icon-size) / 2);
+  user-select: none;
+}
+
+.mcsr-indicator--empty {
+  display: var(--id-display-indicator-empty, block);
+}
+
+.mcsr-indicator__line-container {
+  width: 100%;
+  position: relative;
+}
+
+.mcsr-indicator__line {
+  position: absolute;
+  height: var(--id-line-size);
+  width: 100%;
+  background: #666;
+  transform: translate3d(0, -50%, 0);
+}
+
+.mcsr-indicator__line--pace.mcsr-indicator__line--overworld,
+.mcsr-indicator__line--pace.mcsr-indicator__line--second_portal {
+  background-image: url(texture/overworld.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_nether,
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_nether2,
+.mcsr-indicator__line--pace.mcsr-indicator__line--leave_bastion,
+.mcsr-indicator__line--pace.mcsr-indicator__line--leave_fortress {
+  background-image: url(texture/netherrack.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_bastion,
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_bastion2 {
+  background-image: url(texture/gilded_blackstone.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_fortress,
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_fortress2 {
+  background-image: url(texture/nether_bricks.png);
+}
+.mcsr-indicator--simple
+  .mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
+  background-image: url(texture/nerthergate.png);
+}
+.mcsr-indicator--detail
+  .mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
+  background-image: url(texture/overworld.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_stronghold {
+  background-image: url(texture/cracked_stone_bricks.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_end {
+  background-image: url(texture/end_stone.png);
+}
+
+.mcsr-indicator__line--pace {
+  background-size: 60px;
+  background-repeat: repeat;
+  border: 2px solid var(--id-text-color);
+}
+
+.mcsr-indicator__dot-container {
+  width: 100%;
+  position: relative;
+}
+
+.mcsr-indicator__dot {
+  position: absolute;
+  height: var(--id-dot-size);
+  width: var(--id-dot-size);
+  /* border-radius: 50%; */
+  background: #333;
+  transform: translate3d(0, -50%, 0);
+}
+
+.mcsr-indicator__dot--pace {
+  background: #fff;
+}
+.mcsr-indicator__dot--pace.mcsr-indicator__dot--enter_end {
+  background: #666;
+}
+
+.mcsr-indicator__text {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform: translate3d(0, 64px, 0) rotate(var(--id-display-pace-text-rotate));
+  display: var(--id-display-pace-text);
+}
+
+.mcsr-indicator__text-inner {
+  position: absolute;
+  display: flex;
+}
+
+.mcsr-indicator__text__label {
+  display: var(--id-display-pace-text-label, block);
+}
+.mcsr-indicator__text__time {
+  display: var(--id-display-pace-text-time, block);
+  font: var(--id-digits-font);
+}
+.mcsr-indicator__text__diff {
+  display: var(--id-display-pace-text-diff, block);
+  font: var(--id-digits-font);
+  margin-left: 0.5em;
+}
+
+.mcsr-indicator__icon {
+  position: absolute;
+  background-repeat: no-repeat;
+  transform: translate3d(-50%, -50%, 0);
+  image-rendering: pixelated;
+}
+
+.mcsr-indicator__face--sad {
+  background-image: var(--id-face-sad-file);
+}
+
+.mcsr-indicator__timeline-container .mcsr-indicator__item {
+  position: relative;
+}
+
+.mcsr-indicator__timeline-container--pace {
+  width: 100%;
+  position: relative;
+  top: var(--id-pace-icon-offset);
+}
+
+.mcsr-indicator__timeline-container--pace .mcsr-indicator__icon {
+  height: var(--id-pace-icon-size);
+  width: var(--id-pace-icon-size);
+  background-size: var(--id-pace-icon-size);
+}

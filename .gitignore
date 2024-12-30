@@ -1,0 +1,13 @@
+*.class
+*.log
+*.jar
+
+.DS_Store
+.vscode
+
+target/
+/public
+MCSRPaceWidget*
+server/theme
+
+server/src/main/java/com/oyaniwatori/mcsrwidget/Test.java

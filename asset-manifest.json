@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "https://mcrtabot.github.io/MCSRPaceWidget/static/js/main.5fc8831e.js",
+    "index.html": "https://mcrtabot.github.io/MCSRPaceWidget/index.html",
+    "main.5fc8831e.js.map": "https://mcrtabot.github.io/MCSRPaceWidget/static/js/main.5fc8831e.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.5fc8831e.js"
+  ]
+}

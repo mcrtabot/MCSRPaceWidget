@@ -1,0 +1,152 @@
+:root {
+  /* base text color */
+  --tl-text-color: rgba(255, 255, 255, 1);
+
+  /* highlighted text color for items faster than PB pace */
+  --tl-highlighted-text-color: rgba(255, 128, 128, 1);
+
+  /* timeline's background (color) */
+  --tl-background: transparent;
+
+  --tl-font: normal normal 22px/1 "Minecraft-Regular", sans-serif;
+  --tl-digits-font: normal normal 22px/1 "Minecraft-Regular", monospace,
+    sans-serif;
+  --icon-size: 28px;
+
+  --tl-pb-timeline-width: 290px;
+  --tl-pace-timeline-width: 320px;
+
+  /*  If you want to hide an item, uncomment it (--tl-display-*: none;). */
+
+  --tl-display-pb-timeline: none;
+  --tl-display-pb-timeline-empty: none;
+  /* --tl-display-pb-timeline-title: none; */
+  /* --tl-display-pb-timeline-separator: none; */
+  /* --tl-display-pb-timeline-item-icon: none; */
+  /* --tl-display-pb-timeline-item-label: none; */
+  /* --tl-display-pb-timeline-item-time: none; */
+  /* --tl-display-pb-timeline-item-diff: none; */
+
+  /* --tl-display-pace-timeline: none; */
+  /* --tl-display-pace-timeline-empty: none; */
+  --tl-display-pace-timeline-title: none;
+  --tl-display-pace-timeline-separator: none;
+  /* --tl-display-pace-timeline-item-icon: none; */
+  /* --tl-display-pace-timeline-item-label: none; */
+  /* --tl-display-pace-timeline-item-time: none; */
+  --tl-display-pace-timeline-item-diff: none;
+
+  /* --tl-display-pace-timeline-item-status-done: none; */
+  /* --tl-display-pace-timeline-item-status-current: none; */
+  /* --tl-display-pace-timeline-item-status-next: none; */
+  /* --tl-display-pace-timeline-item-status-todo: none; */
+}
+
+.timeline {
+  color: var(--tl-text-color);
+  background: var(--tl-background);
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+.timeline__title {
+  text-align: center;
+}
+
+.timeline__separator {
+  border: none;
+  border-bottom: 2px solid var(--tl-text-color);
+  margin-bottom: 8px;
+}
+
+.timeline__container {
+  margin: 4px 0;
+  width: 100%;
+}
+
+.timeline__item {
+  padding: 0 8px;
+  height: 24px;
+}
+
+.timeline__item--highlighted {
+  color: var(--tl-highlighted-text-color);
+}
+
+.timeline__item--next {
+  color: var(--tl-text-color);
+}
+
+.timeline__item--todo {
+  color: var(--tl-text-color);
+}
+
+.timeline__item__cell {
+  vertical-align: middle;
+}
+
+.timeline__item__cell__time,
+.timeline__item__cell__diff {
+  text-align: right;
+}
+
+.timeline__item__icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background-size: var(--icon-size);
+  background-repeat: no-repeat;
+}
+.timeline__item {
+  font: var(--tl-digits-font);
+}
+
+.timeline__item__time {
+  font: var(--tl-digits-font);
+}
+
+.timeline__item__diff {
+  font: var(--tl-digits-font);
+  font-size: 0.8em;
+}
+
+.timeline--pace {
+  width: var(--tl-pace-timeline-width);
+  display: var(--tl-display-pace-timeline, block);
+}
+.timeline--pace.timeline--empty {
+  display: var(--tl-display-pace-timeline-empty, block);
+}
+.timeline--pace .timeline__title {
+  display: var(--tl-display-pace-timeline-title, block);
+}
+.timeline--pace .timeline__separator {
+  display: var(--tl-display-pace-timeline-separator, block);
+}
+.timeline--pace .timeline__item__cell__icon {
+  display: var(--tl-display-pace-timeline-item-icon, table-cell);
+}
+.timeline--pace .timeline__item__cell__label {
+  display: var(--tl-display-pace-timeline-item-label, table-cell);
+  font: var(--tl-font);
+}
+.timeline--pace .timeline__item__cell__time {
+  display: var(--tl-display-pace-timeline-item-time, table-cell);
+}
+.timeline--pace .timeline__item__cell__diff {
+  display: var(--tl-display-pace-timeline-item-diff, table-cell);
+}
+.timeline--pace .timeline__item--done {
+  display: var(--tl-display-pace-timeline-item-status-done, table-row);
+}
+.timeline--pace .timeline__item--current {
+  display: var(--tl-display-pace-timeline-item-status-current, table-row);
+}
+.timeline--pace .timeline__item--next {
+  display: var(--tl-display-pace-timeline-item-status-next, table-row);
+}
+.timeline--pace .timeline__item--todo {
+  display: var(
+    --tl-display-pace-timeline-item-status-todo,
+    var(--tl-display-pace-timeline-item-status-next, table-row)
+  );
+}
