@@ -2,3 +2,5 @@
 /build
 public/setting
 public/theme
+public
+src/index.tsx
