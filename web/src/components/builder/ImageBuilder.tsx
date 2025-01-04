@@ -97,6 +97,7 @@ export const ImageBuilder = ({ commonParams, itemParamsList, setting, onChange }
     '--id-text-color': textColor,
     '--tl-text-color': textColor,
     '--st-text-color': textColor,
+    borderBottomColor: transparent ? 'transparent' : backgroundColor,
   } as any;
   if (pixelsPerMinute) {
     canvasStyle['width'] = 'fit-content';
@@ -112,35 +113,37 @@ export const ImageBuilder = ({ commonParams, itemParamsList, setting, onChange }
         <title>{pageTitle} - MCSR Image Builder</title>
       </Helmet>
       <CanvasContainer>
-        <ComponentCanvas ref={componentRef} style={{ ...canvasStyle }}>
-          {itemParamsList.map((itemParams, index) => {
-            const { timeline: strTimeline } = itemParams;
-            let rawTimeline = strTimeline
-              .map((item) => ({ type: item.type, igt: convertTimeToMilliSeconds(item.igt) }))
-              .filter((item) => item.igt !== undefined) as TimelineItem[];
+        <ComponentCanvasWrapper style={{ backgroundColor }}>
+          <ComponentCanvas ref={componentRef} style={{ ...canvasStyle }}>
+            {itemParamsList.map((itemParams, index) => {
+              const { timeline: strTimeline } = itemParams;
+              let rawTimeline = strTimeline
+                .map((item) => ({ type: item.type, igt: convertTimeToMilliSeconds(item.igt) }))
+                .filter((item) => item.igt !== undefined) as TimelineItem[];
 
-            let timeline = rawTimeline;
-            if (!detailMode) {
-              timeline = timeline.filter((item) => SIMPLE_MODE_TIMELINE_EVENTS.includes(item.type as any));
-            }
+              let timeline = rawTimeline;
+              if (!detailMode) {
+                timeline = timeline.filter((item) => SIMPLE_MODE_TIMELINE_EVENTS.includes(item.type as any));
+              }
 
-            return (
-              <AppContext.Provider
-                key={index}
-                value={{
-                  timeline: { timelines: timeline, igt: maxTime },
-                  pbTimeline: timeline,
-                  theme,
-                  setting,
-                  pixelsPerMinute,
-                  detailMode,
-                }}
-              >
-                <RenderImage commonParams={commonParams} itemParams={itemParams} canvasPadding={CANVAS_PADDING} />
-              </AppContext.Provider>
-            );
-          })}
-        </ComponentCanvas>
+              return (
+                <AppContext.Provider
+                  key={index}
+                  value={{
+                    timeline: { timelines: timeline, igt: maxTime },
+                    pbTimeline: timeline,
+                    theme,
+                    setting,
+                    pixelsPerMinute,
+                    detailMode,
+                  }}
+                >
+                  <RenderImage commonParams={commonParams} itemParams={itemParams} canvasPadding={CANVAS_PADDING} />
+                </AppContext.Provider>
+              );
+            })}
+          </ComponentCanvas>
+        </ComponentCanvasWrapper>
       </CanvasContainer>
       <Background style={{ ...backgroundStyle, width: 'fit-content' }}>
         {imageSrc && <RenderedImage src={imageSrc} alt="Screenshot" />}
@@ -174,8 +177,15 @@ const Background = styled.div`
   margin-bottom: 16px;
 `;
 
+const ComponentCanvasWrapper = styled.div`
+  width: fit-content;
+  padding-bottom: 2px;
+`;
 const ComponentCanvas = styled.div`
   background: var(--id-background);
+  border: none;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   padding: ${CANVAS_PADDING}px;
 
   > *:not(:first-child) {
