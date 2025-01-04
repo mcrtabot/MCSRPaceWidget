@@ -20,7 +20,7 @@ const router = createBrowserRouter(
 export const App = () => {
   return (
     <HelmetProvider>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </HelmetProvider>
   );
 };

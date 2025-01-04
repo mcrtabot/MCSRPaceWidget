@@ -107,7 +107,7 @@ export const ImageBuilder = ({ commonParams, itemParamsList, setting, onChange }
   }
 
   return (
-    <>
+    <Wrapper>
       <Helmet>
         <title>{pageTitle} - MCSR Image Builder</title>
       </Helmet>
@@ -150,9 +150,13 @@ export const ImageBuilder = ({ commonParams, itemParamsList, setting, onChange }
         Input example
       </a>
       <ImageBuilderForm initialValues={[commonParams, itemParamsList]} onChange={onChange} />
-    </>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  font-family: 'Roboto', sans-serif;
+`;
 
 const CanvasContainer = styled.div`
   position: 'absolute';
@@ -181,6 +185,10 @@ const ComponentCanvas = styled.div`
 
 const RenderedImage = styled.img`
   display: block;
+
+  @media screen and (max-width: 960px) {
+    width: 100%;
+  }
 `;
 
 const SaveButton = styled.button`

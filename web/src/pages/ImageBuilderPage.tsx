@@ -45,6 +45,7 @@ const DISPLAY_RUN_INFO_PARAMETER = 'dr';
 const DISPLAY_TIMELINE_PARAMETER = 'dt';
 const DISPLAY_STATS_PARAMETER = 'ds';
 const DISPLAY_NOTE_PARAMETER = 'dn';
+const RUNINFO_TITLE_PARAMETER = 'rt';
 
 const TIMELINE_EVENT_MAP = {
   enter_nether: 'en',
@@ -55,6 +56,7 @@ const TIMELINE_EVENT_MAP = {
   first_portal: 'fp',
   second_portal: 'sp',
   enter_stronghold: 'es',
+  portal_room: 'pr',
   enter_end: 'ee',
   credits: 'fn',
   enter_nether2: 'en2',
@@ -145,6 +147,7 @@ const parseBuilderParams = (searchParams: URLSearchParams): [ImageCommonParamete
     const name = getStringValue(itemSearchParams, NAME_PARAMETER, '');
     const date = getStringValue(itemSearchParams, DATE_PARAMETER, '');
     const title = getStringValue(itemSearchParams, TITLE_PARAMETER, '');
+    const runinfoTitle = getStringValue(itemSearchParams, RUNINFO_TITLE_PARAMETER, '');
 
     const note = getStringValue(itemSearchParams, NOTE_PARAMETER, '');
 
@@ -157,6 +160,7 @@ const parseBuilderParams = (searchParams: URLSearchParams): [ImageCommonParamete
       title,
       timeline,
       note,
+      runinfoTitle,
     };
 
     itemParamsList.push(itemParams);
@@ -258,6 +262,9 @@ const toQueryString = (commonParams: ImageCommonParameters, itemParamsList: Imag
     if (itemParams.note) {
       itemSearchParams.set(NOTE_PARAMETER, itemParams.note);
     }
+    if (itemParams.runinfoTitle) {
+      itemSearchParams.set(RUNINFO_TITLE_PARAMETER, itemParams.runinfoTitle);
+    }
 
     if (itemParams.timeline.length > 0) {
       const timelineString = itemParams.timeline
@@ -297,6 +304,7 @@ export const ImageBuilderPage = () => {
       first_portal: 'First Portal',
       second_portal: 'Second Portal',
       enter_stronghold: 'Enter Stronghold',
+      portal_room: 'Portal Room',
       enter_end: 'Enter End',
       credits: 'Finish',
     },

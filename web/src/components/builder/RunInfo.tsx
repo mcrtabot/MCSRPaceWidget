@@ -8,16 +8,17 @@ type RunInfoProps = {
   name: string;
   time: number;
   date: string;
+  title?: string;
 };
 
-export const RunInfo: React.FC<RunInfoProps> = ({ skin, name, time, date }) => {
+export const RunInfo: React.FC<RunInfoProps> = ({ skin, name, time, date, title }) => {
   return (
     <Wrapper>
       <Horizontal>
         <Skin uuid={skin} scale={6} />
         <Container>
           <Name>{name}</Name>
-          <Time>{convertMillisecondsToTime(time)}</Time>
+          <Time>{title ? title : convertMillisecondsToTime(time)}</Time>
           <Date>{date}</Date>
         </Container>
       </Horizontal>
@@ -46,7 +47,8 @@ const Name = styled.div`
 const Time = styled.div`
   color: var(--id-text-color);
   font: normal normal 64px/1 'Minecraft-Regular', monospace, sans-serif;
-  line-height: 2;
+  line-height: 1;
+  margin: 0.5em 0;
 `;
 const Date = styled.div`
   color: var(--id-text-color);

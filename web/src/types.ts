@@ -36,6 +36,7 @@ export const TIMELINE_EVENTS = [
   'enter_fortress',
   'first_portal',
   'enter_stronghold',
+  'portal_room',
   'enter_end',
   'credits',
   'leave_bastion',
@@ -54,6 +55,7 @@ export const SIMPLE_MODE_TIMELINE_EVENTS = [
   'enter_fortress',
   'first_portal',
   'enter_stronghold',
+  'portal_room',
   'enter_end',
   'credits',
 ] as const;

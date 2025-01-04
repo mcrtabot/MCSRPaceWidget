@@ -14,15 +14,22 @@ export const Horizontal = styled.div`
 `;
 
 export const Pane = styled.div`
-  margin: 16px;
-  padding: 32px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-
   font-size: 16px;
   color: #333;
 
-  min-width: 534px;
+  @media (min-width: 960px) {
+    min-width: 534px;
+    margin: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 32px;
+  }
+
+  @media (max-width: 960px) {
+    width: calc(100%-32px);
+    padding: 16px;
+    border-top: 1px solid #ccc;
+  }
 `;
 export const SectionTitle = styled.h3`
   margin-top: 16px;

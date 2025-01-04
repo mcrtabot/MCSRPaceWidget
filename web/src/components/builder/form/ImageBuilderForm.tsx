@@ -18,6 +18,7 @@ const DEFAULT_IMAGE_ITEM_PARAMS: ImageItemParameters = {
   title: '',
   timeline: [],
   note: '',
+  runinfoTitle: '',
 };
 
 export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({ initialValues, onChange }) => {
@@ -114,6 +115,10 @@ const ItemParamsHeader = styled.div`
   display: flex;
   align-items: center;
   max-width: 1230px;
+
+  @media (max-width: 960px) {
+    display: block;
+  }
 `;
 const TitleLabel = styled.div`
   font-size: 20px;
@@ -126,6 +131,10 @@ const ActionContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @media (max-width: 960px) {
+    margin: 16px 0;
+  }
 `;
 const ActionButton = styled.button`
   padding: 8px 16px;

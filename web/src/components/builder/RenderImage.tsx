@@ -32,8 +32,8 @@ export const RenderImage: React.FC<RenderImageProps> = ({ commonParams, itemPara
     displayVisualTimelineTitle,
   } = commonParams;
 
-  const { skin, name, date, timeline: strTimeline, note } = itemParams;
-
+  const { skin, name, date, timeline: strTimeline, note, runinfoTitle } = itemParams;
+  console.log(runinfoTitle);
   let rawTimeline = strTimeline
     .map((item) => ({ type: item.type, igt: convertTimeToMilliSeconds(item.igt) }))
     .filter((item) => item.igt !== undefined) as TimelineItem[];
@@ -91,7 +91,7 @@ export const RenderImage: React.FC<RenderImageProps> = ({ commonParams, itemPara
         <HorizontalContainer>
           {displayRunInfo && (
             <RunInfoContainer>
-              <RunInfo skin={skin} name={name} time={totalTime} date={date} />
+              <RunInfo skin={skin} name={name} time={totalTime} date={date} title={runinfoTitle} />
             </RunInfoContainer>
           )}
           {displayTimeline && (

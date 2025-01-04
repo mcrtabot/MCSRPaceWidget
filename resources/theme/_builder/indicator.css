@@ -6,8 +6,7 @@
   --id-background: transparent;
 
   --id-font: normal bold 18px/1 sans-serif;
-  --id-digits-font: normal normal 22px/1 "Minecraft-Regular", monospace,
-    sans-serif;
+  --id-digits-font: normal normal 22px/1 'Minecraft-Regular', monospace, sans-serif;
   --id-width: 1280px;
   --id-offset: 80px;
 
@@ -78,15 +77,14 @@
 .mcsr-indicator__line--pace.mcsr-indicator__line--enter_fortress2 {
   background-image: url(texture/nether_bricks.png);
 }
-.mcsr-indicator--simple
-  .mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
+.mcsr-indicator--simple .mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
   background-image: url(texture/nerthergate.png);
 }
-.mcsr-indicator--detail
-  .mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
+.mcsr-indicator--detail .mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
   background-image: url(texture/overworld.png);
 }
-.mcsr-indicator__line--pace.mcsr-indicator__line--enter_stronghold {
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_stronghold,
+.mcsr-indicator__line--pace.mcsr-indicator__line--portal_room {
   background-image: url(texture/cracked_stone_bricks.png);
 }
 .mcsr-indicator__line--pace.mcsr-indicator__line--enter_end {

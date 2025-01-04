@@ -43,6 +43,7 @@ export const ImageBuilderItemParamsForm: React.FC<ImageBuilderItemParamsFormProp
     { value: 'enter_fortress', label: 'Enter Fortress' },
     { value: 'first_portal', label: 'First Portal' },
     { value: 'enter_stronghold', label: 'Enter Stronghold' },
+    { value: 'portal_room', label: 'Portal Room' },
     { value: 'enter_end', label: 'Enter End' },
     { value: 'credits', label: 'Finish' },
     { value: '', label: '-- Detailed Mode Event -------------' },
@@ -95,6 +96,13 @@ export const ImageBuilderItemParamsForm: React.FC<ImageBuilderItemParamsFormProp
               <Item>
                 <Label>Custom Title</Label>
                 <Input {...register('title')} />
+              </Item>
+            </ItemContainer>
+
+            <ItemContainer>
+              <Item>
+                <Label>Run Info Title</Label>
+                <Input {...register('runinfoTitle')} />
               </Item>
             </ItemContainer>
 

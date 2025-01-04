@@ -26,6 +26,7 @@ export type ImageItemParameters = {
   title: string;
   timeline: StringTimelineItem[];
   note: string;
+  runinfoTitle: string;
 };
 
 export const generateTitle = (itemParams: ImageItemParameters): string => {

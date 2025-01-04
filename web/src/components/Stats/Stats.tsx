@@ -73,7 +73,7 @@ const aggregateStats = (timeline: TimelineItem[]) => {
       stats.fortress += diff;
     } else if (['first_portal', 'second_portal'].includes(prevEvent)) {
       stats.blinded_move += diff;
-    } else if (prevEvent === 'enter_stronghold') {
+    } else if (['enter_stronghold', 'portal_room'].includes(prevEvent)) {
       stats.stronghold += diff;
     } else if (prevEvent === 'enter_end') {
       stats.end += diff;
