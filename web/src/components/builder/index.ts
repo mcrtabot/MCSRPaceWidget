@@ -63,6 +63,7 @@ export const generateTitle = (itemParams: ImageItemParameters): string => {
 
   return title;
 };
-export function useTitle(itemParams: ImageItemParameters): string {
+
+export const useTitle = (itemParams: ImageItemParameters) => {
   return useMemo(() => generateTitle(itemParams), [itemParams]);
-}
+};
