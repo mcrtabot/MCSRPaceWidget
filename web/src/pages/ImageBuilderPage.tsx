@@ -19,6 +19,7 @@ const DETAULT_DISPLAY_HEADER = false;
 const DETAULT_DISPLAY_VISUAL_TIMELINE = true;
 const DETAULT_DISPLAY_VISUAL_TIMELINE_TITLE = false;
 const DETAULT_DISPLAY_RUN_INFO = true;
+const DETAULT_DISPLAY_RUN_INFO_AT_FIRST_ITEM = false;
 const DETAULT_DISPLAY_TIMELINE = true;
 const DETAULT_DISPLAY_STATS = true;
 const DETAULT_DISPLAY_NOTE = true;
@@ -43,6 +44,7 @@ const DISPLAY_HEADER_PARAMETER = 'dh';
 const DISPLAY_VISUAL_TIMELINE_PARAMETER = 'dv';
 const DISPLAY_VISUAL_TIMELINE_TITLE_PARAMETER = 'dvt';
 const DISPLAY_RUN_INFO_PARAMETER = 'dr';
+const DISPLAY_RUN_INFO_AT_FIRST_ITEM_PARAMETER = 'drf';
 const DISPLAY_TIMELINE_PARAMETER = 'dt';
 const DISPLAY_STATS_PARAMETER = 'ds';
 const DISPLAY_NOTE_PARAMETER = 'dn';
@@ -135,6 +137,11 @@ const parseCommonParams = (searchParams: URLSearchParams): ImageCommonParameters
     DETAULT_DISPLAY_VISUAL_TIMELINE_TITLE,
   );
   const displayRunInfo = getBooleanValue(commonSearchParams, DISPLAY_RUN_INFO_PARAMETER, DETAULT_DISPLAY_RUN_INFO);
+  const displayRunInfoAtFirstItem = getBooleanValue(
+    commonSearchParams,
+    DISPLAY_RUN_INFO_AT_FIRST_ITEM_PARAMETER,
+    DETAULT_DISPLAY_RUN_INFO_AT_FIRST_ITEM,
+  );
   const displayTimeline = getBooleanValue(commonSearchParams, DISPLAY_TIMELINE_PARAMETER, DETAULT_DISPLAY_TIMELINE);
   const displayStats = getBooleanValue(commonSearchParams, DISPLAY_STATS_PARAMETER, DETAULT_DISPLAY_STATS);
   const displayNote = getBooleanValue(commonSearchParams, DISPLAY_NOTE_PARAMETER, DETAULT_DISPLAY_NOTE);
@@ -152,6 +159,7 @@ const parseCommonParams = (searchParams: URLSearchParams): ImageCommonParameters
     displayVisualTimeline,
     displayVisualTimelineTitle,
     displayRunInfo,
+    displayRunInfoAtFirstItem,
     displayTimeline,
     displayStats,
     displayNote,
@@ -160,7 +168,6 @@ const parseCommonParams = (searchParams: URLSearchParams): ImageCommonParameters
 
 const parseItemParams = (searchParams: URLSearchParams): ImageItemParameters[] => {
   // key は現在時刻を時間をベースにしたユニークなランダム文字列を設定する
-  const key = createKey();
   const compressedItemSearchParamsList = searchParams.get(IMAGE_ITEM_PARAMS_PARAMTER) || '';
   const itemParamsList: ImageItemParameters[] = [];
   for (const compressedItemSearchParams of compressedItemSearchParamsList.split(',')) {
@@ -177,7 +184,7 @@ const parseItemParams = (searchParams: URLSearchParams): ImageItemParameters[] =
     const timeline = parseTimeline(itemSearchParams);
 
     const itemParams = {
-      key,
+      key: createKey(),
       skin,
       name,
       date,
@@ -235,6 +242,12 @@ const toQueryString = (commonParams: ImageCommonParameters, itemParamsList: Imag
   }
   if (commonParams.displayRunInfo !== DETAULT_DISPLAY_RUN_INFO) {
     commonSearchParams.set(DISPLAY_RUN_INFO_PARAMETER, commonParams.displayRunInfo ? '1' : '0');
+  }
+  if (commonParams.displayRunInfoAtFirstItem !== DETAULT_DISPLAY_RUN_INFO_AT_FIRST_ITEM) {
+    commonSearchParams.set(
+      DISPLAY_RUN_INFO_AT_FIRST_ITEM_PARAMETER,
+      commonParams.displayRunInfoAtFirstItem ? '1' : '0',
+    );
   }
   if (commonParams.displayTimeline !== DETAULT_DISPLAY_TIMELINE) {
     commonSearchParams.set(DISPLAY_TIMELINE_PARAMETER, commonParams.displayTimeline ? '1' : '0');

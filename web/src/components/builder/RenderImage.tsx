@@ -11,6 +11,7 @@ import { styled } from 'styled-components';
 import { useEffect, useMemo, useState } from 'react';
 
 type RenderImageProps = {
+  index?: number;
   commonParams: ImageCommonParameters;
   itemParams: ImageItemParameters;
   canvasPadding?: number;
@@ -19,6 +20,7 @@ type RenderImageProps = {
 
 const VISUAL_INDICATOR_GAP = 32;
 export const RenderImage: React.FC<RenderImageProps> = ({
+  index,
   commonParams,
   itemParams,
   canvasPadding = 0,
@@ -30,8 +32,9 @@ export const RenderImage: React.FC<RenderImageProps> = ({
     width,
     detailMode,
     displayHeader,
-    displayVisualTimeline,
-    displayRunInfo,
+    displayVisualTimeline: _displayVisualTimeline,
+    displayRunInfo: _displayRunInfo,
+    displayRunInfoAtFirstItem,
     displayTimeline,
     displayStats,
     displayNote,
@@ -85,6 +88,9 @@ export const RenderImage: React.FC<RenderImageProps> = ({
     }
     return '1280px';
   }, [canvasPadding, displayVisualTimelineTitle, itemParams.timeline, maxIndicatorTitleWidth, pixelsPerMinute, width]);
+
+  const displayRunInfo = _displayRunInfo || (index === 0 && displayRunInfoAtFirstItem);
+  const displayVisualTimeline = _displayVisualTimeline && timeline.length > 0;
 
   return (
     <Wrapper>

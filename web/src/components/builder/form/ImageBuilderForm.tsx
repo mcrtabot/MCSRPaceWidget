@@ -39,7 +39,6 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({
 
   const handleChangeItemParams = useCallback(
     (itemParams: ImageItemParameters, index: number) => {
-      console.log('handleChangeItemParams', index, itemParams);
       const newItemParamsList = [...itemParamsList];
       newItemParamsList[index] = itemParams;
       onChangeItemParams(newItemParamsList);
@@ -83,7 +82,7 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({
       {itemParamsList.map((itemParams, index) => {
         const title = generateTitle(itemParams);
         return (
-          <ItemContainer key={`${index}_${title}`}>
+          <ItemContainer key={itemParams.key}>
             <ItemParamsHeader>
               {itemParamsList.length >= 2 && <TitleLabel>Item {index + 1} - </TitleLabel>}
               <Title skin={itemParams.skin} title={title} color="#333333" />

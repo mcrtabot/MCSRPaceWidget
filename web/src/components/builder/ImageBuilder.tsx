@@ -136,7 +136,7 @@ export const ImageBuilder = ({
 
               return (
                 <AppContext.Provider
-                  key={index}
+                  key={itemParams.key}
                   value={{
                     timeline: { timelines: timeline, igt: maxTime },
                     pbTimeline: timeline,
@@ -147,6 +147,7 @@ export const ImageBuilder = ({
                   }}
                 >
                   <RenderImage
+                    index={index}
                     commonParams={commonParams}
                     itemParams={itemParams}
                     canvasPadding={CANVAS_PADDING}

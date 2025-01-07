@@ -131,6 +131,12 @@ export const ImageBuilderCommonParamsForm: React.FC<ImageBuilderCommonParamsForm
             </ComponentItemContainer>
             <ComponentItemContainer>
               <Item>
+                <ComponentLabel>Run Info (only first item)</ComponentLabel>
+                <CheckInput type="checkbox" {...register('displayRunInfoAtFirstItem')} />
+              </Item>
+            </ComponentItemContainer>
+            <ComponentItemContainer>
+              <Item>
                 <ComponentLabel>Timeline</ComponentLabel>
                 <CheckInput type="checkbox" {...register('displayTimeline')} />
               </Item>
@@ -161,7 +167,7 @@ const ComponentItemContainer = styled.div`
 `;
 
 const ComponentLabel = styled(Label)`
-  min-width: 240px;
+  min-width: 280px;
 `;
 const ScaleInput = styled(Input)`
   width: 50px;

@@ -45,4 +45,7 @@ export const convertMillisecondsToTime = (milliseconds?: number, displayMilliSec
   return timeFormat + msPart;
 };
 
-export const createKey = () => new Date().getTime().toString(36);
+export const createKey = () => {
+  const random = Math.random().toString(36).substring(2);
+  return random + new Date().getTime().toString(36);
+};

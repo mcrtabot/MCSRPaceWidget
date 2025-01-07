@@ -13,6 +13,7 @@ export type ImageCommonParameters = {
   displayHeader: boolean;
   displayVisualTimeline: boolean;
   displayRunInfo: boolean;
+  displayRunInfoAtFirstItem: boolean;
   displayTimeline: boolean;
   displayStats: boolean;
   displayNote: boolean;
