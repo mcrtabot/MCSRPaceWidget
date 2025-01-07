@@ -46,12 +46,12 @@ const Name = styled.div`
 `;
 const Time = styled.div`
   color: var(--id-text-color);
-  font: normal normal 64px/1 'Minecraft-Regular', monospace, sans-serif;
+  font: normal normal 64px/1 'Minecraft-Regular', sans-serif;
   line-height: 1;
   margin: 0.5em 0;
 `;
 const Date = styled.div`
   color: var(--id-text-color);
-  font: normal normal 24px/1 'Minecraft-Regular', monospace, sans-serif;
+  font: normal normal 24px/1 'Minecraft-Regular', sans-serif;
   justify-self: flex-end;
 `;

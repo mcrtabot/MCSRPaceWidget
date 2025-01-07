@@ -145,7 +145,9 @@ export const RenderImage: React.FC<RenderImageProps> = ({
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  user-select: none;
+`;
 
 const Horizontal = styled.div`
   display: flex;
