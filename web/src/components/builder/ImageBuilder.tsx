@@ -65,6 +65,7 @@ export const ImageBuilder = ({
         });
     }
   };
+  const updateImage = useCallback(() => generateImage(), []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -145,7 +146,12 @@ export const ImageBuilder = ({
                     detailMode,
                   }}
                 >
-                  <RenderImage commonParams={commonParams} itemParams={itemParams} canvasPadding={CANVAS_PADDING} />
+                  <RenderImage
+                    commonParams={commonParams}
+                    itemParams={itemParams}
+                    canvasPadding={CANVAS_PADDING}
+                    updateForce={updateImage}
+                  />
                 </AppContext.Provider>
               );
             })}

@@ -14,10 +14,16 @@ type RenderImageProps = {
   commonParams: ImageCommonParameters;
   itemParams: ImageItemParameters;
   canvasPadding?: number;
+  updateForce: () => void;
 };
 
 const VISUAL_INDICATOR_GAP = 32;
-export const RenderImage: React.FC<RenderImageProps> = ({ commonParams, itemParams, canvasPadding = 0 }) => {
+export const RenderImage: React.FC<RenderImageProps> = ({
+  commonParams,
+  itemParams,
+  canvasPadding = 0,
+  updateForce,
+}) => {
   const {
     theme,
     pixelsPerMinute,
@@ -60,8 +66,9 @@ export const RenderImage: React.FC<RenderImageProps> = ({ commonParams, itemPara
 
       if (maxWidth !== maxIndicatorTitleWidth) {
         setMaxIndicatorTitleWidth(maxWidth);
+        updateForce();
       }
-    }, 100);
+    }, 0);
   });
 
   // Visual Indicatorの幅を
