@@ -7,28 +7,23 @@ import { TimelineEvent } from '../../../types';
 import styled from 'styled-components';
 
 export type ImageBuilderItemParamsFormProps = {
-  initialValues: ImageItemParameters;
+  values: ImageItemParameters;
   onChange: (values: ImageItemParameters) => void;
 };
 
-export const ImageBuilderItemParamsForm: React.FC<ImageBuilderItemParamsFormProps> = ({ initialValues, onChange }) => {
-  const { register, control, watch, setValue } = useForm<ImageItemParameters>({
-    defaultValues: initialValues,
+export const ImageBuilderItemParamsForm: React.FC<ImageBuilderItemParamsFormProps> = ({ values, onChange }) => {
+  const { register, control, watch } = useForm<ImageItemParameters>({
+    defaultValues: { ...values },
   });
-
-  useEffect(() => {
-    if (initialValues) {
-      Object.keys(initialValues).forEach((key) => {
-        setValue(key as keyof ImageItemParameters, initialValues[key as keyof ImageItemParameters]);
-      });
-    }
-  }, [initialValues, setValue]);
 
   const watchedValues = watch();
 
   useEffect(() => {
-    onChange(watchedValues);
-  }, [watchedValues, onChange]);
+    if (JSON.stringify(watchedValues) !== JSON.stringify(values)) {
+      const copiedValues = JSON.parse(JSON.stringify(watchedValues));
+      onChange(copiedValues);
+    }
+  }, [watchedValues, onChange, values]);
 
   const { fields, append, remove, insert } = useFieldArray({
     control,

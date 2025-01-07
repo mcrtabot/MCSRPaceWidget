@@ -14,13 +14,20 @@ type ImageBuilderProps = {
   commonParams: ImageCommonParameters;
   itemParamsList: ImageItemParameters[];
   setting: Setting;
-  onChange: (commonParams: ImageCommonParameters, itemParamsList: ImageItemParameters[]) => void;
+  onChangeCommonParams: (commonParams: ImageCommonParameters) => void;
+  onChangeItemParams: (itemParamsList: ImageItemParameters[]) => void;
 };
 
 const exampleUrl =
   'https://mcrtabot.github.io/MCSRImageBuilder/?c=K05WNXYxUDUyKwfShkYWIGZKLogNAA%3D%3D&i=NY7BboMwEES_xkdH3rUx5giJ6CntoV9gG9OgOIDAqGq_vrupIvngtzM7O7vQl2aMlTfeytrWIE0alPTeOYkpOEg-JhWDQDuT9RG34sNSCAdCVGgkgISG9UKTz9u0fm8p3gWeBXbdNg1f6f9_WY6QEw_zNA8CK9XeSll3oVuBPb2f5SjHKZClb6_3j9_3Lsu3KyWXTMlpphgks1FkSNTobIj4dJ-ZaiKNrI1EDTst0bgSARAq9xTxxZXhVTYDJynN8v5CzcuJu0NFiM8s7gCWd5sTOPUH';
 export const CANVAS_PADDING = 48;
-export const ImageBuilder = ({ commonParams, itemParamsList, setting, onChange }: ImageBuilderProps) => {
+export const ImageBuilder = ({
+  commonParams,
+  itemParamsList,
+  setting,
+  onChangeCommonParams,
+  onChangeItemParams,
+}: ImageBuilderProps) => {
   const { theme, pixelsPerMinute, width, detailMode, backgroundColor, textColor, transparent, useMinecraftFont } =
     commonParams;
 
@@ -152,7 +159,11 @@ export const ImageBuilder = ({ commonParams, itemParamsList, setting, onChange }
       <a href={exampleUrl} target="_blank" rel="noreferrer">
         Input example
       </a>
-      <ImageBuilderForm initialValues={[commonParams, itemParamsList]} onChange={onChange} />
+      <ImageBuilderForm
+        initialValues={[commonParams, itemParamsList]}
+        onChangeCommonParams={onChangeCommonParams}
+        onChangeItemParams={onChangeItemParams}
+      />
     </Wrapper>
   );
 };

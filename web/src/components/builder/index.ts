@@ -20,6 +20,7 @@ export type ImageCommonParameters = {
 };
 
 export type ImageItemParameters = {
+  key?: string;
   skin: string;
   name: string;
   date: string;

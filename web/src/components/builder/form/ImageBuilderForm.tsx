@@ -1,14 +1,16 @@
+import { ImageCommonParameters, ImageItemParameters, generateTitle } from '..';
 import React, { useCallback } from 'react';
 
-import { generateTitle, ImageCommonParameters, ImageItemParameters } from '..';
 import { ImageBuilderCommonParamsForm } from './ImageBuilderCommonParamsForm';
 import ImageBuilderItemParamsForm from './ImageBuilderItemParamsForm';
-import { styled } from 'styled-components';
 import { Title } from '../Title';
+import { createKey } from '../../../utils/utils';
+import { styled } from 'styled-components';
 
 export type ImageBuilderFormProps = {
   initialValues: [ImageCommonParameters, ImageItemParameters[]];
-  onChange: (commonParams: ImageCommonParameters, itemParamsList: ImageItemParameters[]) => void;
+  onChangeCommonParams: (commonParams: ImageCommonParameters) => void;
+  onChangeItemParams: (itemParamsList: ImageItemParameters[]) => void;
 };
 
 const DEFAULT_IMAGE_ITEM_PARAMS: ImageItemParameters = {
@@ -21,36 +23,48 @@ const DEFAULT_IMAGE_ITEM_PARAMS: ImageItemParameters = {
   runinfoTitle: '',
 };
 
-export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({ initialValues, onChange }) => {
+export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({
+  initialValues,
+  onChangeCommonParams,
+  onChangeItemParams,
+}) => {
   const [commonParams, itemParamsList] = initialValues;
 
   const handleChangeCommonParams = useCallback(
     (commonParams: ImageCommonParameters) => {
-      onChange(commonParams, itemParamsList);
+      onChangeCommonParams(commonParams);
     },
-    [onChange, itemParamsList],
+    [onChangeCommonParams],
   );
 
   const handleChangeItemParams = useCallback(
     (itemParams: ImageItemParameters, index: number) => {
+      console.log('handleChangeItemParams', index, itemParams);
       const newItemParamsList = [...itemParamsList];
       newItemParamsList[index] = itemParams;
-      onChange(commonParams, newItemParamsList);
+      onChangeItemParams(newItemParamsList);
     },
-    [itemParamsList, onChange, commonParams],
+    [itemParamsList, onChangeItemParams],
   );
 
-  const handleAddItemParams = useCallback(() => {
-    onChange(commonParams, [...itemParamsList, DEFAULT_IMAGE_ITEM_PARAMS]);
-  }, [itemParamsList, onChange, commonParams]);
+  const handleAddItemParams = useCallback(
+    (index: number) => {
+      // 指定された index に新しい item を追加する
+      const newItem = { key: createKey(), ...DEFAULT_IMAGE_ITEM_PARAMS };
+      const newItemParamsList = [...itemParamsList];
+      newItemParamsList.splice(index, 0, newItem);
+      onChangeItemParams(newItemParamsList);
+    },
+    [itemParamsList, onChangeItemParams],
+  );
 
   const handleRemoveItemParams = useCallback(
     (index: number) => {
       const newItemParamsList = [...itemParamsList];
       newItemParamsList.splice(index, 1);
-      onChange(commonParams, newItemParamsList);
+      onChangeItemParams(newItemParamsList);
     },
-    [itemParamsList, onChange, commonParams],
+    [itemParamsList, onChangeItemParams],
   );
 
   const handleMoveItemParams = useCallback(
@@ -58,18 +72,18 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({ initialValue
       const newItemParamsList = [...itemParamsList];
       const [removedItem] = newItemParamsList.splice(fromIndex, 1);
       newItemParamsList.splice(toIndex, 0, removedItem);
-      onChange(commonParams, newItemParamsList);
+      onChangeItemParams(newItemParamsList);
     },
-    [itemParamsList, onChange, commonParams],
+    [itemParamsList, onChangeItemParams],
   );
 
   return (
     <>
-      <ImageBuilderCommonParamsForm initialValues={commonParams} onChange={handleChangeCommonParams} />
+      <ImageBuilderCommonParamsForm values={commonParams} onChange={handleChangeCommonParams} />
       {itemParamsList.map((itemParams, index) => {
         const title = generateTitle(itemParams);
         return (
-          <ItemContainer key={index}>
+          <ItemContainer key={`${index}_${title}`}>
             <ItemParamsHeader>
               {itemParamsList.length >= 2 && <TitleLabel>Item {index + 1} - </TitleLabel>}
               <Title skin={itemParams.skin} title={title} color="#333333" />
@@ -83,13 +97,13 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({ initialValue
                 >
                   ↓ Down
                 </ActionButton>
-                <ActionButton onClick={handleAddItemParams}>+ Add</ActionButton>
+                <ActionButton onClick={() => handleAddItemParams(index)}>+ Add</ActionButton>
                 <ActionButton onClick={() => handleRemoveItemParams(index)}>× Remove</ActionButton>
               </ActionContainer>
             </ItemParamsHeader>
 
             <ImageBuilderItemParamsForm
-              initialValues={itemParams}
+              values={itemParams}
               onChange={(itemParams: ImageItemParameters) => handleChangeItemParams(itemParams, index)}
             />
           </ItemContainer>
@@ -97,7 +111,7 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({ initialValue
       })}
       <ItemParamsHeader>
         <ActionContainer>
-          <ActionButton onClick={handleAddItemParams}>+ Add</ActionButton>
+          <ActionButton onClick={() => handleAddItemParams(itemParamsList.length)}>+ Add</ActionButton>
         </ActionContainer>
       </ItemParamsHeader>
     </>
@@ -143,5 +157,3 @@ const ActionButton = styled.button`
   border: 1px solid #ccc;
   cursor: pointer;
 `;
-
-export default ImageBuilderForm;

@@ -1,10 +1,11 @@
-import { ImageBuilder } from '../components/builder/ImageBuilder';
-import React, { useCallback } from 'react';
+import { ImageCommonParameters, ImageItemParameters } from '../components/builder';
+import React, { useCallback, useEffect, useState } from 'react';
+import { deflate, inflate } from '../utils/compress';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
+import { ImageBuilder } from '../components/builder/ImageBuilder';
 import { StringTimelineItem } from '../types';
-import { ImageCommonParameters, ImageItemParameters } from '../components/builder';
-import { deflate, inflate } from '../utils/compress';
+import { createKey } from '../utils/utils';
 
 const DEFAULT_THEME = 'builder';
 const DEFAULT_PIXELS_PER_MINUTE = 0;
@@ -107,7 +108,7 @@ const getColorValue = (searchParams: URLSearchParams, key: string, defaultValue:
   return color;
 };
 
-const parseBuilderParams = (searchParams: URLSearchParams): [ImageCommonParameters, ImageItemParameters[]] => {
+const parseCommonParams = (searchParams: URLSearchParams): ImageCommonParameters => {
   const compressedCommonSearchParams = searchParams.get(IMAGE_COMMON_PARAMS_PARAMTER) || '';
   const commonSearchParams = new URLSearchParams(inflate(compressedCommonSearchParams));
   const theme = getStringValue(commonSearchParams, THEME_PARAMETER, DEFAULT_THEME);
@@ -138,35 +139,7 @@ const parseBuilderParams = (searchParams: URLSearchParams): [ImageCommonParamete
   const displayStats = getBooleanValue(commonSearchParams, DISPLAY_STATS_PARAMETER, DETAULT_DISPLAY_STATS);
   const displayNote = getBooleanValue(commonSearchParams, DISPLAY_NOTE_PARAMETER, DETAULT_DISPLAY_NOTE);
 
-  const compressedItemSearchParamsList = searchParams.get(IMAGE_ITEM_PARAMS_PARAMTER) || '';
-  const itemParamsList: ImageItemParameters[] = [];
-  for (const compressedItemSearchParams of compressedItemSearchParamsList.split(',')) {
-    const itemSearchParams = new URLSearchParams(inflate(compressedItemSearchParams));
-
-    const skin = getStringValue(itemSearchParams, SKIN_PARAMETER, '');
-    const name = getStringValue(itemSearchParams, NAME_PARAMETER, '');
-    const date = getStringValue(itemSearchParams, DATE_PARAMETER, '');
-    const title = getStringValue(itemSearchParams, TITLE_PARAMETER, '');
-    const runinfoTitle = getStringValue(itemSearchParams, RUNINFO_TITLE_PARAMETER, '');
-
-    const note = getStringValue(itemSearchParams, NOTE_PARAMETER, '');
-
-    const timeline = parseTimeline(itemSearchParams);
-
-    const itemParams = {
-      skin,
-      name,
-      date,
-      title,
-      timeline,
-      note,
-      runinfoTitle,
-    };
-
-    itemParamsList.push(itemParams);
-  }
-
-  const commonParams = {
+  return {
     theme,
     pixelsPerMinute,
     width,
@@ -183,8 +156,41 @@ const parseBuilderParams = (searchParams: URLSearchParams): [ImageCommonParamete
     displayStats,
     displayNote,
   };
+};
 
-  return [commonParams, itemParamsList];
+const parseItemParams = (searchParams: URLSearchParams): ImageItemParameters[] => {
+  // key は現在時刻を時間をベースにしたユニークなランダム文字列を設定する
+  const key = createKey();
+  const compressedItemSearchParamsList = searchParams.get(IMAGE_ITEM_PARAMS_PARAMTER) || '';
+  const itemParamsList: ImageItemParameters[] = [];
+  for (const compressedItemSearchParams of compressedItemSearchParamsList.split(',')) {
+    const itemSearchParams = new URLSearchParams(inflate(compressedItemSearchParams));
+
+    const skin = getStringValue(itemSearchParams, SKIN_PARAMETER, '');
+    const name = getStringValue(itemSearchParams, NAME_PARAMETER, '');
+    const date = getStringValue(itemSearchParams, DATE_PARAMETER, '');
+    const title = getStringValue(itemSearchParams, TITLE_PARAMETER, '');
+    const runinfoTitle = getStringValue(itemSearchParams, RUNINFO_TITLE_PARAMETER, '');
+
+    const note = getStringValue(itemSearchParams, NOTE_PARAMETER, '');
+
+    const timeline = parseTimeline(itemSearchParams);
+
+    const itemParams = {
+      key,
+      skin,
+      name,
+      date,
+      title,
+      timeline,
+      note,
+      runinfoTitle,
+    };
+
+    itemParamsList.push(itemParams);
+  }
+
+  return itemParamsList;
 };
 
 const toQueryString = (commonParams: ImageCommonParameters, itemParamsList: ImageItemParameters[]): string => {
@@ -292,10 +298,9 @@ const toQueryString = (commonParams: ImageCommonParameters, itemParamsList: Imag
 };
 
 export const ImageBuilderPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams({ theme: 'builder' });
-  const [commonParams, itemParamsList] = parseBuilderParams(searchParams);
+  const [commonParams, setCommonParams] = useState<ImageCommonParameters>(parseCommonParams(searchParams));
+  const [itemParamsList, setItemParamsList] = useState<ImageItemParameters[]>(parseItemParams(searchParams));
   const setting = {
     label: {
       enter_nether: 'Enter Nether',
@@ -313,26 +318,34 @@ export const ImageBuilderPage = () => {
     nextItemStyle: 'hyphen',
   } as const;
 
-  const onChangeParameters = useCallback(
-    (commonParams: ImageCommonParameters, itemParamsList: ImageItemParameters[]) => {
-      const searchParamsString = toQueryString(commonParams, itemParamsList);
-      const url = searchParamsString ? `${location.pathname}?${searchParamsString}` : location.pathname;
+  const onChangeCommonParameters = useCallback((newCommonParams: ImageCommonParameters) => {
+    setCommonParams(newCommonParams);
+  }, []);
 
-      // クエリパラメータ含めて同じURLには遷移しない
-      if (url === location.pathname + location.search) {
-        return;
-      }
-      navigate(url);
-    },
-    [location.pathname, location.search, navigate],
-  );
+  const onChangeItemParameters = useCallback((newItemParamsList: ImageItemParameters[]) => {
+    setItemParamsList(newItemParamsList);
+  }, []);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const searchParamsString = toQueryString(commonParams, itemParamsList);
+    const url = searchParamsString ? `${location.pathname}?${searchParamsString}` : location.pathname;
+
+    // クエリパラメータ含めて同じURLには遷移しない
+    if (url === location.pathname + location.search) {
+      return;
+    }
+    navigate(url);
+  }, [commonParams, itemParamsList, location.pathname, location.search, navigate]);
 
   return (
     <ImageBuilder
       commonParams={commonParams}
       itemParamsList={itemParamsList}
       setting={setting}
-      onChange={onChangeParameters}
+      onChangeCommonParams={onChangeCommonParameters}
+      onChangeItemParams={onChangeItemParameters}
     />
   );
 };

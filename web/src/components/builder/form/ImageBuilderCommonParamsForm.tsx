@@ -18,31 +18,23 @@ import {
 } from '.';
 
 export type ImageBuilderCommonParamsFormProps = {
-  initialValues: ImageCommonParameters;
+  values: ImageCommonParameters;
   onChange: (values: ImageCommonParameters) => void;
 };
 
-export const ImageBuilderCommonParamsForm: React.FC<ImageBuilderCommonParamsFormProps> = ({
-  initialValues,
-  onChange,
-}) => {
-  const { register, watch, setValue } = useForm<ImageCommonParameters>({
-    defaultValues: initialValues,
+export const ImageBuilderCommonParamsForm: React.FC<ImageBuilderCommonParamsFormProps> = ({ values, onChange }) => {
+  const { register, watch } = useForm<ImageCommonParameters>({
+    defaultValues: values,
   });
-
-  useEffect(() => {
-    if (initialValues) {
-      Object.keys(initialValues).forEach((key) => {
-        setValue(key as keyof ImageCommonParameters, initialValues[key as keyof ImageCommonParameters]);
-      });
-    }
-  }, [initialValues, setValue]);
 
   const watchedValues = watch();
 
   useEffect(() => {
-    onChange(watchedValues);
-  }, [watchedValues, onChange]);
+    if (JSON.stringify(watchedValues) !== JSON.stringify(values)) {
+      const copiedValues = JSON.parse(JSON.stringify(watchedValues));
+      onChange(copiedValues);
+    }
+  }, [watchedValues, onChange, values]);
 
   return (
     <Wrapper>

@@ -44,3 +44,5 @@ export const convertMillisecondsToTime = (milliseconds?: number, displayMilliSec
 
   return timeFormat + msPart;
 };
+
+export const createKey = () => new Date().getTime().toString(36);
