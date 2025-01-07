@@ -115,12 +115,14 @@ export const ImageBuilder = ({
     canvasStyle['width'] = 'fit-content';
   }
 
+  const isRealtimeImageRender = false;
+
   return (
     <Wrapper>
       <Helmet>
         <title>{pageTitle} - MCSR Image Builder</title>
       </Helmet>
-      <CanvasContainer>
+      <CanvasContainer display={isRealtimeImageRender ? '0' : '1'}>
         <ComponentCanvasWrapper style={{ backgroundColor }}>
           <ComponentCanvas ref={componentRef} style={{ ...canvasStyle }}>
             {itemParamsList.map((itemParams, index) => {
@@ -159,9 +161,11 @@ export const ImageBuilder = ({
           </ComponentCanvas>
         </ComponentCanvasWrapper>
       </CanvasContainer>
-      <Background style={{ ...backgroundStyle, width: 'fit-content' }}>
-        {imageSrc && <RenderedImage src={imageSrc} alt="Screenshot" />}
-      </Background>
+      {isRealtimeImageRender && (
+        <Background style={{ ...backgroundStyle, width: 'fit-content' }}>
+          {imageSrc && <RenderedImage src={imageSrc} alt="Screenshot" />}
+        </Background>
+      )}
       <SaveButton onClick={handleSaveAsImage}>Download Image</SaveButton>
       <a href={exampleUrl} target="_blank" rel="noreferrer">
         Input example
@@ -179,13 +183,16 @@ const Wrapper = styled.div`
   font-family: 'Roboto', sans-serif;
 `;
 
-const CanvasContainer = styled.div`
-  position: 'absolute';
+const CanvasContainer = styled.div<{ display: '1' | '0' }>`
+  position: ${({ display }) => (display === '1' ? 'relative' : 'absolute')};
   top: 0;
   left: 0;
-  width: 0;
-  height: 0;
+  width: ${({ display }) => (display === '1' ? 'auto' : 0)};
+  height: ${({ display }) => (display === '1' ? 'auto' : 0)};
   overflow: hidden;
+  margin-top: ${({ display }) => (display === '1' ? '-8px' : 0)};
+  margin-left: ${({ display }) => (display === '1' ? '-8px' : 0)};
+  margin-bottom: ${({ display }) => (display === '1' ? '16px' : 0)};
 `;
 
 const Background = styled.div`
