@@ -1,15 +1,15 @@
-import { ImageCommonParameters, ImageItemParameters, generateTitle } from '..';
+import { ImageCommonParameters, ImageItemParameters } from '..';
 import React, { useCallback } from 'react';
 
 import { ImageBuilderCommonParamsForm } from './ImageBuilderCommonParamsForm';
 import ImageBuilderItemParamsForm from './ImageBuilderItemParamsForm';
-import { Title } from '../Title';
 import { createKey } from '../../../utils/utils';
 import { styled } from 'styled-components';
-import { generateSingleURL, parseItemParams } from '../../../utils/image-builder';
+import { parseItemParams } from '../../../utils/image-builder';
+import { ImageBuilderItemParamsHeader } from './ImageBuilderItemParamsHeader';
 
 export type ImageBuilderFormProps = {
-  initialValues: [ImageCommonParameters, ImageItemParameters[]];
+  values: [ImageCommonParameters, ImageItemParameters[]];
   onChangeCommonParams: (commonParams: ImageCommonParameters) => void;
   onChangeItemParams: (itemParamsList: ImageItemParameters[]) => void;
 };
@@ -25,11 +25,11 @@ const DEFAULT_IMAGE_ITEM_PARAMS: ImageItemParameters = {
 };
 
 export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({
-  initialValues,
+  values,
   onChangeCommonParams,
   onChangeItemParams,
 }) => {
-  const [commonParams, itemParamsList] = initialValues;
+  const [commonParams, itemParamsList] = values;
 
   const handleChangeCommonParams = useCallback(
     (commonParams: ImageCommonParameters) => {
@@ -58,7 +58,7 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({
     [itemParamsList, onChangeItemParams],
   );
 
-  const handleItemParamsAddFrom = useCallback(
+  const handleItemParamsAddFromURL = useCallback(
     (index: number) => {
       const input = window.prompt('Enter URL');
       if (!input) {
@@ -99,44 +99,24 @@ export const ImageBuilderForm: React.FC<ImageBuilderFormProps> = ({
     <>
       <ImageBuilderCommonParamsForm values={commonParams} onChange={handleChangeCommonParams} />
       {itemParamsList.map((itemParams, index) => {
-        const title = generateTitle(itemParams);
-        const singleURL = generateSingleURL({ itemParams });
         return (
           <ItemContainer key={itemParams.key}>
-            <ItemParamsHeader>
-              {itemParamsList.length >= 2 && <TitleLabel>Item {index + 1} - </TitleLabel>}
-              <Title skin={itemParams.skin} title={title} color="#333333" />
-              {itemParamsList.length >= 2 && (
-                <ExternalLink href={singleURL}>
-                  <ExternalLinkIcon />
-                </ExternalLink>
-              )}
-              <ActionContainer>
-                <ActionButton onClick={() => handleMoveItemParams(index, index - 1)} disabled={index === 0}>
-                  ↑ Up
-                </ActionButton>
-                <ActionButton
-                  onClick={() => handleMoveItemParams(index, index + 1)}
-                  disabled={index === itemParamsList.length - 1}
-                >
-                  ↓ Down
-                </ActionButton>
-                <ActionButton onClick={() => handleAddItemParams(index)}>+ Add</ActionButton>
-                <ActionButton onClick={() => handleRemoveItemParams(index)}>× Remove</ActionButton>
-              </ActionContainer>
-            </ItemParamsHeader>
-
-            <ImageBuilderItemParamsForm
-              values={itemParams}
-              onChange={(itemParams: ImageItemParameters) => handleChangeItemParams(itemParams, index)}
+            <ImageBuilderItemParamsHeader
+              index={index}
+              total={itemParamsList.length}
+              itemParams={itemParams}
+              handleAddItemParams={handleAddItemParams}
+              handleRemoveItemParams={handleRemoveItemParams}
+              handleMoveItemParams={handleMoveItemParams}
             />
+            <ImageBuilderItemParamsForm index={index} values={itemParams} onChange={handleChangeItemParams} />
           </ItemContainer>
         );
       })}
       <ItemParamsHeader>
         <ActionContainer>
           <ActionButton onClick={() => handleAddItemParams(itemParamsList.length)}>+ Add</ActionButton>
-          <ActionButton onClick={() => handleItemParamsAddFrom(itemParamsList.length)}>+ Add From URL</ActionButton>
+          <ActionButton onClick={() => handleItemParamsAddFromURL(itemParamsList.length)}>+ Add From URL</ActionButton>
         </ActionContainer>
       </ItemParamsHeader>
     </>
@@ -159,11 +139,7 @@ const ItemParamsHeader = styled.div`
     display: block;
   }
 `;
-const TitleLabel = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 16px;
-`;
+
 const ActionContainer = styled.div`
   margin-left: auto;
   flex-shrink: 0;
@@ -181,16 +157,4 @@ const ActionButton = styled.button`
   border-radius: 4px;
   border: 1px solid #ccc;
   cursor: pointer;
-`;
-
-const ExternalLink = styled.a.attrs(() => ({ target: '_blank' }))`
-  margin-left: 8px;
-`;
-
-const ExternalLinkIcon = styled.img.attrs(() => ({
-  src: `${process.env.REACT_APP_PATH_PREFIX}/image/export.png`,
-}))`
-  display: block;
-  width: 24px;
-  height: 24px;
 `;

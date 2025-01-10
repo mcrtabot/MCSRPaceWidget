@@ -1,8 +1,7 @@
 import { ImageCommonParameters, ImageItemParameters, generateTitle } from '.';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { SIMPLE_MODE_TIMELINE_EVENTS, Setting, TimelineItem } from '../../types';
 
-import { AppContext } from '../../context';
 import { ImageBuilderForm } from './form/ImageBuilderForm';
 import { RenderImage } from './RenderImage';
 import { convertTimeToMilliSeconds } from '../../utils/utils';
@@ -66,12 +65,6 @@ export const ImageBuilder = ({
     }
   };
   const updateImage = useCallback(() => generateImage(), []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      generateImage();
-    }, 100);
-  }, [commonParams, itemParamsList]);
 
   let pageTitle = '';
   if (itemParamsList.length > 0) {
@@ -137,25 +130,20 @@ export const ImageBuilder = ({
               }
 
               return (
-                <AppContext.Provider
+                <RenderImage
                   key={itemParams.key}
-                  value={{
-                    timeline: { timelines: timeline, igt: maxTime },
-                    pbTimeline: timeline,
-                    theme,
-                    setting,
-                    pixelsPerMinute,
-                    detailMode,
-                  }}
-                >
-                  <RenderImage
-                    index={index}
-                    commonParams={commonParams}
-                    itemParams={itemParams}
-                    canvasPadding={CANVAS_PADDING}
-                    updateForce={updateImage}
-                  />
-                </AppContext.Provider>
+                  index={index}
+                  commonParams={commonParams}
+                  itemParams={itemParams}
+                  canvasPadding={CANVAS_PADDING}
+                  updateForce={updateImage}
+                  timeline={{ timelines: timeline, igt: maxTime }}
+                  pbTimeline={timeline}
+                  theme={theme}
+                  setting={setting}
+                  pixelsPerMinute={pixelsPerMinute}
+                  detailMode={detailMode}
+                />
               );
             })}
           </ComponentCanvas>
@@ -171,7 +159,7 @@ export const ImageBuilder = ({
         Input example
       </a>
       <ImageBuilderForm
-        initialValues={[commonParams, itemParamsList]}
+        values={[commonParams, itemParamsList]}
         onChangeCommonParams={onChangeCommonParams}
         onChangeItemParams={onChangeItemParams}
       />
