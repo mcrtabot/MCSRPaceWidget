@@ -1,5 +1,5 @@
 import { ImageCommonParameters, ImageItemParameters, generateTitle } from '.';
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { SIMPLE_MODE_TIMELINE_EVENTS, Setting, TimelineItem } from '../../types';
 
 import { ImageBuilderForm } from './form/ImageBuilderForm';
@@ -52,19 +52,6 @@ export const ImageBuilder = ({
 
   // 画像生成関連の処理
   const componentRef = useRef(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const generateImage = () => {
-    if (componentRef.current) {
-      domToPng(componentRef.current)
-        .then((dataUrl: string) => {
-          setImageSrc(dataUrl);
-        })
-        .catch((error: any) => {
-          console.error('Error taking screenshot', error);
-        });
-    }
-  };
-  const updateImage = useCallback(() => generateImage(), []);
 
   let pageTitle = '';
   if (itemParamsList.length > 0) {
@@ -72,13 +59,19 @@ export const ImageBuilder = ({
   }
 
   const handleSaveAsImage = useCallback(() => {
-    if (imageSrc) {
-      const link = document.createElement('a');
-      link.href = imageSrc;
-      link.download = pageTitle ? `${pageTitle}.png` : 'mcsr_run.png';
-      link.click();
+    if (componentRef.current) {
+      domToPng(componentRef.current)
+        .then((dataUrl: string) => {
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = pageTitle ? `${pageTitle}.png` : 'mcsr_run.png';
+          link.click();
+        })
+        .catch((error: any) => {
+          console.error('Error taking screenshot', error);
+        });
     }
-  }, [imageSrc, pageTitle]);
+  }, [pageTitle]);
 
   const maxTime = useMemo(
     () =>
@@ -89,9 +82,6 @@ export const ImageBuilder = ({
       ),
     [itemParamsList],
   );
-  const backgroundStyle = {
-    background: backgroundColor,
-  } as any;
 
   const canvasStyle = {
     '--id-background': transparent ? 'transparent' : backgroundColor,
@@ -136,7 +126,6 @@ export const ImageBuilder = ({
                   commonParams={commonParams}
                   itemParams={itemParams}
                   canvasPadding={CANVAS_PADDING}
-                  updateForce={updateImage}
                   timeline={{ timelines: timeline, igt: maxTime }}
                   pbTimeline={timeline}
                   theme={theme}
@@ -149,11 +138,6 @@ export const ImageBuilder = ({
           </ComponentCanvas>
         </ComponentCanvasWrapper>
       </CanvasContainer>
-      {isRealtimeImageRender && (
-        <Background style={{ ...backgroundStyle, width: 'fit-content' }}>
-          {imageSrc && <RenderedImage src={imageSrc} alt="Screenshot" />}
-        </Background>
-      )}
       <SaveButton onClick={handleSaveAsImage}>Download Image</SaveButton>
       <a href={exampleUrl} target="_blank" rel="noreferrer">
         Input example
@@ -183,13 +167,6 @@ const CanvasContainer = styled.div<{ display: '1' | '0' }>`
   margin-bottom: ${({ display }) => (display === '1' ? '16px' : 0)};
 `;
 
-const Background = styled.div`
-  margin-left: -8px;
-  margin-right: -8px;
-  margin-top: -8px;
-  margin-bottom: 16px;
-`;
-
 const ComponentCanvasWrapper = styled.div`
   width: fit-content;
   padding-bottom: 2px;
@@ -206,16 +183,9 @@ const ComponentCanvas = styled.div`
   }
 `;
 
-const RenderedImage = styled.img`
-  display: block;
-
-  @media screen and (max-width: 960px) {
-    width: 100%;
-  }
-`;
-
 const SaveButton = styled.button`
   font-size: 18px;
   margin: 8px 16px;
   padding: 8px 16px;
+  cursor: pointer;
 `;

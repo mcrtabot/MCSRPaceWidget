@@ -17,7 +17,6 @@ type RenderImageProps = {
   commonParams: ImageCommonParameters;
   itemParams: ImageItemParameters;
   canvasPadding?: number;
-  updateForce: () => void;
 
   // For Context
   theme: string;
@@ -30,16 +29,7 @@ type RenderImageProps = {
 
 const VISUAL_INDICATOR_GAP = 32;
 export const RenderImage: React.FC<RenderImageProps> = React.memo(
-  ({
-    index,
-    commonParams,
-    itemParams,
-    canvasPadding = 0,
-    updateForce,
-    timeline: timelineData,
-    pbTimeline,
-    setting,
-  }) => {
+  ({ index, commonParams, itemParams, canvasPadding = 0, timeline: timelineData, pbTimeline, setting }) => {
     const {
       theme,
       pixelsPerMinute,
@@ -80,13 +70,8 @@ export const RenderImage: React.FC<RenderImageProps> = React.memo(
             maxWidth = width;
           }
         });
-
-        if (maxWidth !== maxIndicatorTitleWidth) {
-          setMaxIndicatorTitleWidth(maxWidth);
-          updateForce();
-        }
       }, 200);
-    }, [maxIndicatorTitleWidth, updateForce]);
+    }, [maxIndicatorTitleWidth]);
 
     // Visual Indicatorの幅を
     const visualIndicatorWidth = useMemo(() => {
