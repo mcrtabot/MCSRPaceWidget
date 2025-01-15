@@ -59,7 +59,6 @@ export const RenderImage: React.FC<RenderImageProps> = React.memo(
     const title = useTitle(itemParams);
 
     const [maxIndicatorTitleWidth, setMaxIndicatorTitleWidth] = useState(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
       setTimeout(() => {
         const elements = document.querySelectorAll('[data-search="indicator-title"]');
@@ -70,6 +69,10 @@ export const RenderImage: React.FC<RenderImageProps> = React.memo(
             maxWidth = width;
           }
         });
+
+        if (maxWidth !== maxIndicatorTitleWidth) {
+          setMaxIndicatorTitleWidth(maxWidth);
+        }
       }, 200);
     }, [maxIndicatorTitleWidth]);
 
@@ -94,7 +97,6 @@ export const RenderImage: React.FC<RenderImageProps> = React.memo(
       pixelsPerMinute,
       width,
     ]);
-
     const displayRunInfo = _displayRunInfo || (index === 0 && displayRunInfoAtFirstItem);
     const displayVisualTimeline = _displayVisualTimeline && timeline.length > 0;
 

@@ -150,7 +150,7 @@ export const ImageBuilderCommonParamsForm: React.FC<ImageBuilderCommonParamsForm
               </ComponentItemContainer>
               <ComponentItemContainer>
                 <Item>
-                  <ComponentLabel>Remarks</ComponentLabel>
+                  <ComponentLabel>Note</ComponentLabel>
                   <CheckInput type="checkbox" {...register('displayNote')} />
                 </Item>
               </ComponentItemContainer>

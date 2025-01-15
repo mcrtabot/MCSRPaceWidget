@@ -61,6 +61,12 @@ const aggregateStats = (timeline: TimelineItem[]) => {
 
     if (prevEvent === 'overworld') {
       stats.overworld += diff;
+    } else if (prevEvent === 'overworld2') {
+      if (!is_blinded) {
+        stats.overworld += diff;
+      } else {
+        stats.blinded_move += diff;
+      }
     } else if (['enter_nether', 'enter_nether2', 'leave_bastion', 'leave_fortress'].includes(prevEvent)) {
       if (!is_blinded) {
         stats.nether_move += diff;

@@ -88,18 +88,18 @@ export const Indicator = () => {
       <div className="mcsr-indicator__line-container">
         {pbLineItems
           .filter((lineItem) => lineItem.type !== 'credits')
-          .map((lineItem) => (
+          .map((lineItem, index) => (
             <div
-              key={lineItem.type}
+              key={`${index}-${lineItem.type}`}
               className={`mcsr-indicator__line mcsr-indicator__line--pb mcsr-indicator__line--${lineItem.type}`}
               style={{ left: lineItem.left, width: lineItem.width }}
             />
           ))}
         {lineItems
           .filter((lineItem) => lineItem.type !== 'credits')
-          .map((lineItem) => (
+          .map((lineItem, index) => (
             <div
-              key={lineItem.type}
+              key={`${index}-${lineItem.type}`}
               className={`mcsr-indicator__line mcsr-indicator__line--pace mcsr-indicator__line--${lineItem.type}`}
               style={{ left: lineItem.left, width: lineItem.width }}
             />
@@ -122,7 +122,7 @@ export const Indicator = () => {
         ))}
       </div>
       <div className="mcsr-indicator__timeline-container mcsr-indicator__timeline-container--pb">
-        {displayItemTypes.map((itemType) => {
+        {displayItemTypes.map((itemType, index) => {
           const item = pbTimelineMap.get(itemType);
           if (!item) {
             return <React.Fragment key={itemType} />;
@@ -130,7 +130,7 @@ export const Indicator = () => {
           const status = timelineMap.has(itemType) ? 'done' : 'todo';
           return (
             <div
-              key={itemType}
+              key={`${index}-${itemType}`}
               className={['mcsr-indicator__item', `mcsr-indicator__item--${status}`].join(' ')}
               style={{ left: calcPosition(item.igt, pbFinalIGT) }}
             >
@@ -142,7 +142,7 @@ export const Indicator = () => {
         })}
       </div>
       <div className="mcsr-indicator__timeline-container mcsr-indicator__timeline-container--pace">
-        {displayItemTypes.map((itemType) => {
+        {displayItemTypes.map((itemType, index) => {
           const item = timelineMap.get(itemType);
           if (!item) {
             return <React.Fragment key={itemType} />;
@@ -155,7 +155,7 @@ export const Indicator = () => {
           const highlighted = diffEnabled && item.igt < (pbTimelineMap.get(itemType)?.igt ?? 0);
           return (
             <div
-              key={itemType}
+              key={`${index}-${itemType}`}
               className={[
                 'mcsr-indicator__item',
                 `mcsr-indicator__item--${highlighted ? 'highlighted' : 'normal'}`,

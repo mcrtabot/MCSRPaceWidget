@@ -14,7 +14,12 @@ export const Time = ({ value, displaySign, displayMilliSeconds = false }: TimePr
   } else {
     t = parseTime(Math.abs(Math.floor(value / 1000)));
   }
-  let hms = `${(t.h * 60 + t.m).toString().padStart(2, '0')}:${t.s.toString().padStart(2, '0')}`;
+  let hms: string;
+  if (t.h > 0) {
+    hms = `${t.h.toString()}:${t.m.toString().padStart(2, '0')}:${t.s.toString().padStart(2, '0')}`;
+  } else {
+    hms = `${(t.h * 60 + t.m).toString().padStart(2, '0')}:${t.s.toString().padStart(2, '0')}`;
+  }
   if (displayMilliSeconds) {
     const milliseconds = `000${t.ms}`.slice(-3);
     hms = hms + `.${milliseconds}`;

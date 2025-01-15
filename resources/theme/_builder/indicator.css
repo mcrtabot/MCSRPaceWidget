@@ -60,6 +60,7 @@
 }
 
 .mcsr-indicator__line--pace.mcsr-indicator__line--overworld,
+.mcsr-indicator__line--pace.mcsr-indicator__line--overworld2,
 .mcsr-indicator__line--pace.mcsr-indicator__line--second_portal {
   background-image: url(texture/overworld.png);
 }

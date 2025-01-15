@@ -42,6 +42,7 @@ export const TIMELINE_EVENTS = [
   'leave_bastion',
   'leave_fortress',
   'second_portal',
+  'overworld2',
   'enter_nether2',
   'enter_bastion2',
   'enter_fortress2',

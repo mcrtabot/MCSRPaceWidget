@@ -47,6 +47,7 @@ export const ImageBuilderItemParamsForm: React.FC<ImageBuilderItemParamsFormProp
       { value: 'leave_bastion', label: 'Leave Bastion' },
       { value: 'leave_fortress', label: 'Leave Fortress' },
       { value: 'second_portal', label: 'Second Portal' },
+      { value: 'overworld2', label: 'Overworld (without icon)' },
       { value: 'enter_nether2', label: 'Enter Nether (without icon)' },
       { value: 'enter_bastion2', label: 'Enter Bastion (without icon)' },
       { value: 'enter_fortress2', label: 'Enter Fortress (without icon)' },
