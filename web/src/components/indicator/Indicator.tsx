@@ -13,6 +13,7 @@ export const Indicator = () => {
     theme,
     setting,
     detailMode = false, // 詳細モード(leave_bastionなどを表示)で表示するかどうか
+    displayMinutesDot = true, // 1分ごとのドットを表示するかどうか
   } = useContext(AppContext);
   useLayoutEffect(() => {
     const head = document.head;
@@ -105,22 +106,24 @@ export const Indicator = () => {
             />
           ))}
       </div>
-      <div className="mcsr-indicator__dot-container">
-        {getTimelineDotItems(pbTimeline, pbFinalIGT, pbFinalIGT).map((dotItem, index) => (
-          <div
-            key={`${dotItem.type}_${index}`}
-            className={`mcsr-indicator__dot mcsr-indicator__dot--pb mcsr-indicator__dot--${dotItem.type}`}
-            style={{ left: dotItem.left }}
-          />
-        ))}
-        {getTimelineDotItems(timeline, paceIGT || 0, pbFinalIGT).map((dotItem, index) => (
-          <div
-            key={`${dotItem.type}_${index}`}
-            className={`mcsr-indicator__dot mcsr-indicator__dot--pace mcsr-indicator__dot--${dotItem.type}`}
-            style={{ left: dotItem.left }}
-          />
-        ))}
-      </div>
+      {displayMinutesDot && (
+        <div className="mcsr-indicator__dot-container">
+          {getTimelineDotItems(pbTimeline, pbFinalIGT, pbFinalIGT).map((dotItem, index) => (
+            <div
+              key={`${dotItem.type}_${index}`}
+              className={`mcsr-indicator__dot mcsr-indicator__dot--pb mcsr-indicator__dot--${dotItem.type}`}
+              style={{ left: dotItem.left }}
+            />
+          ))}
+          {getTimelineDotItems(timeline, paceIGT || 0, pbFinalIGT).map((dotItem, index) => (
+            <div
+              key={`${dotItem.type}_${index}`}
+              className={`mcsr-indicator__dot mcsr-indicator__dot--pace mcsr-indicator__dot--${dotItem.type}`}
+              style={{ left: dotItem.left }}
+            />
+          ))}
+        </div>
+      )}
       <div className="mcsr-indicator__timeline-container mcsr-indicator__timeline-container--pb">
         {displayItemTypes.map((itemType, index) => {
           const item = pbTimelineMap.get(itemType);

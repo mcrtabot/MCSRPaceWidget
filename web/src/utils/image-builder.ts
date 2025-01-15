@@ -19,6 +19,7 @@ const DETAULT_DISPLAY_RUN_INFO_AT_FIRST_ITEM = false;
 const DETAULT_DISPLAY_TIMELINE = true;
 const DETAULT_DISPLAY_STATS = true;
 const DETAULT_DISPLAY_NOTE = true;
+const DETAULT_DISPLAY_MINUTES_DOT = true;
 
 const IMAGE_COMMON_PARAMS_PARAMTER = 'c';
 const IMAGE_ITEM_PARAMS_PARAMTER = 'i';
@@ -45,6 +46,7 @@ const DISPLAY_TIMELINE_PARAMETER = 'dt';
 const DISPLAY_STATS_PARAMETER = 'ds';
 const DISPLAY_NOTE_PARAMETER = 'dn';
 const RUNINFO_TITLE_PARAMETER = 'rt';
+const DISPLAY_MINUTES_DOT_PARAMETER = 'dd';
 
 const TIMELINE_EVENT_MAP = {
   enter_nether: 'en',
@@ -141,6 +143,11 @@ export const parseCommonParams = (searchParams: URLSearchParams): ImageCommonPar
   const displayTimeline = getBooleanValue(commonSearchParams, DISPLAY_TIMELINE_PARAMETER, DETAULT_DISPLAY_TIMELINE);
   const displayStats = getBooleanValue(commonSearchParams, DISPLAY_STATS_PARAMETER, DETAULT_DISPLAY_STATS);
   const displayNote = getBooleanValue(commonSearchParams, DISPLAY_NOTE_PARAMETER, DETAULT_DISPLAY_NOTE);
+  const displayMinutesDot = getBooleanValue(
+    commonSearchParams,
+    DISPLAY_MINUTES_DOT_PARAMETER,
+    DETAULT_DISPLAY_MINUTES_DOT,
+  );
 
   return {
     theme,
@@ -159,6 +166,7 @@ export const parseCommonParams = (searchParams: URLSearchParams): ImageCommonPar
     displayTimeline,
     displayStats,
     displayNote,
+    displayMinutesDot,
   };
 };
 
@@ -260,6 +268,9 @@ export const toQueryString = ({
     }
     if (commonParams.displayNote !== DETAULT_DISPLAY_NOTE) {
       commonSearchParams.set(DISPLAY_NOTE_PARAMETER, commonParams.displayNote ? '1' : '0');
+    }
+    if (commonParams.displayMinutesDot !== DETAULT_DISPLAY_MINUTES_DOT) {
+      commonSearchParams.set(DISPLAY_MINUTES_DOT_PARAMETER, commonParams.displayMinutesDot ? '1' : '0');
     }
   }
 

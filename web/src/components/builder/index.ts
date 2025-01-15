@@ -18,6 +18,7 @@ export type ImageCommonParameters = {
   displayStats: boolean;
   displayNote: boolean;
   displayVisualTimelineTitle: boolean;
+  displayMinutesDot: boolean;
 };
 
 export type ImageItemParameters = {

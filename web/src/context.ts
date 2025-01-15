@@ -9,6 +9,7 @@ export const AppContext = createContext<{
   pbTimeline: TimelineItem[];
   pixelsPerMinute?: number | null;
   detailMode?: boolean;
+  displayMinutesDot?: boolean;
 }>({
   theme: 'default',
   setting: defaultSetting,

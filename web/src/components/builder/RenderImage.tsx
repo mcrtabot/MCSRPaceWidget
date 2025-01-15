@@ -43,6 +43,7 @@ export const RenderImage: React.FC<RenderImageProps> = React.memo(
       displayStats,
       displayNote,
       displayVisualTimelineTitle,
+      displayMinutesDot,
     } = commonParams;
 
     const { skin, name, date, timeline: strTimeline, note, runinfoTitle } = itemParams;
@@ -109,6 +110,7 @@ export const RenderImage: React.FC<RenderImageProps> = React.memo(
           setting,
           pixelsPerMinute,
           detailMode,
+          displayMinutesDot,
         }}
       >
         <Wrapper>

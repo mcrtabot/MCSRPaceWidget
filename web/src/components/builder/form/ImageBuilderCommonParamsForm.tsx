@@ -101,6 +101,13 @@ export const ImageBuilderCommonParamsForm: React.FC<ImageBuilderCommonParamsForm
                 </Item>
                 <Description>If checked, the Minecraft font will be used for the text.</Description>
               </ItemContainer>
+
+              <ItemContainer>
+                <Item>
+                  <Label>Display Minutes Dot</Label>
+                  <CheckInput type="checkbox" {...register('displayMinutesDot')} />
+                </Item>
+              </ItemContainer>
             </Pane>
 
             <Pane>
