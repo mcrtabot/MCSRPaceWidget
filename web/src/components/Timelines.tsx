@@ -1,24 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 
 import { Timeline } from '../components/Timeline';
 import { AppContext } from '../context';
+import { useThemeCSS } from '../hooks';
 
 export const Timelines = () => {
   const { timeline, pbTimeline, theme, setting } = useContext(AppContext);
-  useEffect(() => {
-    const head = document.head;
-    const link = document.createElement('link');
-
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = `/theme/${theme}/timeline.css`;
-
-    head.appendChild(link);
-
-    return () => {
-      head.removeChild(link);
-    };
-  }, [theme]);
+  useThemeCSS(theme, 'timeline');
 
   return (
     <div className="mcsr-widget">

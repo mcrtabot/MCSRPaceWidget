@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { usePBTimeline, useSetting, useTimeline } from '../hooks';
+import { usePageData } from '../hooks';
 import { useSearchParams } from 'react-router-dom';
 import { Timelines } from '../components/Timelines';
 import { AppContext } from '../context';
@@ -11,24 +11,18 @@ export const TimelinePage = () => {
   const theme = searchParams.get('theme') || 'default';
   const isDemo = searchParams.get('demo') === '1';
 
-  const { isLoading: isLoadingTimeline, data: timeline, hasError: hasErrorTimeline } = useTimeline(isDemo);
-  const { isLoading: isLoadingPBTimeline, data: pbTimeline, hasError: hasErrorPBTimeline } = usePBTimeline(isDemo);
-  const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(theme, false);
+  const { isLoading, timeline, pbTimeline, setting, errors } = usePageData(theme, isDemo);
 
-  if (isLoadingTimeline || isLoadingSetting || isLoadingPBTimeline) {
+  if (isLoading) {
     return <></>;
   }
 
-  if (hasErrorTimeline || !timeline || hasErrorSetting || !setting || hasErrorPBTimeline || !pbTimeline) {
+  if (errors.length > 0 || !timeline || !setting || !pbTimeline) {
     return (
       <div className="warning-container">
-        {(hasErrorTimeline || !timeline) && <div className="warning">No timeline data.</div>}
-        {(hasErrorSetting || !setting) && (
-          <div className="warning">file:theme/{theme}/setting.json does not exist or is in an invalid data format.</div>
-        )}
-        {(hasErrorPBTimeline || !pbTimeline) && (
-          <div className="warning">file:setting/pb.json does not exist or is in an invalid data format.</div>
-        )}
+        {errors.map((error, i) => (
+          <div key={i} className="warning">{error}</div>
+        ))}
       </div>
     );
   }

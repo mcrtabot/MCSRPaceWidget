@@ -4,7 +4,8 @@ import { defaultSetting } from './setting';
 import { Setting, Theme, TimelineData, TimelineItem } from './types';
 import demoTimelineData from './assets/demo/timeline.json';
 import demoPBTimeline from './assets/demo/pb.json';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
 const TIMELINE_REFRESH_INTERVAL = 500;
@@ -15,26 +16,6 @@ const fetcher = async (path: string) => {
     throw new Error('');
   }
   return await response.json();
-};
-
-const convertTimeToMilliSeconds = (time?: string) => {
-  if (!time) {
-    return undefined;
-  }
-  const match = time.match(/(?:(\d+):)?(\d{1,2}):(\d{1,2})(?:\.(\d+))?/);
-  if (!match) {
-    return undefined;
-  }
-  const h = match.at(1);
-  const m = match.at(2);
-  const s = match.at(3);
-  const ms = match.at(4);
-  return (
-    (h ? parseInt(h, 10) * 60 * 60 * 1000 : 0) +
-    (m ? parseInt(m, 10) * 60 * 1000 : 0) +
-    (s ? parseInt(s, 10) * 1000 : 0) +
-    (ms ? parseInt(ms, 10) : 0)
-  );
 };
 
 export const useSetting = (theme: string | null, isDemo: boolean) => {
@@ -169,4 +150,38 @@ const getTimelinePattern = (timeline: TimelineItem[]) => {
     return 'fb' as const;
   }
   return 'bf' as const;
+};
+
+export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator') => {
+  useEffect(() => {
+    const head = document.head;
+    const link = document.createElement('link');
+
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = `/theme/${theme}/${cssFile}.css`;
+
+    head.appendChild(link);
+
+    return () => {
+      head.removeChild(link);
+    };
+  }, [theme, cssFile]);
+};
+
+export const usePageData = (theme: string, isDemo: boolean) => {
+  const { isLoading: isLoadingTimeline, data: timeline, hasError: hasErrorTimeline } = useTimeline(isDemo);
+  const { isLoading: isLoadingPBTimeline, data: pbTimeline, hasError: hasErrorPBTimeline } = usePBTimeline(isDemo);
+  const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(theme, false);
+
+  const isLoading = isLoadingTimeline || isLoadingSetting || isLoadingPBTimeline;
+
+  const errors: string[] = [];
+  if (hasErrorTimeline || (!isLoading && !timeline)) errors.push('No timeline data.');
+  if (hasErrorSetting || (!isLoading && !setting))
+    errors.push(`file:theme/${theme}/setting.json does not exist or is in an invalid data format.`);
+  if (hasErrorPBTimeline || (!isLoading && !pbTimeline))
+    errors.push('file:setting/pb.json does not exist or is in an invalid data format.');
+
+  return { isLoading, timeline, pbTimeline, setting, errors };
 };
