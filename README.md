@@ -2,112 +2,129 @@
 
 [日本語の README はこちら](README.ja.md)
 
-## About
+A pace display widget that enhances your Minecraft speedrun (RSG) streams.
+Integrates with SpeedRunIGT to show split times and comparisons against your target pace in real time.
+Set your PB, goal times, or any custom pace as the baseline —
+works as an OBS browser source, just pick a theme and add it to your scene.
 
-A Minecraft Speedrun pace widget tool that displays your pace in real time.
+<img src="docs/timeline_texture-bar.gif" alt="Timeline display example">
+<img src="docs/indicator_texture-bar.gif" alt="Visual timeline display example">
+
+## Features
+
+- **Timeline** — Table display showing current pace and difference from personal best (PB)
+- **Visual Timeline** — Bar-style visual progress indicator
+- Customizable themes (7 built-in + custom theme support)
+- Real-time updates via SpeedRunIGT integration
 
 ## Requirements
 
 - SpeedRunIGT 14.0 or later
-  - **Set "Auto Save Interval" (in SpeedRunIGT Option > Timer) to `Ticks` for real-time updates!**
+  - **Set "Auto Save Interval" (SpeedRunIGT Options > Timer) to `Ticks`** — required for real-time split updates
 
-## Features
+## Installation
 
-### Timeline
+Download the zip from the [Release Page](https://github.com/mcrtabot/MCSRPaceWidget/releases) and extract it.
 
-- Displays your current pace and the difference from your personal best time.
+### Standalone
 
-<img src="docs/timeline_texture-bar.gif" alt="Timeline displaying current pace and personal best difference">
+1. Run `mcsr-pace-widget.jar`
+2. Click `open MCSR Pace Widget` (opens http://127.0.0.1:1161)
+3. Select a theme and copy the widget URL
+4. Set the URL as an OBS browser source
 
-### Visual Timeline (Old name: Indicator)
+### As a Jingle Plugin
 
-- A visually intuitive timeline representation.
+1. Create a `.config/MCSRPaceWidget` directory in your home directory and copy `theme` and `setting` from the extracted files
+   - Windows: `C:\Users\<username>\.config\MCSRPaceWidget`
+2. Copy `mcsr-pace-widget.jar` to the Jingle plugins directory
+   - `C:\Users\<username>\.config\Jingle\plugins`
+3. Restart Jingle, then open Plugins > MCSR Pace Widget tab
+4. Click `open MCSR Pace Widget`, select a theme
+5. Set the widget URL as an OBS browser source
 
-<img src="docs/indicator_texture-bar.gif" alt="Visual timeline with a graphical representation">
+## Settings
 
-### Other
+The `setting` and `theme` directories can be placed in either location (first takes priority):
 
-- Customizable themes.
-- Real-time updates.
-- Easily displayed on OBS using a browser source.
+1. Inside `~/.config/MCSRPaceWidget/`
+2. In the same directory as `mcsr-pace-widget.jar`
 
-## How to Use
+### PB Time
 
-### Standalone Execution
+To display the difference from your personal best, configure your PB times.
 
-1. Download from the [Release Page](https://github.com/mcrtabot/MCSRPaceWidget/releases) and extract the zip file.
-2. (Optional) Create a `.config/MCSRPaceWidget` directory within your home directory (Windows: `C:\Users\[username]`, Mac: `/Users/[username]`) and copy the `theme` and `setting` from the extracted directory.
-3. Execute `mcsr-pace-widget.jar`.
-4. Click `open MCSR Pace Widget` (this will open http://127.0.0.1:1161 in a browser).
-5. Select a theme and copy the widget URL.
-6. Use the widget (e.g., in the OBS browser source).
-7. Set "Auto Save Interval" (in SpeedRunIGT Option > Timer) to `Ticks`.
+- Click `Pace Settings...` in the MCSRPaceWidget window (or Jingle tab)
+- Enter times in `12:34` (12m34s) or `12:34.567` (12m34.567s) format
 
-### Execution as a Jingle Plugin
+### Custom Themes
 
-1. Download from the [Release Page](https://github.com/mcrtabot/MCSRPaceWidget/releases) and extract the zip file.
-2. (Mandatory!) Create a `.config/MCSRPaceWidget` directory within your home directory (Windows: `C:\Users\[username]`) and copy the `theme` and `setting` from the extracted directory.
-3. Copy `mcsr-pace-widget.jar` to the Jingle plugin directory (`C:\Users\[username]\.config\Jingle\plugins`).
-4. Restart Jingle.
-5. Open the Plugins -> MCSR Pace Widget tab.
-6. Click `open MCSR Pace Widget` (this will open http://127.0.0.1:1161 in a browser).
-7. Select a theme and copy the widget URL.
-8. Use the widget (e.g., in the OBS browser source).
-9. Set "Auto Save Interval" (in SpeedRunIGT Option > Timer) to `Ticks`.
+1. Copy a base theme (e.g., `default`) in the `theme` directory and rename it
+2. Edit `setting.json` and the stylesheets `timeline.css` / `indicator.css`
 
-### Settings
-
-- The `setting` directory and `theme` directory are located either within the `.config/MCSRPaceWidget` directory in the home directory or in the same directory as `mcsr-pace-widget.jar`.
-- If these directories exist within the `.config/MCSRPaceWidget` directory in the home directory, they will be given priority.
-
-#### PB Time Setting
-
-To see the difference from your personal best (PB), edit the PB Time Setting.
-
-- Click `Pace Settings...` within the MCSRPaceWidget window (or the tab in Jingle) and enter your time.
-- Enter the time in the format `12:34` (12m34s) or `12:34.567` (12m34.567s).
-
-#### Custom Theme
-
-- Copy a base theme (e.g., default) and rename it in the `theme` directory.
-- Edit the `setting.json` and stylesheets `timeline.css` / `indicator.css`.
+[Minecraft fonts](https://fontmeme.com/jfont/minecraft-font/) can be used for a more authentic look.
 
 ## Themes
 
-- Default / Texture-bar
+<details>
+<summary>Default / Texture-bar</summary>
 
-  <img src="docs/timeline_texture-bar.gif" alt="Default / Texture-bar theme timeline">
-  <img src="docs/indicator_texture-bar.gif" alt="Default / Texture-bar theme indicator">
+<img src="docs/timeline_texture-bar.gif" alt="Default / Texture-bar timeline">
+<img src="docs/indicator_texture-bar.gif" alt="Default / Texture-bar visual timeline">
+</details>
 
-- Standard
+<details>
+<summary>Standard</summary>
 
-  <img src="docs/timeline_standard.gif" alt="Standard theme timeline">
-  <img src="docs/indicator_standard.gif" alt="Standard theme indicator">
+<img src="docs/timeline_standard.gif" alt="Standard timeline">
+<img src="docs/indicator_standard.gif" alt="Standard visual timeline">
+</details>
 
-- Standard-full
+<details>
+<summary>Standard-full</summary>
 
-  <img src="docs/timeline_standard-full.gif" alt="Standard-full theme timeline">
-  <img src="docs/indicator_standard-full.gif" alt="Standard-full theme indicator">
+<img src="docs/timeline_standard-full.gif" alt="Standard-full timeline">
+<img src="docs/indicator_standard-full.gif" alt="Standard-full visual timeline">
+</details>
 
-- Paceman (display latest event only)
+<details>
+<summary>Paceman (latest event only)</summary>
 
-  <img src="docs/timeline_paceman.gif" alt="Paceman theme timeline">
-  <img src="docs/indicator_paceman.gif" alt="Paceman theme indicator">
+<img src="docs/timeline_paceman.gif" alt="Paceman timeline">
+<img src="docs/indicator_paceman.gif" alt="Paceman visual timeline">
+</details>
 
-- Paceman-list
+<details>
+<summary>Paceman-list</summary>
 
-  <img src="docs/timeline_paceman-list.gif" alt="Paceman-list theme timeline">
-  <img src="docs/indicator_paceman-list.gif" alt="Paceman-list theme indicator">
+<img src="docs/timeline_paceman-list.gif" alt="Paceman-list timeline">
+<img src="docs/indicator_paceman-list.gif" alt="Paceman-list visual timeline">
+</details>
 
-- Horizontal
+<details>
+<summary>Horizontal</summary>
 
-  <img src="docs/timeline_horizontal.gif" alt="Horizontal theme timeline">
+<img src="docs/timeline_horizontal.gif" alt="Horizontal timeline">
+</details>
 
-- Niwatori
+<details>
+<summary>Niwatori</summary>
 
-  <img src="docs/timeline_niwatori.gif" alt="Niwatori theme timeline">
-  <img src="docs/indicator_niwatori.gif" alt="Niwatori theme indicator">
+<img src="docs/timeline_niwatori.gif" alt="Niwatori timeline">
+<img src="docs/indicator_niwatori.gif" alt="Niwatori visual timeline">
+</details>
 
-And your customized themes can be added!
+## FAQ
 
-[Minecraft fonts](https://fontmeme.com/jfont/minecraft-font/) can be used for a more Minecraft-like look.
+**Q: Splits like Enter Bastion or Enter Fortress don't appear immediately**
+
+A: Make sure "Auto Save Interval" is set to `Ticks` in SpeedRunIGT Options > Timer.
+Without this setting, split data is not written in real time, causing delays.
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and build instructions.
+
+## Related
+
+- [MCSRImageBuilder](https://github.com/mcrtabot/MCSRImageBuilder) — Web tool for generating timeline images from completed runs

@@ -1,113 +1,130 @@
 # MCSR (Minecraft Speedrunning) Pace Widget
 
-[README in English is here](README.md)
+[README in English](README.md)
 
-## 概要
+Minecraft スピードラン（RSG）の配信を強化するペース表示ウィジェットです。
+SpeedRunIGT と連携し、各スプリットのタイムと目標タイムとの差分をリアルタイムで表示します。
+自己ベスト・目標ペースなど自由に基準タイムを設定でき、
+OBS のブラウザソースとしてテーマを切り替えるだけで配信画面にすぐ組み込めます。
 
-リアルタイムでペースを表示する マインクラフト RTA のウィジェットツールです。
+<img src="docs/timeline_texture-bar.gif" alt="タイムライン表示例">
+<img src="docs/indicator_texture-bar.gif" alt="ビジュアルタイムライン表示例">
+
+## 特徴
+
+- **タイムライン** — 現在のペースと自己ベスト（PB）との差分をテーブル表示
+- **ビジュアルタイムライン** — バー形式で進行状況を視覚的に表示
+- カスタマイズ可能なテーマ（7種類同梱 + 自作テーマ対応）
+- SpeedRunIGT と連携したリアルタイム更新
 
 ## 必要条件
 
 - SpeedRunIGT 14.0 以降
-  - **リアルタイムの更新には、SpeedRunIGT オプション > タイマー内で"自動保存間隔"を`Ticks`に設定してください！**
+  - **SpeedRunIGT オプション > タイマー で「自動保存間隔」を `Ticks` に設定してください** — スプリットをリアルタイムで表示するために必要です
 
-## 特徴
+## インストール
 
-### タイムライン
-
-- 現在のペース、および自己ベストとの違いを表示します。
-
-<img src="docs/timeline_texture-bar.gif" alt="現在のペースと自己ベストの差を表示しているタイムライン">
-
-### ビジュアルタイムライン (旧称: インジケーター)
-
-- 視覚的に分かりやすいタイムライン
-
-<img src="docs/indicator_texture-bar.gif" alt="視覚的にグラフィカルなタイムラインの表現">
-
-### その他
-
-- カスタマイズ可能なテーマ
-- リアルタイム更新
-- ブラウザソースを使って OBS 上で簡単に表示可能
-
-## 使用方法
+[リリースページ](https://github.com/mcrtabot/MCSRPaceWidget/releases)から zip をダウンロードし、解凍します。
 
 ### スタンドアロン実行
 
-1. [リリースページ](https://github.com/mcrtabot/MCSRPaceWidget/releases)からダウンロードし、zip ファイルを解凍します。
-2. （オプション）ホームディレクトリ内に`.config/MCSRPaceWidget`ディレクトリを作成し（Windows の場合: `C:\Users\[username]`, Mac の場合: `/Users/[username]`）、解凍したディレクトリから`theme`および`setting`をコピーします。
-3. `mcsr-pace-widget.jar`を実行します。
-4. `open MCSR Pace Widget`をクリックします（これによりブラウザでhttp://127.0.0.1:1161が開きます）。
-5. テーマを選択し、ウィジェット URL をコピーします。
-6. ウィジェットを使用します（例：OBS ブラウザソースで）。
-7. "自動保存間隔"を（SpeedRunIGT オプション > タイマー内で）`Ticks`に設定します。
+1. `mcsr-pace-widget.jar` を実行
+2. `open MCSR Pace Widget` をクリック（http://127.0.0.1:1161 が開きます）
+3. テーマを選択し、ウィジェット URL をコピー
+4. OBS のブラウザソースに URL を設定
 
-### Jingle プラグインとしての実行
+### Jingle プラグインとして実行
 
-1. [リリースページ](https://github.com/mcrtabot/MCSRPaceWidget/releases)からダウンロードし、zip ファイルを解凍します。
-2. （必須！）ホームディレクトリ内に`.config/MCSRPaceWidget`ディレクトリを作成し（Windows の場合: `C:\Users\[username]`）、解凍したディレクトリから`theme`および`setting`をコピーします。
-3. `mcsr-pace-widget.jar`を Jingle プラグインディレクトリ（`C:\Users\[username]\.config\Jingle\plugins`）にコピーします。
-4. Jingle を再起動します。
-5. プラグイン -> MCSR Pace Widget タブを開きます。
-6. `open MCSR Pace Widget`をクリックします（これによりブラウザでhttp://127.0.0.1:1161が開きます）。
-7. テーマを選択し、ウィジェット URL をコピーします。
-8. ウィジェットを使用します（例：OBS ブラウザソースで）。
-9. "自動保存間隔"を（SpeedRunIGT オプション > タイマー内で）`Ticks`に設定します。
+1. ホームディレクトリに `.config/MCSRPaceWidget` ディレクトリを作成し、解凍した `theme` と `setting` をコピー
+   - Windows: `C:\Users\<ユーザー名>\.config\MCSRPaceWidget`
+2. `mcsr-pace-widget.jar` を Jingle プラグインディレクトリにコピー
+   - `C:\Users\<ユーザー名>\.config\Jingle\plugins`
+3. Jingle を再起動し、Plugins > MCSR Pace Widget タブを開く
+4. `open MCSR Pace Widget` をクリックし、テーマを選択
+5. OBS のブラウザソースにウィジェット URL を設定
 
-### 設定
+## 設定
 
-- `setting`フォルダと`theme`フォルダは、ホームディレクトリの`.config/MCSRPaceWidget`ディレクトリ内か、`mcsr-pace-widget.jar`と同じディレクトリ内に配置されます。
-- これらのディレクトリがホームディレクトリの`.config/MCSRPaceWidget`ディレクトリ内に存在する場合、それらが優先されます。
+`setting` と `theme` ディレクトリは以下のいずれかに配置します（上が優先）:
 
-#### PB タイム設定
+1. `~/.config/MCSRPaceWidget/` 内
+2. `mcsr-pace-widget.jar` と同じディレクトリ内
 
-自己ベスト（PB）との差を確認するには、PB タイム設定を編集します。
+### PB タイム設定
 
-- MCSRPaceWidget ウィンドウ内（または Jingle のタブ内）で`Pace Settings...`をクリックし、時間を入力します。
-- 時間は`12:34`（12 分 34 秒）または`12:34.567`（12 分 34.567 秒）の形式で入力します。
+自己ベストとの差分を表示するには、PB タイムを設定します。
 
-#### カスタムテーマ
+- MCSRPaceWidget ウィンドウ（または Jingle タブ）で `Pace Settings...` をクリック
+- `12:34`（12分34秒）または `12:34.567`（12分34.567秒）の形式で入力
 
-- ベースとなるテーマ（例：default）をコピーし、`theme`ディレクトリ内で名前を変更します。
-- `setting.json`とスタイルシート`timeline.css` / `indicator.css`を編集します。
+### カスタムテーマ
 
-## テーマ
+1. `theme` ディレクトリ内のベーステーマ（例: `default`）をコピーしてリネーム
+2. `setting.json` と `timeline.css` / `indicator.css` を編集
 
-- Default / Texture-bar
+[Minecraft フォント](https://fontmeme.com/jfont/minecraft-font/)を使うと、より Minecraft らしい見た目にできます。
 
-  <img src="docs/timeline_texture-bar.gif" alt="Default / Texture-bar theme timeline">
-  <img src="docs/indicator_texture-bar.gif" alt="Default / Texture-bar theme indicator">
+## テーマ一覧
 
-- Standard
+<details>
+<summary>Default / Texture-bar</summary>
 
-  <img src="docs/timeline_standard.gif" alt="Standard theme timeline">
-  <img src="docs/indicator_standard.gif" alt="Standard theme indicator">
+<img src="docs/timeline_texture-bar.gif" alt="Default / Texture-bar タイムライン">
+<img src="docs/indicator_texture-bar.gif" alt="Default / Texture-bar ビジュアルタイムライン">
+</details>
 
-- Standard-full
+<details>
+<summary>Standard</summary>
 
-  <img src="docs/timeline_standard-full.gif" alt="Standard-full theme timeline">
-  <img src="docs/indicator_standard-full.gif" alt="Standard-full theme indicator">
+<img src="docs/timeline_standard.gif" alt="Standard タイムライン">
+<img src="docs/indicator_standard.gif" alt="Standard ビジュアルタイムライン">
+</details>
 
-- Paceman (display latest event only)
+<details>
+<summary>Standard-full</summary>
 
-  <img src="docs/timeline_paceman.gif" alt="Paceman theme timeline">
-  <img src="docs/indicator_paceman.gif" alt="Paceman theme indicator">
+<img src="docs/timeline_standard-full.gif" alt="Standard-full タイムライン">
+<img src="docs/indicator_standard-full.gif" alt="Standard-full ビジュアルタイムライン">
+</details>
 
-- Paceman-list
+<details>
+<summary>Paceman（最新イベントのみ表示）</summary>
 
-  <img src="docs/timeline_paceman-list.gif" alt="Paceman-list theme timeline">
-  <img src="docs/indicator_paceman-list.gif" alt="Paceman-list theme indicator">
+<img src="docs/timeline_paceman.gif" alt="Paceman タイムライン">
+<img src="docs/indicator_paceman.gif" alt="Paceman ビジュアルタイムライン">
+</details>
 
-- Horizontal
+<details>
+<summary>Paceman-list</summary>
 
-  <img src="docs/timeline_horizontal.gif" alt="Horizontal theme timeline">
+<img src="docs/timeline_paceman-list.gif" alt="Paceman-list タイムライン">
+<img src="docs/indicator_paceman-list.gif" alt="Paceman-list ビジュアルタイムライン">
+</details>
 
-- Niwatori
+<details>
+<summary>Horizontal</summary>
 
-  <img src="docs/timeline_niwatori.gif" alt="Niwatori theme timeline">
-  <img src="docs/indicator_niwatori.gif" alt="Niwatori theme indicator">
+<img src="docs/timeline_horizontal.gif" alt="Horizontal タイムライン">
+</details>
 
-加えて、あなた自身がカスタマイズしたテーマも追加可能です！
+<details>
+<summary>Niwatori</summary>
 
-Minecraft 風の見た目には[Minecraft フォント](https://fontmeme.com/jfont/minecraft-font/)を使用できます。
+<img src="docs/timeline_niwatori.gif" alt="Niwatori タイムライン">
+<img src="docs/indicator_niwatori.gif" alt="Niwatori ビジュアルタイムライン">
+</details>
+
+## FAQ
+
+**Q: Enter Bastion や Enter Fortress などのスプリットがすぐに表示されない**
+
+A: SpeedRunIGT オプション > タイマー で「自動保存間隔」が `Ticks` になっているか確認してください。
+この設定がされていないと、スプリットデータがリアルタイムで書き出されず、表示が遅延します。
+
+## 開発
+
+開発に参加する場合は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+
+## 関連プロジェクト
+
+- [MCSRImageBuilder](https://github.com/mcrtabot/MCSRImageBuilder) — ランのタイムライン画像を生成するWebツール
