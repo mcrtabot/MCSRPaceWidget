@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+
 import {
   Box,
   Button,
@@ -17,14 +17,16 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { AppContext } from '../context';
-import { Timelines } from '../components/widget/Timelines';
-import { Indicator } from '../components/widget/Indicator';
-import { useSetting, useThemes } from '../hooks';
-import { TimelineData, TimelineItem, Theme } from '../types';
+import { useSearchParams } from 'react-router-dom';
+
 import { presets } from '../assets/playground/presets';
+import { Indicator } from '../components/widget/Indicator';
+import { Timelines } from '../components/widget/Timelines';
+import { AppContext } from '../context';
+import { useSetting, useThemes } from '../hooks';
 import { defaultSetting } from '../setting';
-import { convertTimeToMilliSeconds, convertMillisecondsToTime } from '../utils/utils';
+import { Theme, TimelineData, TimelineItem } from '../types';
+import { convertMillisecondsToTime, convertTimeToMilliSeconds } from '../utils/utils';
 
 const defaultPBTimeline: TimelineItem[] = [
   { type: 'enter_nether', igt: 267704 },

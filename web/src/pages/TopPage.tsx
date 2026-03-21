@@ -1,15 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
-import { usePBTimeline, useSetting, useTimeline } from '../hooks';
-import { useSearchParams } from 'react-router-dom';
-import { ThemeSelectorCondition, ThemeSelector } from '../components/ui/ThemeSelector';
-import { Timelines } from '../components/widget/Timelines';
-import { Indicator } from '../components/widget/Indicator';
-import { AppContext } from '../context';
 import {
   Accordion,
-  Anchor,
   Alert,
+  Anchor,
   Badge,
   Box,
   Card,
@@ -24,6 +18,13 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { useSearchParams } from 'react-router-dom';
+
+import { ThemeSelector, ThemeSelectorCondition } from '../components/ui/ThemeSelector';
+import { Indicator } from '../components/widget/Indicator';
+import { Timelines } from '../components/widget/Timelines';
+import { AppContext } from '../context';
+import { usePBTimeline, useSetting, useTimeline } from '../hooks';
 
 export const TopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams({ timeline: 'default', indicator: 'default', data: 'demo' });
@@ -131,14 +132,26 @@ export const TopPage = () => {
                   theme={timelineTheme}
                   onChangeTheme={(theme: string) => changeTheme('timeline', theme)}
                 />
-                <Box mt="md" p="md" style={{ background: bgColor, borderRadius: 8, minHeight: 240, position: 'relative', overflow: 'hidden' }}>
+                <Box
+                  mt="md"
+                  p="md"
+                  style={{
+                    background: bgColor,
+                    borderRadius: 8,
+                    minHeight: 240,
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
                   <AppContext.Provider value={{ timeline, pbTimeline, theme: timelineTheme, setting }}>
                     <Timelines />
                   </AppContext.Provider>
                 </Box>
               </div>
               <Card withBorder shadow="sm" radius="md" padding="md" w={280}>
-                <Title order={5} mb="sm">Preview Options</Title>
+                <Title order={5} mb="sm">
+                  Preview Options
+                </Title>
                 <ThemeSelectorCondition
                   igt={igt}
                   onChangeIGT={changeIGT}
@@ -159,7 +172,11 @@ export const TopPage = () => {
                   theme={indicatorTheme}
                   onChangeTheme={(theme: string) => changeTheme('indicator', theme)}
                 />
-                <Box mt="md" p="md" style={{ background: bgColor, borderRadius: 8, minHeight: 240, overflow: 'hidden' }}>
+                <Box
+                  mt="md"
+                  p="md"
+                  style={{ background: bgColor, borderRadius: 8, minHeight: 240, overflow: 'hidden' }}
+                >
                   <AppContext.Provider value={{ timeline, pbTimeline, theme: indicatorTheme, setting }}>
                     <div style={{ width: '80%', ['--id-width' as any]: '100%' }}>
                       <Indicator />
@@ -168,7 +185,9 @@ export const TopPage = () => {
                 </Box>
               </div>
               <Card withBorder shadow="sm" radius="md" padding="md" w={280}>
-                <Title order={5} mb="sm">Preview Options</Title>
+                <Title order={5} mb="sm">
+                  Preview Options
+                </Title>
                 <ThemeSelectorCondition
                   igt={igt}
                   onChangeIGT={changeIGT}
@@ -198,11 +217,13 @@ export const TopPage = () => {
               </List>
               <Alert color="orange" variant="light" mt="md" p="sm">
                 <Text size="xs" fw={600}>
-                  For real-time updates, set <b>"Auto Save Interval"</b> to <b>"Ticks"</b> in SpeedRunIGT Options &gt; Timer.
+                  For real-time updates, set <b>"Auto Save Interval"</b> to <b>"Ticks"</b> in SpeedRunIGT Options &gt;
+                  Timer.
                 </Text>
               </Alert>
               <Text size="xs" c="dimmed" mt="sm">
-                Tip: A Minecraft font is bundled. Use <Code>font-family: 'Minecraft-Regular'</Code> in your theme CSS for a more authentic look.
+                Tip: A Minecraft font is bundled. Use <Code>font-family: 'Minecraft-Regular'</Code> in your theme CSS
+                for a more authentic look.
               </Text>
             </Accordion.Panel>
           </Accordion.Item>
@@ -220,10 +241,12 @@ export const TopPage = () => {
                   Duplicate an existing theme folder (e.g. <Code>theme/default</Code>) and rename it
                 </List.Item>
                 <List.Item>
-                  Edit <Code>setting.json</Code> and the stylesheets (<Code>timeline.css</Code> / <Code>indicator.css</Code>)
+                  Edit <Code>setting.json</Code> and the stylesheets (<Code>timeline.css</Code> /{' '}
+                  <Code>indicator.css</Code>)
                 </List.Item>
                 <List.Item>
-                  Use the <Anchor href="/playground">Playground</Anchor> to test your theme with various data patterns and preview scales
+                  Use the <Anchor href="/playground">Playground</Anchor> to test your theme with various data patterns
+                  and preview scales
                 </List.Item>
               </List>
             </Accordion.Panel>
@@ -235,7 +258,13 @@ export const TopPage = () => {
 };
 
 const Code = ({ children }: { children: React.ReactNode }) => (
-  <Text component="code" size="sm" c="blue" fw={600} style={{ background: 'var(--mantine-color-blue-light)', padding: '1px 6px', borderRadius: 4 }}>
+  <Text
+    component="code"
+    size="sm"
+    c="blue"
+    fw={600}
+    style={{ background: 'var(--mantine-color-blue-light)', padding: '1px 6px', borderRadius: 4 }}
+  >
     {children}
   </Text>
 );

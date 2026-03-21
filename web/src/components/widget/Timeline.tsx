@@ -1,10 +1,10 @@
 import React from 'react';
 
+import { useTimelineInfo } from '../../hooks';
 import { TimelineItem, TimelineNextItemStyle } from '../../types';
 import { RandomTime } from './RandomTime';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon as TLIcon } from './TimelineIcon';
-import { useTimelineInfo } from '../../hooks';
 
 type TimelineProps = {
   className?: string;
@@ -63,10 +63,10 @@ export const Timeline = ({
               index < timeline.length - 1
                 ? 'done'
                 : index === timeline.length - 1
-                ? 'current'
-                : index === timeline.length
-                ? 'next'
-                : 'todo';
+                  ? 'current'
+                  : index === timeline.length
+                    ? 'next'
+                    : 'todo';
 
             return (
               <tr

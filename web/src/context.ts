@@ -1,6 +1,7 @@
 import { createContext } from 'react';
-import { Setting, TimelineData, TimelineItem } from './types';
+
 import { defaultSetting } from './setting';
+import { Setting, TimelineData, TimelineItem } from './types';
 
 export const AppContext = createContext<{
   theme: string;

@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { usePageData } from '../hooks';
 import { useSearchParams } from 'react-router-dom';
+
+import { DemoWarning } from '../components/ui/DemoWarning';
 import { Timelines } from '../components/widget/Timelines';
 import { AppContext } from '../context';
-import { DemoWarning } from '../components/ui/DemoWarning';
+import { usePageData } from '../hooks';
 
 export const TimelinePage = () => {
   const [searchParams] = useSearchParams({ theme: 'default', demo: '0' });
@@ -21,7 +22,9 @@ export const TimelinePage = () => {
     return (
       <div className="warning-container">
         {errors.map((error, i) => (
-          <div key={i} className="warning">{error}</div>
+          <div key={i} className="warning">
+            {error}
+          </div>
         ))}
       </div>
     );

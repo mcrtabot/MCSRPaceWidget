@@ -1,9 +1,10 @@
 import React, { useContext, useMemo } from 'react';
-import { useThemeCSS, useTimelineInfo } from '../../hooks';
-import { TimelineIcon } from './TimelineIcon';
-import { DiffTime, Time } from './Time';
+
 import { AppContext } from '../../context';
+import { useThemeCSS, useTimelineInfo } from '../../hooks';
 import { calcPosition, getFaceStatus, getTimelineDotItems, getTimelineLineItems } from '../../utils/indicator';
+import { DiffTime, Time } from './Time';
+import { TimelineIcon } from './TimelineIcon';
 
 export const Indicator = () => {
   const { timeline: timelineData, pbTimeline, theme, setting } = useContext(AppContext);

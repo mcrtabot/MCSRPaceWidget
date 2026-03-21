@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
-import { Timeline } from './Timeline';
 import { AppContext } from '../../context';
 import { useThemeCSS } from '../../hooks';
+import { Timeline } from './Timeline';
 
 export const Timelines = () => {
   const { timeline, pbTimeline, theme, setting } = useContext(AppContext);

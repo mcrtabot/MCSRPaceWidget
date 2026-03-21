@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { usePageData } from '../hooks';
 import { useSearchParams } from 'react-router-dom';
+
+import { DemoWarning } from '../components/ui/DemoWarning';
 import { Indicator } from '../components/widget/Indicator';
 import { AppContext } from '../context';
-import { DemoWarning } from '../components/ui/DemoWarning';
+import { usePageData } from '../hooks';
 
 export const IndicatorPage = () => {
   const [searchParams] = useSearchParams({ theme: 'default' });
@@ -21,7 +22,9 @@ export const IndicatorPage = () => {
     return (
       <div className="warning-container">
         {errors.map((error, i) => (
-          <div key={i} className="warning">{error}</div>
+          <div key={i} className="warning">
+            {error}
+          </div>
         ))}
       </div>
     );

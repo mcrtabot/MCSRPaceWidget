@@ -14,11 +14,7 @@ export type TimelineLineItem = {
   width: string;
 };
 
-export const getTimelineLineItems = (
-  timeline: TimelineItem[],
-  igt: number,
-  pbFinalIGT: number,
-): TimelineLineItem[] => {
+export const getTimelineLineItems = (timeline: TimelineItem[], igt: number, pbFinalIGT: number): TimelineLineItem[] => {
   let itemType = 'overworld';
   let itemStartIGT = 0;
   const lineItems: TimelineLineItem[] = [];
@@ -51,11 +47,7 @@ export type TimelineDotItem = {
 
 const MILLISECONDS_PER_MINUTE = 60000;
 
-export const getTimelineDotItems = (
-  timeline: TimelineItem[],
-  igt: number,
-  pbFinalIGT: number,
-): TimelineDotItem[] => {
+export const getTimelineDotItems = (timeline: TimelineItem[], igt: number, pbFinalIGT: number): TimelineDotItem[] => {
   if (!igt) {
     return [];
   }
@@ -74,8 +66,7 @@ export const getTimelineDotItems = (
   });
 };
 
-export const range = (start: number, end: number) =>
-  Array.from({ length: end - start + 1 }, (v, k) => k + start);
+export const range = (start: number, end: number) => Array.from({ length: end - start + 1 }, (v, k) => k + start);
 
 export type FaceStatus = 'normal' | 'smile' | 'sad';
 

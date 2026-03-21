@@ -1,10 +1,11 @@
+import { useEffect, useMemo } from 'react';
+
 import useSWR from 'swr/immutable';
 
+import demoPBTimeline from './assets/demo/pb.json';
+import demoTimelineData from './assets/demo/timeline.json';
 import { defaultSetting } from './setting';
 import { Setting, Theme, TimelineData, TimelineItem } from './types';
-import demoTimelineData from './assets/demo/timeline.json';
-import demoPBTimeline from './assets/demo/pb.json';
-import { useEffect, useMemo } from 'react';
 import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
@@ -65,8 +66,8 @@ export const useTimeline = (demo?: boolean, igt?: number) => {
   const filteredTimelines = left
     ? []
     : enableCheatsIndex >= 0
-    ? data.timelines.slice(0, enableCheatsIndex)
-    : data.timelines;
+      ? data.timelines.slice(0, enableCheatsIndex)
+      : data.timelines;
 
   return { isLoading, data: { ...data, timelines: filteredTimelines }, hasError: false };
 };
