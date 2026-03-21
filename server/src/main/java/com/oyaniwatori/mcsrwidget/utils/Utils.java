@@ -40,7 +40,8 @@ public class Utils {
                 continue;
             }
             themes.add(new Theme(file.getName(), new File(file.getPath() + File.separator + "timeline.css").exists(),
-                    new File(file.getPath() + File.separator + "indicator.css").exists()));
+                    new File(file.getPath() + File.separator + "indicator.css").exists(),
+                    new File(file.getPath() + File.separator + "segment.css").exists()));
         }
         Collections.sort(themes, new Comparator<Theme>() {
             public int compare(Theme t1, Theme t2) {

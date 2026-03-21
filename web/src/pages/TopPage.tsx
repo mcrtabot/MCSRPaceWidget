@@ -22,14 +22,16 @@ import { useSearchParams } from 'react-router-dom';
 
 import { ThemeSelector, ThemeSelectorCondition } from '../components/ui/ThemeSelector';
 import { Indicator } from '../components/widget/Indicator';
+import { Segment } from '../components/widget/Segment';
 import { Timelines } from '../components/widget/Timelines';
 import { AppContext } from '../context';
 import { usePBTimeline, useSetting, useTimeline } from '../hooks';
 
 export const TopPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams({ timeline: 'default', indicator: 'default', data: 'demo' });
+  const [searchParams, setSearchParams] = useSearchParams({ timeline: 'default', indicator: 'default', segment: 'default', data: 'demo' });
   const timelineTheme = searchParams.get('timeline') || 'default';
   const indicatorTheme = searchParams.get('indicator') || 'default';
+  const segmentTheme = searchParams.get('segment') || 'default';
   const dataType = (searchParams.get('data') || 'demo') as 'demo' | 'actual';
 
   const [igt, setIGT] = useState(1200);
@@ -37,7 +39,7 @@ export const TopPage = () => {
   const [activeTab, setActiveTab] = useState<string | null>('timeline');
 
   const changeTheme = useCallback(
-    (type: 'timeline' | 'indicator', theme: string) => {
+    (type: 'timeline' | 'indicator' | 'segment', theme: string) => {
       setSearchParams((prev) => {
         prev.set(type, theme);
         return prev;
@@ -71,6 +73,7 @@ export const TopPage = () => {
     hasError: hasErrorPBTimeline,
   } = usePBTimeline(dataType === 'demo');
   const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(timelineTheme, true);
+  const { setting: segmentSetting } = useSetting(segmentTheme, true);
 
   if (isLoadingTimeline || isLoadingPBTimeline || isLoadingSetting) {
     return (
@@ -122,6 +125,7 @@ export const TopPage = () => {
           <Tabs.List>
             <Tabs.Tab value="timeline">Timeline</Tabs.Tab>
             <Tabs.Tab value="indicator">Visual Timeline</Tabs.Tab>
+            <Tabs.Tab value="segment">Segment</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="timeline" pt="md">
@@ -181,6 +185,40 @@ export const TopPage = () => {
                     <div style={{ width: '80%', ['--id-width' as any]: '100%' }}>
                       <Indicator />
                     </div>
+                  </AppContext.Provider>
+                </Box>
+              </div>
+              <Card withBorder shadow="sm" radius="md" padding="md" w={280}>
+                <Title order={5} mb="sm">
+                  Preview Options
+                </Title>
+                <ThemeSelectorCondition
+                  igt={igt}
+                  onChangeIGT={changeIGT}
+                  bgColor={bgColor}
+                  onChangeBgColor={setBgColor}
+                  dataType={dataType}
+                  onChangeDataType={changeDataType}
+                />
+              </Card>
+            </div>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="segment" pt="md">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 24 }}>
+              <div>
+                <ThemeSelector
+                  type="segment"
+                  theme={segmentTheme}
+                  onChangeTheme={(theme: string) => changeTheme('segment', theme)}
+                />
+                <Box
+                  mt="md"
+                  p="md"
+                  style={{ background: bgColor, borderRadius: 8, minHeight: 240, overflow: 'hidden' }}
+                >
+                  <AppContext.Provider value={{ timeline, pbTimeline, theme: segmentTheme, setting: segmentSetting ?? setting }}>
+                    <Segment />
                   </AppContext.Provider>
                 </Box>
               </div>

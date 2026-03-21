@@ -7,7 +7,7 @@ import { Theme } from '../../types';
 import { Time } from '../widget/Time';
 
 type ThemeSelectorProps = {
-  type: 'timeline' | 'indicator';
+  type: 'timeline' | 'indicator' | 'segment';
   theme: string;
   onChangeTheme: (theme: string) => void;
 };

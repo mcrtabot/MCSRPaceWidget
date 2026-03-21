@@ -21,6 +21,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { presets } from '../assets/playground/presets';
 import { Indicator } from '../components/widget/Indicator';
+import { Segment } from '../components/widget/Segment';
 import { Timelines } from '../components/widget/Timelines';
 import { AppContext } from '../context';
 import { useSetting, useThemes } from '../hooks';
@@ -57,8 +58,10 @@ export const PlaygroundPage = () => {
   const [pbItems, setPbItems] = useState<TimelineItem[]>(defaultPBTimeline);
   const [timelineTheme, setTimelineTheme] = useState(searchParams.get('tlTheme') || 'default');
   const [indicatorTheme, setIndicatorTheme] = useState(searchParams.get('vtTheme') || 'default');
+  const [segmentTheme, setSegmentTheme] = useState(searchParams.get('sgTheme') || 'default');
   const [tlScale, setTlScale] = useState(getNumParam(searchParams, 'tlScale', 100));
   const [vtScale, setVtScale] = useState(getNumParam(searchParams, 'vtScale', 75));
+  const [sgScale, setSgScale] = useState(getNumParam(searchParams, 'sgScale', 100));
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -74,6 +77,7 @@ export const PlaygroundPage = () => {
   );
 
   const { isLoading: isLoadingSetting, setting } = useSetting(timelineTheme, true);
+  const { setting: segmentSetting } = useSetting(segmentTheme, true);
   const { data: themes = [] } = useThemes();
 
   const applyPreset = useCallback(
@@ -99,6 +103,13 @@ export const PlaygroundPage = () => {
     },
     [updateParam],
   );
+  const changeSegmentTheme = useCallback(
+    (v: string) => {
+      setSegmentTheme(v);
+      updateParam('sgTheme', v);
+    },
+    [updateParam],
+  );
   const changeTlScale = useCallback(
     (v: number) => {
       setTlScale(v);
@@ -110,6 +121,13 @@ export const PlaygroundPage = () => {
     (v: number) => {
       setVtScale(v);
       updateParam('vtScale', String(v));
+    },
+    [updateParam],
+  );
+  const changeSgScale = useCallback(
+    (v: number) => {
+      setSgScale(v);
+      updateParam('sgScale', String(v));
     },
     [updateParam],
   );
@@ -158,6 +176,10 @@ export const PlaygroundPage = () => {
     () => themes.filter((t: Theme) => t.indicator).map((t: Theme) => ({ value: t.name, label: t.name })),
     [themes],
   );
+  const segmentThemeOptions = useMemo(
+    () => themes.filter((t: Theme) => t.segment).map((t: Theme) => ({ value: t.name, label: t.name })),
+    [themes],
+  );
 
   const igtMax = useMemo(() => {
     const allIgts = [...pbItems, ...timeline.timelines].map((item) => item.igt);
@@ -178,6 +200,7 @@ export const PlaygroundPage = () => {
   );
 
   const resolvedSetting = setting ?? defaultSetting;
+  const resolvedSegmentSetting = segmentSetting ?? defaultSetting;
 
   if (isLoadingSetting) {
     return (
@@ -268,6 +291,7 @@ export const PlaygroundPage = () => {
         <Tabs.List>
           <Tabs.Tab value="timeline">Timeline</Tabs.Tab>
           <Tabs.Tab value="visual-timeline">Visual Timeline</Tabs.Tab>
+          <Tabs.Tab value="segment">Segment</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="timeline" pt="md" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -374,6 +398,60 @@ export const PlaygroundPage = () => {
             >
               <div style={{ transformOrigin: 'top left', transform: `scale(${vtScale / 100})` }}>
                 <Indicator />
+              </div>
+            </AppContext.Provider>
+          </Box>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="segment" pt="md" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Group align="flex-end" gap="md" mb="xl">
+            <Select
+              label="Theme"
+              value={segmentTheme}
+              onChange={(val) => val && changeSegmentTheme(val)}
+              data={segmentThemeOptions}
+              w={200}
+            />
+            <div style={{ flex: 1 }}>
+              <Text size="sm" fw={600} mb={4}>
+                Scale: {sgScale}%
+              </Text>
+              <Slider
+                value={sgScale}
+                onChange={setSgScale}
+                onChangeEnd={changeSgScale}
+                min={10}
+                max={100}
+                step={5}
+                marks={[
+                  { value: 25, label: '25%' },
+                  { value: 50, label: '50%' },
+                  { value: 75, label: '75%' },
+                  { value: 100, label: '100%' },
+                ]}
+              />
+            </div>
+          </Group>
+          <Box
+            p="md"
+            style={{
+              flex: 1,
+              background: '#333',
+              borderRadius: 8,
+              minHeight: 80,
+              overflow: 'auto',
+            }}
+          >
+            <AppContext.Provider
+              value={{
+                timeline: filteredTimeline,
+                pbTimeline: pbItems,
+                theme: segmentTheme,
+                setting: resolvedSegmentSetting,
+              }}
+            >
+              <div style={{ transformOrigin: 'top left', transform: `scale(${sgScale / 100})` }}>
+                <Segment />
               </div>
             </AppContext.Provider>
           </Box>

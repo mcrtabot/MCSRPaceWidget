@@ -11,6 +11,8 @@ export const defaultSetting: Setting = {
     enter_end: 'Enter End',
     credits: 'Finish',
   },
+  segmentLabel: {},
+  enteringDuration: 5000,
   pbTimelineTitle: '',
   paceTimelineTitle: '',
   nextItemStyle: 'hyphen',

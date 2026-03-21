@@ -153,7 +153,7 @@ const getTimelinePattern = (timeline: TimelineItem[]) => {
   return 'bf' as const;
 };
 
-export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator') => {
+export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator' | 'segment') => {
   useEffect(() => {
     const head = document.head;
     const link = document.createElement('link');

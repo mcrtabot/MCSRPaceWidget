@@ -58,7 +58,7 @@ public class MCSRPaceServer extends NanoHTTPD {
             } else if (uri.startsWith("/theme/")) {
                 return this.responseFromStaticFile("/theme", uri.substring("/theme".length()));
             } else {
-                if (uri.startsWith("/timeline") || uri.startsWith("/indicator")) {
+                if (uri.startsWith("/timeline") || uri.startsWith("/indicator") || uri.startsWith("/segment")) {
                     uri = "/";
                 }
                 if (uri.equals("/")) {

@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { IndicatorPage } from './pages/IndicatorPage';
 import { PlaygroundPage } from './pages/PlaygroundPage';
+import { SegmentPage } from './pages/SegmentPage';
 import { TimelinePage } from './pages/TimelinePage';
 import { TopPage } from './pages/TopPage';
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: '/indicator',
     element: <IndicatorPage />,
+  },
+  {
+    path: '/segment',
+    element: <SegmentPage />,
   },
   {
     path: '/playground',
