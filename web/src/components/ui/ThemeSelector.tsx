@@ -1,7 +1,7 @@
 import React from 'react';
-import { useThemes } from '../hooks';
-import { Time } from './Time';
-import { Theme } from '../types';
+import { useThemes } from '../../hooks';
+import { Time } from '../widget/Time';
+import { Theme } from '../../types';
 import {
   Group,
   Select,

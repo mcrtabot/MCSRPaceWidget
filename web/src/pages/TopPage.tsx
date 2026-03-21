@@ -2,9 +2,9 @@ import React, { useCallback, useState } from 'react';
 
 import { usePBTimeline, useSetting, useTimeline } from '../hooks';
 import { useSearchParams } from 'react-router-dom';
-import { ThemeSelectorCondition, ThemeSelector } from '../components/ThemeSelector';
-import { Timelines } from '../components/Timelines';
-import { Indicator } from '../components/Indicator';
+import { ThemeSelectorCondition, ThemeSelector } from '../components/ui/ThemeSelector';
+import { Timelines } from '../components/widget/Timelines';
+import { Indicator } from '../components/widget/Indicator';
 import { AppContext } from '../context';
 import {
   Accordion,

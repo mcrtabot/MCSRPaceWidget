@@ -18,11 +18,11 @@ import {
   Title,
 } from '@mantine/core';
 import { AppContext } from '../context';
-import { Timelines } from '../components/Timelines';
-import { Indicator } from '../components/Indicator';
+import { Timelines } from '../components/widget/Timelines';
+import { Indicator } from '../components/widget/Indicator';
 import { useSetting, useThemes } from '../hooks';
 import { TimelineData, TimelineItem, Theme } from '../types';
-import { presets } from '../assets/debug/presets';
+import { presets } from '../assets/playground/presets';
 import { defaultSetting } from '../setting';
 import { convertTimeToMilliSeconds, convertMillisecondsToTime } from '../utils/utils';
 

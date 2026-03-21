@@ -2,9 +2,9 @@ import React from 'react';
 
 import { usePageData } from '../hooks';
 import { useSearchParams } from 'react-router-dom';
-import { Indicator } from '../components/Indicator';
+import { Indicator } from '../components/widget/Indicator';
 import { AppContext } from '../context';
-import { DemoWarning } from '../components/DemoWarning';
+import { DemoWarning } from '../components/ui/DemoWarning';
 
 export const IndicatorPage = () => {
   const [searchParams] = useSearchParams({ theme: 'default' });

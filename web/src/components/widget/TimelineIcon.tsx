@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { AppContext } from '../context';
+import { AppContext } from '../../context';
 
 type TimelineIconProps = {
   className?: string;
