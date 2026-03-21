@@ -62,7 +62,7 @@ To display the difference from your personal best, configure your PB times.
 1. Copy a base theme (e.g., `default`) in the `theme` directory and rename it
 2. Edit `setting.json` and the stylesheets `timeline.css` / `indicator.css`
 
-[Minecraft fonts](https://fontmeme.com/jfont/minecraft-font/) can be used for a more authentic look.
+A Minecraft font is bundled. Specify `font-family: 'Minecraft-Regular'` in your theme CSS for a more authentic look.
 
 ## Themes
 

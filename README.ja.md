@@ -62,7 +62,7 @@ OBS のブラウザソースとしてテーマを切り替えるだけで配信�
 1. `theme` ディレクトリ内のベーステーマ（例: `default`）をコピーしてリネーム
 2. `setting.json` と `timeline.css` / `indicator.css` を編集
 
-[Minecraft フォント](https://fontmeme.com/jfont/minecraft-font/)を使うと、より Minecraft らしい見た目にできます。
+Minecraft フォントが同梱されています。テーマ CSS で `font-family: 'Minecraft-Regular'` を指定すると、より Minecraft らしい見た目にできます。
 
 ## テーマ一覧
 
