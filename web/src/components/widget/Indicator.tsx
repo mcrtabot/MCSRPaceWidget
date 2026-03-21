@@ -33,9 +33,13 @@ export const Indicator = () => {
   const latestItem = timeline[timeline.length - 1];
   const faceStatus = getFaceStatus(paceIGT, pbFinalIGT, latestItem, pbTimeline, pbTimelinePattern, timelinePattern);
 
+  const isCompleted = timelineMap.has('credits');
+  const currentSegment = timeline.length > 0 ? timeline[timeline.length - 1].type : '';
+  const indicatorStatus = timeline.length === 0 ? 'empty' : isCompleted ? 'completed' : 'running';
+
   const classNames: string[] = [
     'mcsr-indicator',
-    `mcsr-indicator--${timelineMap.has('credits') ? 'completed' : 'running'}`,
+    `mcsr-indicator--${isCompleted ? 'completed' : 'running'}`,
   ];
   if (timeline.length === 0) {
     classNames.push('mcsr-indicator--empty');
@@ -45,7 +49,7 @@ export const Indicator = () => {
   const lineItems = getTimelineLineItems(timeline, paceIGT || 0, pbFinalIGT);
 
   return (
-    <div className={classNames.join(' ')}>
+    <div className={classNames.join(' ')} data-segment={currentSegment} data-status={indicatorStatus}>
       <div className="mcsr-indicator__line-container">
         {pbLineItems.map((lineItem) => (
           <div
@@ -90,6 +94,8 @@ export const Indicator = () => {
               key={itemType}
               className={['mcsr-indicator__item', `mcsr-indicator__item--${status}`].join(' ')}
               style={{ left: calcPosition(item.igt, pbFinalIGT) }}
+              data-segment={itemType}
+              data-status={status}
             >
               <div className="mcsr-indicator__icon-container">
                 <TimelineIcon className="mcsr-indicator__icon" type={itemType} />
@@ -118,6 +124,8 @@ export const Indicator = () => {
                 `mcsr-indicator__item--${highlighted ? 'highlighted' : 'normal'}`,
               ].join(' ')}
               style={{ left: calcPosition(item.igt, pbFinalIGT) }}
+              data-segment={itemType}
+              data-highlighted={highlighted}
             >
               <div className="mcsr-indicator__icon-container">
                 <TimelineIcon className="mcsr-indicator__icon" type={itemType} />

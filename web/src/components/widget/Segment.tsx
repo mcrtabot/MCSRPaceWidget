@@ -49,6 +49,7 @@ export const Segment = () => {
     if (!entering) return;
     const timer = setTimeout(() => setEntering(false), enteringDuration);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enterKey, enteringDuration]);
 
   // Diff calculation
@@ -75,8 +76,8 @@ export const Segment = () => {
   return (
     <div
       className={`mcsr-segment mcsr-segment--${status}`}
-      data-segment={currentType ?? ''}
       data-entering={entering}
+      data-segment={currentType ?? ''}
       data-highlighted={highlighted}
     >
       <div className={`mcsr-segment__background mcsr-segment__background--${currentType ?? 'none'}`} />
@@ -87,14 +88,8 @@ export const Segment = () => {
         </div>
 
         {labels.map((text, i) => (
-          <div
-            key={i}
-            className={`mcsr-segment__label${i + 1}`}
-            style={{ gridArea: `label${i + 1}` }}
-          >
-            {i === 0 && currentType && (
-              <TimelineIcon className="mcsr-segment__label-icon" type={currentType} />
-            )}
+          <div key={i} className={`mcsr-segment__label${i + 1}`} style={{ gridArea: `label${i + 1}` }}>
+            {i === 0 && currentType && <TimelineIcon className="mcsr-segment__label-icon" type={currentType} />}
             <span className="mcsr-segment__label-text">{text}</span>
           </div>
         ))}

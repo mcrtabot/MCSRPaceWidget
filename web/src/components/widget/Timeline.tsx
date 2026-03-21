@@ -76,6 +76,9 @@ export const Timeline = ({
                   `timeline__item--${highlighted ? 'highlighted' : 'normal'}`,
                   `timeline__item--${timelineStatus}`,
                 ].join(' ')}
+                data-segment={type}
+                data-status={timelineStatus}
+                data-highlighted={!!highlighted}
               >
                 <td className="timeline__item__cell timeline__item__cell__icon">
                   <TLIcon className="timeline__item__icon" type={type} />

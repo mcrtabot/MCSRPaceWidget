@@ -8,8 +8,12 @@ export const Timelines = () => {
   const { timeline, pbTimeline, theme, setting } = useContext(AppContext);
   useThemeCSS(theme, 'timeline');
 
+  const currentSegment = timeline.timelines.length > 0 ? timeline.timelines[timeline.timelines.length - 1].type : '';
+  const isCompleted = timeline.timelines.some((item) => item.type === 'credits');
+  const status = timeline.timelines.length === 0 ? 'empty' : isCompleted ? 'completed' : 'running';
+
   return (
-    <div className="mcsr-widget">
+    <div className="mcsr-widget" data-segment={currentSegment} data-status={status}>
       <div className="mcsr-widget-container">
         <Timeline
           className="timeline timeline--pb"
