@@ -46,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/styled-components": "^5.1.26"
   },
   "proxy": "http://localhost:1161"
