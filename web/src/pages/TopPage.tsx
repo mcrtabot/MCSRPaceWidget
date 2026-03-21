@@ -222,6 +222,9 @@ export const TopPage = () => {
                 <List.Item>
                   Edit <Code>setting.json</Code> and the stylesheets (<Code>timeline.css</Code> / <Code>indicator.css</Code>)
                 </List.Item>
+                <List.Item>
+                  Use the <Anchor href="/playground">Playground</Anchor> to test your theme with various data patterns and preview scales
+                </List.Item>
               </List>
             </Accordion.Panel>
           </Accordion.Item>
