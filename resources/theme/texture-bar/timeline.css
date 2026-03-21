@@ -9,7 +9,8 @@
   --tl-background: transparent;
 
   --tl-font: normal bold 18px/1 sans-serif;
-  --tl-digits-font: normal normal 18px/1 Minecraft, monospace, sans-serif;
+  --tl-digits-font:
+    normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
   --icon-size: 24px;
 
   --tl-pb-timeline-width: 290px;
@@ -81,15 +82,15 @@
   height: 24px;
 }
 
-.timeline__item--highlighted {
+.timeline__item[data-highlighted="true"] {
   color: var(--tl-highlighted-text-color);
 }
 
-.timeline__item--next {
+.timeline__item[data-status="next"] {
   color: var(--tl-text-color);
 }
 
-.timeline__item--todo {
+.timeline__item[data-status="todo"] {
   color: var(--tl-text-color);
 }
 
@@ -115,7 +116,7 @@
 
 .timeline__item__diff {
   font: var(--tl-digits-font);
-  font-size: 0.8em;
+  font-size: 1em;
 }
 
 .timeline--pb {
@@ -169,16 +170,16 @@
 .timeline--pace .timeline__item__cell__diff {
   display: var(--tl-display-pace-timeline-item-diff, table-cell);
 }
-.timeline--pace .timeline__item--done {
+.timeline--pace .timeline__item[data-status="done"] {
   display: var(--tl-display-pace-timeline-item-status-done, table-row);
 }
-.timeline--pace .timeline__item--current {
+.timeline--pace .timeline__item[data-status="current"] {
   display: var(--tl-display-pace-timeline-item-status-current, table-row);
 }
-.timeline--pace .timeline__item--next {
+.timeline--pace .timeline__item[data-status="next"] {
   display: var(--tl-display-pace-timeline-item-status-next, table-row);
 }
-.timeline--pace .timeline__item--todo {
+.timeline--pace .timeline__item[data-status="todo"] {
   display: var(
     --tl-display-pace-timeline-item-status-todo,
     var(--tl-display-pace-timeline-item-status-next, table-row)
