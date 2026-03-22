@@ -5,7 +5,7 @@ CSS reference for `indicator.css`. For general theme development, see [Theme Dev
 ## HTML Structure
 
 ```
-.mcsr-indicator                                     [data-segment] [data-status]
+.mcsr-indicator                                     [data-segment] [data-run-status]
   .mcsr-indicator__line-container                   Background progress bars
     .mcsr-indicator__line.mcsr-indicator__line--pb   PB progress segments
     .mcsr-indicator__line.mcsr-indicator__line--pace Pace progress segments
@@ -31,29 +31,56 @@ CSS reference for `indicator.css`. For general theme development, see [Theme Dev
 
 ## Data Attributes
 
-| Element                | Attribute          | Values                            | Description                            |
-| ---------------------- | ------------------ | --------------------------------- | -------------------------------------- |
-| `.mcsr-indicator`      | `data-segment`     | `enter_nether`, `credits`, etc.   | Current segment (last completed split) |
-| `.mcsr-indicator`      | `data-status`      | `running` / `completed` / `empty` | Overall run status                     |
-| PB `.mcsr-indicator__item`  | `data-segment` | `enter_nether`, `credits`, etc.   | This item's segment type               |
-| PB `.mcsr-indicator__item`  | `data-status`  | `done` / `todo`                   | Whether pace has passed this PB split  |
-| Pace `.mcsr-indicator__item`| `data-segment` | `enter_nether`, `credits`, etc.   | This item's segment type               |
-| Pace `.mcsr-indicator__item`| `data-highlighted` | `true` / `false`              | Whether this split is faster than PB   |
+### `data-segment`
 
-## State Classes (legacy, kept for backward compatibility)
+The current or item's segment type. Available on `.mcsr-indicator` (root) and `.mcsr-indicator__item` (each item).
 
-| Class                                | Equivalent data attribute                |
-| ------------------------------------ | ---------------------------------------- |
-| `.mcsr-indicator--running`           | `[data-status="running"]`                |
-| `.mcsr-indicator--completed`         | `[data-status="completed"]`              |
-| `.mcsr-indicator--empty`             | `[data-status="empty"]`                  |
-| `.mcsr-indicator__item--highlighted` | `[data-highlighted="true"]`              |
-| `.mcsr-indicator__item--normal`      | `[data-highlighted="false"]`             |
-| `.mcsr-indicator__item--done`        | `[data-status="done"]`                   |
-| `.mcsr-indicator__item--todo`        | `[data-status="todo"]`                   |
-| `.mcsr-indicator__face--normal`      | (no equivalent — face-specific class)    |
-| `.mcsr-indicator__face--smile`       | (no equivalent — face-specific class)    |
-| `.mcsr-indicator__face--sad`         | (no equivalent — face-specific class)    |
+| Value              | Segment                          |
+| ------------------ | -------------------------------- |
+| `enter_nether`     | Entered the Nether               |
+| `enter_bastion`    | Entered a Bastion                |
+| `enter_fortress`   | Entered a Fortress               |
+| `first_portal`     | First Portal (returned to OW)    |
+| `enter_stronghold` | Entered Stronghold               |
+| `enter_end`        | Entered the End                  |
+| `credits`          | Finished (credits roll)          |
+| _(empty string)_   | No events yet (root only)        |
+
+### `data-run-status`
+
+On `.mcsr-indicator` (root). Overall run status.
+
+| Value       | Description            |
+| ----------- | ---------------------- |
+| `running`   | Run in progress        |
+| `completed` | Credits reached        |
+| `empty`     | No splits yet          |
+
+### `data-status`
+
+On PB `.mcsr-indicator__item`.
+
+| Value  | Description                    |
+| ------ | ------------------------------ |
+| `done` | Pace has passed this PB split  |
+| `todo` | Pace has not reached this split|
+
+### `data-highlighted`
+
+On Pace `.mcsr-indicator__item`. Whether this split is faster than PB.
+
+| Value   | Description                |
+| ------- | -------------------------- |
+| `true`  | Split faster than PB       |
+| `false` | Split same or slower than PB |
+
+## Face Classes
+
+| Class                           | Condition          |
+| ------------------------------- | ------------------ |
+| `.mcsr-indicator__face--normal` | Default face       |
+| `.mcsr-indicator__face--smile`  | Ahead of PB pace   |
+| `.mcsr-indicator__face--sad`    | Behind PB pace     |
 
 ## Line Segment Classes
 

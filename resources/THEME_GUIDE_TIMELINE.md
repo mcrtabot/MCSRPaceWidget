@@ -5,7 +5,7 @@ CSS reference for `timeline.css`. For general theme development, see [Theme Deve
 ## HTML Structure
 
 ```
-.mcsr-widget                                        [data-segment] [data-status]
+.mcsr-widget                                        [data-segment] [data-run-status]
   .mcsr-widget-container
     .timeline.timeline--pb                          PB timeline
       .timeline__title                              Title text
@@ -26,25 +26,50 @@ CSS reference for `timeline.css`. For general theme development, see [Theme Deve
 
 ## Data Attributes
 
-| Element          | Attribute          | Values                               | Description                            |
-| ---------------- | ------------------ | ------------------------------------ | -------------------------------------- |
-| `.mcsr-widget`   | `data-segment`     | `enter_nether`, `credits`, etc.      | Current segment (last completed split) |
-| `.mcsr-widget`   | `data-status`      | `running` / `completed` / `empty`    | Overall run status                     |
-| `.timeline__item`| `data-segment`     | `enter_nether`, `credits`, etc.      | This item's segment type               |
-| `.timeline__item`| `data-status`      | `done` / `current` / `next` / `todo` | This item's status                     |
-| `.timeline__item`| `data-highlighted` | `true` / `false`                     | Whether this split is faster than PB   |
+### `data-segment`
 
-## State Classes (legacy, kept for backward compatibility)
+The current or item's segment type. Available on `.mcsr-widget` (root) and `.timeline__item` (each row).
 
-| Class                          | Equivalent data attribute          |
-| ------------------------------ | ---------------------------------- |
-| `.timeline--empty`             | (no equivalent — Timeline child)   |
-| `.timeline__item--highlighted` | `[data-highlighted="true"]`        |
-| `.timeline__item--normal`      | `[data-highlighted="false"]`       |
-| `.timeline__item--done`        | `[data-status="done"]`             |
-| `.timeline__item--current`     | `[data-status="current"]`          |
-| `.timeline__item--next`        | `[data-status="next"]`             |
-| `.timeline__item--todo`        | `[data-status="todo"]`             |
+| Value              | Segment                          |
+| ------------------ | -------------------------------- |
+| `enter_nether`     | Entered the Nether               |
+| `enter_bastion`    | Entered a Bastion                |
+| `enter_fortress`   | Entered a Fortress               |
+| `first_portal`     | First Portal (returned to OW)    |
+| `enter_stronghold` | Entered Stronghold               |
+| `enter_end`        | Entered the End                  |
+| `credits`          | Finished (credits roll)          |
+| _(empty string)_   | No events yet (root only)        |
+
+### `data-run-status`
+
+On `.mcsr-widget` (root). Overall run status.
+
+| Value       | Description            |
+| ----------- | ---------------------- |
+| `running`   | Run in progress        |
+| `completed` | Credits reached        |
+| `empty`     | No splits yet          |
+
+### `data-status`
+
+On `.timeline__item` (each row).
+
+| Value     | Description        |
+| --------- | ------------------ |
+| `done`    | Past split         |
+| `current` | Latest split       |
+| `next`    | Next upcoming split|
+| `todo`    | Future split       |
+
+### `data-highlighted`
+
+On `.timeline__item`. Whether this split is faster than PB.
+
+| Value   | Description                |
+| ------- | -------------------------- |
+| `true`  | Split faster than PB       |
+| `false` | Split same or slower than PB |
 
 ## CSS Variables
 

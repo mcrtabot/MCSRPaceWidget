@@ -6,10 +6,11 @@ Each theme is a folder in `theme/{theme-name}/` containing:
 
 - `timeline.css` — Timeline widget styles (see [Timeline Reference](THEME_GUIDE_TIMELINE.md))
 - `indicator.css` — Visual Timeline widget styles (see [Visual Timeline Reference](THEME_GUIDE_VISUAL_TIMELINE.md))
+- `segment.css` — Segment widget styles (see [Segment Reference](THEME_GUIDE_SEGMENT.md))
 - `setting.json` — Labels and display options
 - `icon/` — Split icon images
 
-You don't need both `timeline.css` and `indicator.css` — include only the ones your theme supports.
+Include only the CSS files your theme supports. The server detects supported widgets by the presence of each CSS file.
 
 ## Getting Started
 
@@ -30,6 +31,11 @@ You don't need both `timeline.css` and `indicator.css` — include only the ones
     "enter_end": "Enter End",
     "credits": "Finish"
   },
+  "segmentLabel": {
+    "enter_nether": ["Entered Nether", "Find a structure"],
+    "credits": ["Complete", "GG", "New PB!!"]
+  },
+  "enteringDuration": 5000,
   "pbTimelineTitle": "PB Timeline",
   "paceTimelineTitle": "Current",
   "nextItemStyle": "hyphen"
@@ -38,7 +44,9 @@ You don't need both `timeline.css` and `indicator.css` — include only the ones
 
 | Field | Description |
 |---|---|
-| `label` | Display name for each split type |
+| `label` | Display name for each split type (used by all widgets) |
+| `segmentLabel` | Per-segment label arrays for Segment widget. Falls back to `label` if not defined |
+| `enteringDuration` | Duration (ms) of `data-entering="true"` for Segment widget. Default: `5000` |
 | `pbTimelineTitle` | Title shown above PB timeline (empty string = hidden) |
 | `paceTimelineTitle` | Title shown above pace timeline (empty string = hidden) |
 | `nextItemStyle` | How to show the next split: `"hyphen"` (--:--), `"random"` (animated), `"igt"` (current IGT) |
@@ -73,5 +81,6 @@ icon/credits.png
 
 ## CSS Reference
 
-- [Timeline CSS Reference](THEME_GUIDE_TIMELINE.md) — HTML structure, class names, CSS variables for `timeline.css`
-- [Visual Timeline CSS Reference](THEME_GUIDE_VISUAL_TIMELINE.md) — HTML structure, class names, CSS variables for `indicator.css`
+- [Timeline CSS Reference](THEME_GUIDE_TIMELINE.md) — HTML structure, data attributes, CSS variables for `timeline.css`
+- [Visual Timeline CSS Reference](THEME_GUIDE_VISUAL_TIMELINE.md) — HTML structure, data attributes, CSS variables for `indicator.css`
+- [Segment CSS Reference](THEME_GUIDE_SEGMENT.md) — HTML structure, data attributes, CSS variables for `segment.css`
