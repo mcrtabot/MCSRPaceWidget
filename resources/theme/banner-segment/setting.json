@@ -1,0 +1,25 @@
+{
+    "label": {
+        "enter_nether": "Enter Nether",
+        "enter_bastion": "Enter Bastion",
+        "enter_fortress": "Enter Fortress",
+        "first_portal": "First Portal",
+        "enter_stronghold": "Enter Stronghold",
+        "enter_end": "Enter End",
+        "credits": "Finish"
+    },
+
+    "segmentLabel": {
+        "enter_nether": [ "Entered Nether", "Find a structure" ],
+        "enter_bastion": [ "Entered Bastion", "Barter with Piglins" ],
+        "enter_fortress": [ "Entered Fortress", "Get Blaze Rods" ],
+        "first_portal": [ "First Portal", "Locate the Stronghold" ],
+        "enter_stronghold": [ "Entered Stronghold", "Fill the End Portal" ],
+        "enter_end": [ "Entered The End", "Kill the Dragon" ],
+        "credits": [ "Complete", "Better luck next time...", "New PB!!" ]
+    },
+
+    "pbTimelineTitle": "",
+    "paceTimelineTitle": "",
+    "nextItemStyle": "hyphen"
+}

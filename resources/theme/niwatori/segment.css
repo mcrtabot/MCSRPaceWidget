@@ -1,0 +1,281 @@
+:root {
+  --sg-text-color: rgba(255, 255, 255, 1);
+  --tl-highlighted-text-color: rgba(255, 192, 128, 1);
+
+  --sg-font: normal bold 18px/1 sans-serif;
+  --sg-digits-font:
+    normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+
+  --sg-width: auto;
+  --sg-background: transparent;
+  --sg-icon-size: 128px;
+
+  /* Display control for each element */
+  /* --sg-display-icon: none; */
+  /* --sg-display-label1: none; */
+  /* --sg-display-time: none; */
+  /* --sg-display-diff: none; */
+  /* --sg-display-background: none; */
+  /* --sg-display-decoration: none; */
+
+  /* Hide widget when empty (no events yet) */
+  --sg-display-empty: none;
+}
+
+.mcsr-segment {
+  position: relative;
+  width: var(--sg-width);
+  font: var(--sg-font);
+  color: var(--sg-text-color);
+  background: var(--sg-background);
+}
+
+.mcsr-segment--empty {
+  display: var(--sg-display-empty, block);
+}
+
+/* ── Entering animation ── */
+.mcsr-segment .mcsr-segment__label2,
+.mcsr-segment .mcsr-segment__icon-area,
+.mcsr-segment .mcsr-segment__label1,
+.mcsr-segment .mcsr-segment__time,
+.mcsr-segment .mcsr-segment__diff {
+  opacity: 0;
+  transform: translateX(60px);
+}
+
+/* Niwatori (label2): in then out in first half */
+.mcsr-segment[data-entering="true"] .mcsr-segment__label2 {
+  animation: sg-niwatori-flip 10s ease forwards;
+}
+
+/* Other elements: in at niwatori out timing, then out in second half */
+.mcsr-segment[data-entering="true"] .mcsr-segment__icon-area,
+.mcsr-segment[data-entering="true"] .mcsr-segment__label1,
+.mcsr-segment[data-entering="true"] .mcsr-segment__time,
+.mcsr-segment[data-entering="true"] .mcsr-segment__diff {
+  animation: sg-niwatori-others 10s ease forwards;
+}
+
+.mcsr-segment__label3 {
+  opacity: 0;
+}
+.mcsr-segment[data-entering="true"][data-highlighted="true"]
+  .mcsr-segment__label3 {
+  animation: sg-niwatori-pb 10s ease forwards;
+}
+
+/* niwatori: 0%→10% in, 10%→30% hold, 30%→40% out */
+@keyframes sg-niwatori-flip {
+  0% {
+    opacity: 0;
+    transform: translateX(60px) scaleX(-1);
+  }
+  3% {
+    opacity: 1;
+    transform: translateX(0) scaleX(-1);
+  }
+  6% {
+    opacity: 1;
+    transform: translateX(0) scaleX(-1);
+  }
+  9% {
+    opacity: 0;
+    transform: translateX(-60px) scaleX(-1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-60px) scaleX(-1);
+  }
+}
+
+/* others: 30%→40% in (synced with niwatori out), 80%→90% out */
+@keyframes sg-niwatori-others {
+  0% {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  6% {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  9% {
+    opacity: 1;
+    transform: translateX(-76px);
+  }
+  49% {
+    opacity: 1;
+    transform: translateX(-76px);
+  }
+  52% {
+    opacity: 0;
+    transform: translateX(-136px);
+  }
+}
+
+@keyframes sg-niwatori-pb {
+  0% {
+    opacity: 0;
+    transform: translateX(188px) translateY(-128px);
+  }
+  55% {
+    opacity: 0;
+    transform: translateX(188px) translateY(-128px);
+  }
+  57% {
+    opacity: 1;
+    transform: translateX(128px) translateY(-128px);
+  }
+  97% {
+    opacity: 1;
+    transform: translateX(128px) translateY(-128px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(68px) translateY(-128px);
+  }
+}
+
+/* Background layer — full-bleed, behind content */
+.mcsr-segment__background {
+  display: var(--sg-display-background, block);
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Content — grid layout, freely rearrangeable via CSS */
+.mcsr-segment__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template:
+    ". label2 icon   label1 label1 label1" auto
+    ". label2 icon   time   diff   ." auto
+    ". label3 label3 label3 label3 label3" auto
+    / 1fr auto auto auto auto 1fr;
+  align-items: center;
+  gap: 0 8px;
+  padding: 8px 12px;
+}
+
+.mcsr-segment__icon-area {
+  grid-area: icon;
+  display: var(--sg-display-icon, block);
+}
+
+/* Hide default icon, use segment-icon per data-segment instead */
+.mcsr-segment__icon {
+  display: none;
+}
+
+.mcsr-segment__icon-area {
+  width: var(--sg-icon-size);
+  height: var(--sg-icon-size);
+  background-size: contain;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+.mcsr-segment[data-segment="enter_nether"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/enter_nether.png);
+}
+.mcsr-segment[data-segment="enter_bastion"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/enter_bastion.png);
+}
+.mcsr-segment[data-segment="enter_fortress"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/enter_fortress.gif);
+  background-size: cover;
+  background-position-y: 60%;
+}
+.mcsr-segment[data-segment="first_portal"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/first_portal.png);
+}
+.mcsr-segment[data-segment="enter_stronghold"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/enter_stronghold.png);
+}
+.mcsr-segment[data-segment="enter_end"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/enter_end.gif);
+  background-size: 500%;
+  background-position-x: 3%;
+  background-position-y: 75%;
+}
+.mcsr-segment[data-segment="credits"] .mcsr-segment__icon-area {
+  background-image: url(segment-icon/credits.png);
+}
+
+/* Labels — segment__label1 (1st), segment__label2 (2nd), segment__label3 (3rd), ... */
+.mcsr-segment__label1 {
+  grid-area: label1;
+  display: var(--sg-display-label1, block);
+  font: normal normal 64px/1 Minecraft-Regular;
+}
+
+.mcsr-segment__label2 {
+  grid-area: label2;
+  min-width: 128px;
+  min-height: 128px;
+}
+
+.mcsr-segment__label3 {
+  grid-area: label3;
+  min-height: 128px;
+  font: normal normal 96px/1 Minecraft-Regular;
+}
+
+.mcsr-segment__time {
+  grid-area: time;
+  display: var(--sg-display-time, block);
+  font: var(--sg-digits-font);
+  font-size: 48px;
+}
+
+.mcsr-segment__diff {
+  grid-area: diff;
+  display: var(--sg-display-diff, block);
+  font: var(--sg-digits-font);
+  font-size: 48px;
+  margin-left: 24px;
+}
+.mcsr-segment__diff::before {
+  content: "(";
+  margin-right: 4px;
+}
+.mcsr-segment__diff::after {
+  content: ")";
+  margin-left: 4px;
+}
+
+.mcsr-segment[data-segment=""] .mcsr-segment__label1::after {
+  content: "Overworld";
+}
+
+.mcsr-segment[data-segment=""] .mcsr-segment__diff {
+  display: none;
+}
+
+/* Highlighted (PB pace) */
+.mcsr-segment[data-highlighted="true"] {
+  color: var(--tl-highlighted-text-color);
+}
+
+/* .mcsr-segment[data-highlighted="true"] .mcsr-segment__label2 { */
+.mcsr-segment__label2 {
+  display: block;
+  background-image: url(niwatori.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: scaleX(-1);
+  image-rendering: pixelated;
+}
+
+/* Decoration layer — for extra images, effects */
+.mcsr-segment__decoration {
+  display: var(--sg-display-decoration, none);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}

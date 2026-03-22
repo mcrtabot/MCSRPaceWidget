@@ -26,6 +26,7 @@ export const Segment = () => {
   const currentType = currentItem?.type ?? null;
 
   // Detect segment change → set entering state
+  // Using enterKey as React key on root div forces DOM remount = guaranteed animation restart
   const prevTypeRef = useRef<string | null>(null);
   const [entering, setEntering] = useState(false);
   const [enterKey, setEnterKey] = useState(0);
@@ -34,12 +35,8 @@ export const Segment = () => {
     if (currentType !== prevTypeRef.current) {
       prevTypeRef.current = currentType;
       if (currentType !== null) {
-        setEntering(false);
-        // Force a re-render cycle so React removes data-entering="true" before re-adding it
-        requestAnimationFrame(() => {
-          setEntering(true);
-          setEnterKey((k) => k + 1);
-        });
+        setEntering(true);
+        setEnterKey((k) => k + 1);
       } else {
         setEntering(false);
       }
@@ -50,8 +47,7 @@ export const Segment = () => {
     if (!entering) return;
     const timer = setTimeout(() => setEntering(false), enteringDuration);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enterKey, enteringDuration]);
+  }, [enterKey, entering, enteringDuration]);
 
   // Diff calculation
   const pbTime = currentType ? pbTimelineMap.get(currentType)?.igt : undefined;
@@ -76,6 +72,7 @@ export const Segment = () => {
 
   return (
     <div
+      key={enterKey}
       className={`mcsr-segment mcsr-segment--${status}`}
       data-entering={entering}
       data-segment={currentType ?? ''}

@@ -11,7 +11,7 @@
 
   --tl-font: normal bold 20px/1 sans-serif;
   --tl-digits-font:
-    normal normal 24px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+    normal normal 30px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
   --icon-size: 28px;
 
   --tl-pb-timeline-width: 0;
@@ -120,7 +120,8 @@
 
 .timeline__item__diff {
   font: var(--tl-digits-font);
-  font-size: 1em;
+  font-size: 20px;
+  line-height: 30px;
 }
 
 .timeline--pb {
@@ -170,6 +171,7 @@
 }
 .timeline--pace .timeline__item__cell__time {
   display: var(--tl-display-pace-timeline-item-time, table-cell);
+  padding-right: 8px;
 }
 .timeline--pace .timeline__item__cell__diff {
   display: var(--tl-display-pace-timeline-item-diff, table-cell);

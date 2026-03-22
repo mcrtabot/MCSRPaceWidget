@@ -3,38 +3,38 @@
   --id-text-color: rgba(255, 255, 255, 1);
 
   /* highlighted text color for items faster than PB pace */
-  --id-highlighted-text-color: rgba(255, 128, 128, 1);
+  --tl-highlighted-text-color: rgba(255, 192, 128, 1);
 
   /* timeline's background (color) */
   --id-background: transparent;
 
   --id-font: normal bold 18px/1 sans-serif;
   --id-digits-font:
-    normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+    normal normal 18px/1 Minecraft-Regular, Minecraft, , monospace, sans-serif;
 
-  --id-width: 1280px;
+  --id-width: 960px;
   --id-offset: 80px;
 
-  --id-line-size: 4px;
-  --id-dot-size: 12px;
+  --id-line-size: 20px;
+  --id-dot-size: 6px;
   --id-face-icon-size: 48px;
-  --id-pb-icon-size: 48px;
-  --id-pace-icon-size: 48px;
+  --id-pb-icon-size: 24px;
+  --id-pace-icon-size: 32px;
 
-  --id-pb-icon-offset: -48px;
+  --id-pb-icon-offset: -32px;
   --id-pace-icon-offset: 0px;
 
   /* face setting */
-  --id-face-file: url(./niwatori.png);
-  --id-face-smile-file: url(./niwatori.png);
-  --id-face-sad-file: url(./niwatori-sad.png);
+  --id-face-file: url(./niwatori.gif);
+  --id-face-smile-file: url(./niwatori.gif);
+  --id-face-sad-file: url(./niwatori-sad.gif);
   --id-face-smile-shadow-color: rgba(255, 192, 128, 1);
   /* --id-display-face-completed: none; */
-  --id-face-completed-offset: -48px;
+  --id-face-completed-offset: -32px;
 
   /* --id-display-indicator-empty: none; */
   /* --id-display-done-pb-item: none; */
-  --id-done-pb-icon-size: 32px;
+  --id-done-pb-icon-size: 24px;
 
   --id-highlighted-shadow-color: rgba(255, 192, 128, 1);
 
@@ -72,8 +72,36 @@
   transition: width 200ms ease-out;
 }
 
+.mcsr-indicator__line--pace.mcsr-indicator__line--overworld {
+  background-image: url(texture/overworld.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_nether {
+  background-image: url(texture/netherrack.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_bastion {
+  background-image: url(texture/gilded_blackstone.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_fortress {
+  background-image: url(texture/nether_bricks.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--first_portal {
+  background-image: url(texture/nerthergate.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_stronghold {
+  background-image: url(texture/cracked_stone_bricks.png);
+}
+.mcsr-indicator__line--pace.mcsr-indicator__line--enter_end {
+  background-image: url(texture/end_stone.png);
+}
+
 .mcsr-indicator__line--pace {
-  background: #fff;
+  background-size: 60px;
+  background-repeat: repeat;
+  border: 2px solid #fff;
+}
+
+.mcsr-indicator__line--pb {
+  background: rgba(96, 96, 96, 0.75);
 }
 
 .mcsr-indicator__dot-container {
@@ -85,13 +113,16 @@
   position: absolute;
   height: var(--id-dot-size);
   width: var(--id-dot-size);
-  border-radius: 50%;
-  background: #666;
+  background: #000;
   transform: translate3d(0, -50%, 0);
 }
 
 .mcsr-indicator__dot--pace {
   background: #fff;
+}
+
+.mcsr-indicator__dot--pace.mcsr-indicator__dot--enter_end {
+  background: #666;
 }
 
 .mcsr-indicator__text {
@@ -140,7 +171,7 @@
   background-size: var(--id-face-icon-size);
   background-image: var(--id-face-file);
   transition: left 200ms ease-out;
-  animation: 1s steps(2, end) 0s infinite walk;
+  /* animation: 1s steps(2, end) 0s infinite walk; */
 }
 
 @keyframes walk {
@@ -183,6 +214,22 @@
   .mcsr-indicator__item[data-status="done"] {
   display: var(--id-display-done-pb-item, block);
 }
+
+.mcsr-indicator__timeline-container--pb:last-child {
+  /* filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.5)); */
+}
+
+/* .mcsr-indicator__timeline-container--pb
+  .mcsr-indicator__item:last-child::after {
+  content: "PB 17:08";
+  position: absolute;
+  left: 20px;
+  top: -12px;
+  font: normal normal 20px/1 Minecraft, monospace, sans-serif;
+} */
 
 .mcsr-indicator__timeline-container .mcsr-indicator__icon-container {
   position: absolute;
@@ -232,4 +279,9 @@
   filter: drop-shadow(0 0 3px var(--id-highlighted-shadow-color))
     drop-shadow(0 0 3px var(--id-highlighted-shadow-color))
     drop-shadow(0 0 3px var(--id-highlighted-shadow-color));
+}
+
+.mcsr-indicator__item[data-segment="enter_nether"] .mcsr-indicator__icon,
+.mcsr-indicator__item[data-segment="first_portal"] .mcsr-indicator__icon {
+  transform: scale(1.5) translate3d(-25%, -37.5%, 0);
 }

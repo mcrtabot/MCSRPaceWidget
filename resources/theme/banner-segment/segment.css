@@ -1,0 +1,230 @@
+:root {
+  --sg-text-color: rgba(255, 255, 255, 1);
+  --sg-font: normal normal 16px/1.4 sans-serif;
+  /* --sg-width: 480px; */
+  --sg-width: 1920px;
+  --sg-icon-size: 72px;
+
+  --sg-display-empty: none;
+  --sg-display-time: none;
+  --sg-display-diff: none;
+  --sg-display-background: block;
+  --sg-display-decoration: none;
+
+  /* Banner timing — synced with JS ENTERING_DURATION (5s) */
+  --sg-banner-fade-in: 0.8s;
+  --sg-banner-hold: 3.4s;
+  --sg-banner-fade-out: 0.8s;
+}
+
+/* ── Root ── */
+.mcsr-segment {
+  position: relative;
+  width: var(--sg-width);
+  font: var(--sg-font);
+  color: var(--sg-text-color);
+  /* Always transparent — banner animates visibility */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mcsr-segment--empty {
+  display: var(--sg-display-empty, block);
+}
+
+/* Show banner on entering */
+.mcsr-segment[data-entering="true"] {
+  animation: sg-banenr-fade
+    calc(
+      var(--sg-banner-fade-in) + var(--sg-banner-hold) +
+        var(--sg-banner-fade-out)
+    )
+    ease forwards;
+}
+
+.mcsr-segment[data-entering="true"] .mcsr-segment__icon-area,
+.mcsr-segment[data-entering="true"] .mcsr-segment__label1 {
+  animation: sg-banenr-text-drift
+    calc(
+      var(--sg-banner-fade-in) + var(--sg-banner-hold) +
+        var(--sg-banner-fade-out)
+    )
+    ease forwards;
+}
+
+.mcsr-segment[data-entering="true"] .mcsr-segment__label2,
+.mcsr-segment[data-entering="true"] .mcsr-segment__label3 {
+  animation:
+    sg-banenr-bar-slide
+      calc(
+        var(--sg-banner-fade-in) + var(--sg-banner-hold) +
+          var(--sg-banner-fade-out)
+      )
+      ease forwards,
+    sg-banenr-text-drift
+      calc(
+        var(--sg-banner-fade-in) + var(--sg-banner-hold) +
+          var(--sg-banner-fade-out)
+      )
+      ease forwards;
+}
+
+/* Text: fade in / out */
+@keyframes sg-banenr-fade {
+  0% {
+    opacity: 0;
+  }
+  16% {
+    opacity: 1;
+  }
+  84% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Text inside bar: drift left while fading in/out */
+@keyframes sg-banenr-text-drift {
+  0% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  16% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  84% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+}
+
+/* Bar: slide in from right, slide out to left */
+@keyframes sg-banenr-bar-slide {
+  0% {
+    clip-path: inset(0 0 0 100%);
+  }
+  16% {
+    clip-path: inset(0 0 0 0);
+  }
+  84% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/* ── Background bar — hidden, using label2::before instead ── */
+.mcsr-segment__background {
+  display: none;
+}
+
+/* ── Content grid ── */
+.mcsr-segment__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template:
+    ".      icon   label1 ." auto
+    "label2 label2 label2 label2" auto
+    "label3 label3 label3 label3" auto
+    / 1fr auto auto 1fr;
+  justify-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+/* ── Icon: displayed inline inside label1 ── */
+.mcsr-segment__icon-area {
+  grid-area: icon;
+  margin: 8px;
+}
+
+.mcsr-segment__icon {
+  width: var(--sg-icon-size);
+  height: var(--sg-icon-size);
+  background-size: var(--sg-icon-size);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+/* ── Label 1: small text with icon to the left ── */
+.mcsr-segment__label1 {
+  grid-area: label1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 36px;
+}
+
+/* ── Label 2: main text inside the bar ── */
+.mcsr-segment__label2,
+.mcsr-segment__label3 {
+  font-size: 4.5em;
+  font-weight: bold;
+  padding: 10px 48px;
+  width: 100%;
+  box-sizing: border-box;
+  color: rgba(15, 10, 5, 0.95);
+  background: rgba(255, 255, 255, 0.85);
+  line-height: 2;
+}
+
+.mcsr-segment__label2 {
+  grid-area: label2;
+}
+
+.mcsr-segment__label3 {
+  grid-area: label3;
+  display: none;
+}
+
+/* ── credits: swap label2/label3 on PB ── */
+.mcsr-segment[data-highlighted="true"][data-segment="credits"]
+  .mcsr-segment__label2 {
+  display: none;
+}
+
+.mcsr-segment[data-highlighted="true"][data-segment="credits"]
+  .mcsr-segment__label3 {
+  display: block;
+  color: rgba(140, 20, 20, 1);
+  background: rgba(255, 180, 180, 0.85);
+}
+
+/* ── Highlighted (PB pace) ── */
+.mcsr-segment[data-highlighted="true"] .mcsr-segment__label1 {
+  color: rgba(255, 150, 150, 1);
+}
+
+.mcsr-segment[data-highlighted="true"] .mcsr-segment__label2 {
+  color: rgba(140, 20, 20, 1);
+  background: rgba(255, 180, 180, 0.85);
+}
+
+/* ── Hidden elements ── */
+.mcsr-segment__time {
+  display: var(--sg-display-time, none);
+}
+
+.mcsr-segment__diff {
+  display: var(--sg-display-diff, none);
+}
+
+.mcsr-segment__decoration {
+  display: var(--sg-display-decoration, none);
+}

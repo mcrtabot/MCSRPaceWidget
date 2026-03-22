@@ -1,0 +1,139 @@
+:root {
+  --sg-text-color: rgba(255, 255, 255, 1);
+  --tl-highlighted-text-color: rgba(255, 128, 128, 1);
+
+  --sg-font: normal bold 21px/1 sans-serif;
+  --sg-digits-font:
+    normal normal 30px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+
+  --sg-width: 420px;
+  --sg-background: transparent;
+  --sg-icon-size: 64px;
+
+  /* Display control for each element */
+  /* --sg-display-icon: none; */
+  /* --sg-display-label1: none; */
+  /* --sg-display-time: none; */
+  /* --sg-display-diff: none; */
+  /* --sg-display-background: none; */
+  /* --sg-display-decoration: none; */
+
+  /* Hide widget when empty (no events yet) */
+  /* --sg-display-empty: none; */
+}
+
+.mcsr-segment {
+  position: relative;
+  width: var(--sg-width);
+  font: var(--sg-font);
+  color: var(--sg-text-color);
+  background: var(--sg-background);
+}
+
+.mcsr-segment--empty {
+  display: var(--sg-display-empty, block);
+}
+
+/* Background layer — full-bleed, behind content */
+.mcsr-segment__background {
+  display: var(--sg-display-background, block);
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Content — grid layout, freely rearrangeable via CSS */
+.mcsr-segment__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template:
+    "icon label1 label1 label1" auto
+    "icon time   diff ." auto
+    / auto auto auto 1fr;
+  align-items: center;
+  gap: 0 8px;
+  padding: 8px 12px;
+}
+
+.mcsr-segment__icon-area {
+  grid-area: icon;
+  display: var(--sg-display-icon, block);
+}
+
+.mcsr-segment__icon {
+  width: var(--sg-icon-size);
+  height: var(--sg-icon-size);
+  background-size: var(--sg-icon-size);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+/* Label icon — inline icon inside label1 */
+.mcsr-segment__label-icon {
+  display: none;
+}
+
+/* Labels — segment__label1 (1st), segment__label2 (2nd), segment__label3 (3rd), ... */
+.mcsr-segment__label1 {
+  grid-area: label1;
+  display: var(--sg-display-label1, block);
+  font-size: 1.2em;
+}
+
+.mcsr-segment__time {
+  grid-area: time;
+  display: var(--sg-display-time, block);
+  font: var(--sg-digits-font);
+}
+
+.mcsr-segment__diff {
+  grid-area: diff;
+  display: var(--sg-display-diff, block);
+  font: var(--sg-digits-font);
+}
+.mcsr-segment__diff::before {
+  content: "(";
+  margin-right: 4px;
+}
+.mcsr-segment__diff::after {
+  content: ")";
+  margin-left: 4px;
+}
+
+/* Empty state */
+.mcsr-segment[data-segment=""] .mcsr-segment__icon-area {
+  width: var(--sg-icon-size);
+  height: var(--sg-icon-size);
+  background-image: url(icon/overworld.png);
+  background-size: var(--sg-icon-size);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+.mcsr-segment[data-segment=""] .mcsr-segment__label1::after {
+  content: "Overworld";
+}
+
+.mcsr-segment[data-segment=""] .mcsr-segment__diff {
+  display: none;
+}
+
+/* Highlighted (PB pace) */
+.mcsr-segment[data-highlighted="true"] {
+  color: var(--tl-highlighted-text-color);
+}
+
+.mcsr-segment[data-highlighted="true"] .mcsr-segment__label2 {
+  display: block;
+}
+
+/* Decoration layer — for extra images, effects */
+.mcsr-segment__decoration {
+  display: var(--sg-display-decoration, none);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}

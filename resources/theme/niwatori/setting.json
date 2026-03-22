@@ -10,6 +10,18 @@
         "credits": "Finish"
     },
 
+    "segmentLabel": {
+        "enter_nether": [ "Enter Nether", " " ],
+        "enter_bastion": [ "Enter Bastion", " " ],
+        "enter_fortress": [ "Enter Fortress", " ", "PB Pace!" ],
+        "first_portal": [ "First Portal", " ", "PB Pace!" ],
+        "enter_stronghold": [ "Enter Stronghold", " ", "PB Pace!" ],
+        "enter_end": [ "Enter End", " ", "PB Pace!" ],
+        "credits": [ "Finish", " ", "New Personal Best!!" ]
+    },
+
+    "enteringDuration": 10000,
+
     "//": "title for PB timeline",
     "pbTimelineTitle": "PB Timeline",
 

@@ -1,0 +1,25 @@
+{
+    "label": {
+        "enter_nether": "Enter Nether",
+        "enter_bastion": "Enter Bastion",
+        "enter_fortress": "Enter Fortress",
+        "first_portal": "First Portal",
+        "enter_stronghold": "Enter Stronghold",
+        "enter_end": "Enter End",
+        "credits": "Finish"
+    },
+
+    "segmentLabel": {
+        "enter_nether": [ "Entered Nether", "ネザーの探索を開始せよ！" ],
+        "enter_bastion": [ "Entered Bastion", "ピグリンと交易して必要物資を集めろ！" ],
+        "enter_fortress": [ "Entered Fortress", "ブレイズを倒してロッドを集めろ！" ],
+        "first_portal": [ "First Portal", "エンド要塞を見つけ出せ！" ],
+        "enter_stronghold": [ "Entered Stronghold", "エンドポータルを起動せよ！" ],
+        "enter_end": [ "Entered The End", "エンダードラゴンを討伐せよ！" ],
+        "credits": [ "Complete", "自己ベスト更新ならず...", "自己ベスト更新！！" ]
+    },
+
+    "pbTimelineTitle": "",
+    "paceTimelineTitle": "",
+    "nextItemStyle": "hyphen"
+}
