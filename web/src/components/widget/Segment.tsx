@@ -4,6 +4,7 @@ import { AppContext } from '../../context';
 import { useThemeCSS, useTimelineInfo } from '../../hooks';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon } from './TimelineIcon';
+import { RandomTime } from './RandomTime';
 
 const DEFAULT_ENTERING_DURATION = 5000;
 
@@ -88,13 +89,20 @@ export const Segment = () => {
         </div>
 
         {labels.map((text, i) => (
-          <div key={i} className={`mcsr-segment__label${i + 1}`} style={{ gridArea: `label${i + 1}` }}>
-            {i === 0 && currentType && <TimelineIcon className="mcsr-segment__label-icon" type={currentType} />}
-            <span className="mcsr-segment__label-text">{text}</span>
+          <div key={i} className={`mcsr-segment__label${i + 1}`}>
+            {text}
           </div>
         ))}
 
-        <div className="mcsr-segment__time">{currentItem ? <Time value={currentItem.igt} /> : '--:--'}</div>
+        <div className="mcsr-segment__time">
+          {currentItem ? (
+            <Time value={currentItem.igt} />
+          ) : setting.nextItemStyle === 'random' ? (
+            <RandomTime />
+          ) : (
+            '--:--'
+          )}
+        </div>
 
         <div className="mcsr-segment__diff">
           {currentItem && diffEnabled ? <DiffTime time={currentItem.igt} pbTime={pbTime} /> : ''}
