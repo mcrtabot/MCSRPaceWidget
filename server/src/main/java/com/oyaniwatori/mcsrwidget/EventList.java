@@ -73,6 +73,16 @@ public class EventList {
         long endIGTTime = json.get("endIGTTime").asLong();
         long currentIgt = activateTicks * 50 - rebaseIGTime - excludedIGT + endIGTTime;
 
+        // リタイム対応: IGTが13分以内の場合、retimedIGTTime（ポーズ時間累積）をIGTに加算
+        // MCSRルール: 13分以内のランではポーズ時間がIGTに加算される
+        long retimedIgt = currentIgt;
+        if (currentIgt < 1000 * 60 * 13) {
+            JsonNode retimedIGTTimeNode = json.get("retimedIGTTime");
+            if (retimedIGTTimeNode != null && !retimedIGTTimeNode.isNull()) {
+                retimedIgt = currentIgt + retimedIGTTimeNode.asLong();
+            }
+        }
+
         // クリア判定をするかどうかのために、エンドインしているかを保持しておく
         boolean isEnteredEnd = false;
         for (JsonNode item : json.get("timelines")) {
@@ -99,12 +109,11 @@ public class EventList {
         if (json.get("isCompleted").asBoolean(false)) {
             JsonNode record = mapper.readTree(json.get("resultRecord").asText());
             long rta = record.get("final_rta").asLong();
-            long igt = record.get("final_igt").asLong();
 
             String type = "credits";
             String id = "rsg." + type;
 
-            items.add(new Event(id, type, rta, igt));
+            items.add(new Event(id, type, rta, retimedIgt));
         } else if (isEnteredEnd) {
             // event.log からイベントリストを取得
             try {
@@ -114,7 +123,7 @@ public class EventList {
                 if (creditEvent != null) {
                     // ここに来るのはエンドロール表示中のみ
                     long rta = creditEvent.rta;
-                    long igt = currentIgt;
+                    long igt = retimedIgt;
 
                     String type = "credits";
                     String id = "rsg." + type;
@@ -147,7 +156,7 @@ public class EventList {
 
                 });
 
-        return new EventList(items, currentIgt);
+        return new EventList(items, retimedIgt);
     }
 
     private Event getEvent(String type) {
