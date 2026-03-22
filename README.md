@@ -14,8 +14,10 @@ works as an OBS browser source, just pick a theme and add it to your scene.
 
 - **Timeline** — Table display showing current pace and difference from personal best (PB)
 - **Visual Timeline** — Bar-style visual progress indicator
-- Customizable themes (7 built-in + custom theme support)
+- **Segment** — Current segment display with customizable enter animations (banner, persistent, etc.)
+- Customizable themes with CSS data attributes for flexible styling
 - Real-time updates via SpeedRunIGT integration
+- MCSR retime support (automatic pause time adjustment for runs under 13 minutes)
 
 ## Requirements
 
@@ -60,9 +62,14 @@ To display the difference from your personal best, configure your PB times.
 ### Custom Themes
 
 1. Copy a base theme (e.g., `default`) in the `theme` directory and rename it
-2. Edit `setting.json` and the stylesheets `timeline.css` / `indicator.css`
+2. Edit `setting.json` and the stylesheets (`timeline.css` / `indicator.css` / `segment.css`)
+3. Use the [Playground](/playground) to preview with various data patterns
+
+Only include the CSS files your theme supports. The server detects supported widgets by the presence of each file.
 
 A Minecraft font is bundled. Specify `font-family: 'Minecraft-Regular'` in your theme CSS for a more authentic look.
+
+For detailed CSS reference, see the [Theme Development Guide](resources/THEME_GUIDE.md).
 
 ## Themes
 
@@ -102,9 +109,9 @@ A Minecraft font is bundled. Specify `font-family: 'Minecraft-Regular'` in your 
 </details>
 
 <details>
-<summary>Horizontal</summary>
+<summary>Horizontal-timeline</summary>
 
-<img src="docs/timeline_horizontal.gif" alt="Horizontal timeline">
+<img src="docs/timeline_horizontal.gif" alt="Horizontal-timeline">
 </details>
 
 <details>

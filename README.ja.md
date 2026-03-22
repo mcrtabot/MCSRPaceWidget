@@ -14,8 +14,10 @@ OBS のブラウザソースとしてテーマを切り替えるだけで配信�
 
 - **タイムライン** — 現在のペースと自己ベスト（PB）との差分をテーブル表示
 - **ビジュアルタイムライン** — バー形式で進行状況を視覚的に表示
-- カスタマイズ可能なテーマ（7種類同梱 + 自作テーマ対応）
+- **セグメント** — 現在の区間を表示。バナー演出や常時表示などCSSで自由にカスタマイズ可能
+- CSSのdata属性による柔軟なテーマスタイリング
 - SpeedRunIGT と連携したリアルタイム更新
+- MCSRリタイム対応（13分以内のランで自動的にポーズ時間を加算）
 
 ## 必要条件
 
@@ -60,9 +62,14 @@ OBS のブラウザソースとしてテーマを切り替えるだけで配信�
 ### カスタムテーマ
 
 1. `theme` ディレクトリ内のベーステーマ（例: `default`）をコピーしてリネーム
-2. `setting.json` と `timeline.css` / `indicator.css` を編集
+2. `setting.json` とスタイルシート（`timeline.css` / `indicator.css` / `segment.css`）を編集
+3. [Playground](/playground) で様々なデータパターンでプレビュー
+
+テーマが対応するウィジェットは、各 CSS ファイルの有無で自動判定されます。
 
 Minecraft フォントが同梱されています。テーマ CSS で `font-family: 'Minecraft-Regular'` を指定すると、より Minecraft らしい見た目にできます。
+
+テーマ開発の詳細は [テーマ開発ガイド](resources/THEME_GUIDE.md) を参照してください。
 
 ## テーマ一覧
 
@@ -102,9 +109,9 @@ Minecraft フォントが同梱されています。テーマ CSS で `font-fami
 </details>
 
 <details>
-<summary>Horizontal</summary>
+<summary>Horizontal-timeline</summary>
 
-<img src="docs/timeline_horizontal.gif" alt="Horizontal タイムライン">
+<img src="docs/timeline_horizontal.gif" alt="Horizontal-timeline タイムライン">
 </details>
 
 <details>
