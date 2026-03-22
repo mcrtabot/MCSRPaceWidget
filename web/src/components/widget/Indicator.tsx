@@ -49,7 +49,7 @@ export const Indicator = () => {
   const lineItems = getTimelineLineItems(timeline, paceIGT || 0, pbFinalIGT);
 
   return (
-    <div className={classNames.join(' ')} data-segment={currentSegment} data-status={indicatorStatus}>
+    <div className={classNames.join(' ')} data-segment={currentSegment} data-run-status={indicatorStatus}>
       <div className="mcsr-indicator__line-container">
         {pbLineItems.map((lineItem) => (
           <div

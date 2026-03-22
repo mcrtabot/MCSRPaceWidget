@@ -76,6 +76,7 @@ export const Segment = () => {
       className={`mcsr-segment mcsr-segment--${status}`}
       data-entering={entering}
       data-segment={currentType ?? ''}
+      data-run-status={status}
       data-highlighted={highlighted}
     >
       <div className={`mcsr-segment__background mcsr-segment__background--${currentType ?? 'none'}`} />

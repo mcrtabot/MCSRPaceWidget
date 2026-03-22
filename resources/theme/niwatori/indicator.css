@@ -54,7 +54,7 @@
   padding-left: calc(var(--id-face-icon-size) / 2);
 }
 
-.mcsr-indicator[data-status="empty"] {
+.mcsr-indicator[data-run-status="empty"] {
   display: var(--id-display-indicator-empty, block);
 }
 
@@ -195,7 +195,7 @@
   background-image: var(--id-face-sad-file);
 }
 
-.mcsr-indicator[data-status="completed"] .mcsr-indicator__face {
+.mcsr-indicator[data-run-status="completed"] .mcsr-indicator__face {
   display: var(--id-display-face-completed, block);
   top: var(--id-face-completed-offset);
 }

@@ -13,7 +13,7 @@ export const Timelines = () => {
   const status = timeline.timelines.length === 0 ? 'empty' : isCompleted ? 'completed' : 'running';
 
   return (
-    <div className="mcsr-widget" data-segment={currentSegment} data-status={status}>
+    <div className="mcsr-widget" data-segment={currentSegment} data-run-status={status}>
       <div className="mcsr-widget-container">
         <Timeline
           className="timeline timeline--pb"
