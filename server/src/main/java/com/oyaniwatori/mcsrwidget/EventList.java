@@ -118,11 +118,17 @@ public class EventList {
         if (json.get("isCompleted").asBoolean(false)) {
             JsonNode record = mapper.readTree(json.get("resultRecord").asText());
             long rta = record.get("final_rta").asLong();
+            // 完走後はactivateTicksが進み続けるためcurrentIgtは使えない
+            // resultRecordのretimed_igt（またはfinal_igt）を使用する
+            JsonNode retimedIgtNode = record.get("retimed_igt");
+            long creditsIgt = (retimedIgtNode != null && !retimedIgtNode.isNull())
+                    ? retimedIgtNode.asLong()
+                    : record.get("final_igt").asLong();
 
             String type = "credits";
             String id = "rsg." + type;
 
-            items.add(new Event(id, type, rta, retimedIgt));
+            items.add(new Event(id, type, rta, creditsIgt));
         } else if (isEnteredEnd) {
             // event.log からイベントリストを取得
             try {
