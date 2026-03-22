@@ -20,10 +20,18 @@ import com.oyaniwatori.mcsrwidget.utils.Utils;
 public class EventList {
     public List<Event> timelines;
     public Long igt = null;
+    public Long retimedIgt = null;
+    public Long retimeAmount = null;
 
-    public EventList(List<Event> timelines, Long igt) {
+    public EventList(List<Event> timelines, Long igt, Long retimedIgt, Long retimeAmount) {
         this.timelines = timelines;
         this.igt = igt;
+        this.retimedIgt = retimedIgt;
+        this.retimeAmount = retimeAmount;
+    }
+
+    public EventList(List<Event> timelines, Long igt) {
+        this(timelines, igt, null, null);
     }
 
     public static EventList parse(String eventsString) {
@@ -75,13 +83,14 @@ public class EventList {
 
         // リタイム対応: IGTが13分以内の場合、retimedIGTTime（ポーズ時間累積）をIGTに加算
         // MCSRルール: 13分以内のランではポーズ時間がIGTに加算される
-        long retimedIgt = currentIgt;
+        long retimeAmount = 0;
         if (currentIgt < 1000 * 60 * 13) {
             JsonNode retimedIGTTimeNode = json.get("retimedIGTTime");
             if (retimedIGTTimeNode != null && !retimedIGTTimeNode.isNull()) {
-                retimedIgt = currentIgt + retimedIGTTimeNode.asLong();
+                retimeAmount = retimedIGTTimeNode.asLong();
             }
         }
+        long retimedIgt = currentIgt + retimeAmount;
 
         // クリア判定をするかどうかのために、エンドインしているかを保持しておく
         boolean isEnteredEnd = false;
@@ -156,7 +165,7 @@ public class EventList {
 
                 });
 
-        return new EventList(items, retimedIgt);
+        return new EventList(items, currentIgt, retimedIgt, retimeAmount);
     }
 
     private Event getEvent(String type) {
