@@ -26,7 +26,7 @@ export const useSetting = (theme: string | null, isDemo: boolean) => {
     isLoading,
     data: rawSetting,
     error,
-  } = useSWR<Setting>(path, fetcher, { refreshInterval, dedupingInterval: refreshInterval });
+  } = useSWR<Setting>(path, fetcher, { refreshInterval, dedupingInterval: refreshInterval, refreshWhenHidden: true });
 
   if (isLoading || !rawSetting || !!error) {
     return { isLoading, setting: undefined, hasError: !!error };
@@ -50,6 +50,7 @@ export const useTimeline = (demo?: boolean, igt?: number) => {
     refreshInterval: TIMELINE_REFRESH_INTERVAL,
     dedupingInterval: TIMELINE_REFRESH_INTERVAL,
     errorRetryInterval: TIMELINE_REFRESH_INTERVAL,
+    refreshWhenHidden: true,
   });
 
   if (demo && igt !== undefined) {
@@ -88,6 +89,7 @@ export const usePBTimeline = (demo?: boolean) => {
   } = useSWR<{ type: string; igt: string }[]>([path, demo], fetchPBTimeline, {
     refreshInterval: REFRESH_INTERVAL,
     dedupingInterval: REFRESH_INTERVAL,
+    refreshWhenHidden: true,
   });
 
   if (isLoading || !rawPBSetting || !!error) {
@@ -109,7 +111,7 @@ export const useThemes = () => {
     isLoading,
     data: themes,
     error,
-  } = useSWR<Theme[]>(path, fetcher, { refreshInterval: REFRESH_INTERVAL, dedupingInterval: REFRESH_INTERVAL });
+  } = useSWR<Theme[]>(path, fetcher, { refreshInterval: REFRESH_INTERVAL, dedupingInterval: REFRESH_INTERVAL, refreshWhenHidden: true });
 
   if (isLoading || !themes || !!error) {
     return { isLoading, themes: undefined, hasError: !!error };
