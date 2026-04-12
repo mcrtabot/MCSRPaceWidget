@@ -20,7 +20,7 @@
         "credits": [ "Finish", " ", "New Personal Best!!" ]
     },
 
-    "enteringDuration": 10000,
+    "enteringDuration": 15000,
 
     "//": "title for PB timeline",
     "pbTimelineTitle": "PB Timeline",
