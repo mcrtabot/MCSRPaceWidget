@@ -120,10 +120,17 @@ public class EventList {
             long rta = record.get("final_rta").asLong();
             // 完走後はactivateTicksが進み続けるためcurrentIgtは使えない
             // resultRecordのretimed_igt（またはfinal_igt）を使用する
-            JsonNode retimedIgtNode = record.get("retimed_igt");
-            long creditsIgt = (retimedIgtNode != null && !retimedIgtNode.isNull())
-                    ? retimedIgtNode.asLong()
-                    : record.get("final_igt").asLong();
+            // ただし13分以上の場合はリタイム不要なためfinal_igtを使用する
+            long finalIgt = record.get("final_igt").asLong();
+            long creditsIgt;
+            if (finalIgt < 1000 * 60 * 13) {
+                JsonNode retimedIgtNode = record.get("retimed_igt");
+                creditsIgt = (retimedIgtNode != null && !retimedIgtNode.isNull())
+                        ? retimedIgtNode.asLong()
+                        : finalIgt;
+            } else {
+                creditsIgt = finalIgt;
+            }
 
             String type = "credits";
             String id = "rsg." + type;
