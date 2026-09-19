@@ -1,11 +1,16 @@
-import { TimelineItem } from '../types';
+import { ContextMarker, TimelineItem } from '../types';
 
-export const calcPosition = (igt?: number | null, pbFinalIGT?: number | null): string => {
+/** 0..1 の割合。位置の比較に使う。表示に使うのは calcPosition の方 */
+const calcRatio = (igt?: number | null, pbFinalIGT?: number | null): number => {
   if (!pbFinalIGT) {
-    return '0%';
+    return 0;
   }
 
-  return `${((igt || 0) / pbFinalIGT) * 100}%`;
+  return (igt || 0) / pbFinalIGT;
+};
+
+export const calcPosition = (igt?: number | null, pbFinalIGT?: number | null): string => {
+  return `${calcRatio(igt, pbFinalIGT) * 100}%`;
 };
 
 export type TimelineLineItem = {
@@ -102,3 +107,16 @@ export const getFaceStatus = (
 
   return 'normal';
 };
+
+export type ContextItem = {
+  left: string;
+  item: ContextMarker;
+};
+
+/** context マーカーの位置。近いものが重なっても、まとめずに全部返す */
+export const getContextItems = (context: ContextMarker[], denominator: number): ContextItem[] =>
+  [...context]
+    .sort((a, b) => a.igt - b.igt)
+    // 分母の外は画面の外なので描かない
+    .filter((item) => item.igt <= denominator)
+    .map((item) => ({ left: calcPosition(item.igt, denominator), item }));

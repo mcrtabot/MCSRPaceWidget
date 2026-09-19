@@ -2,11 +2,27 @@ import React, { useContext, useMemo } from 'react';
 
 import { AppContext } from '../../context';
 import { skinFaceUrl, usePlayer, useThemeCSS, useThemeOverrides, useTimelineInfo } from '../../hooks';
-import { calcPosition, getFaceStatus, getTimelineDotItems, getTimelineLineItems } from '../../utils/indicator';
+import {
+  calcPosition,
+  getContextItems,
+  getFaceStatus,
+  getTimelineDotItems,
+  getTimelineLineItems,
+} from '../../utils/indicator';
 import { ThemeOverrides } from '../../utils/overrides';
 import { resolveScale } from '../../utils/scale';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon } from './TimelineIcon';
+
+/*
+ * タイムは区切り位置から右下へ伸びるので、右端に近いスプリットは画面の外へ出る。
+ * 完走すると credits は必ず 100% に来るため、放っておくと最後のタイムが必ず切れる。
+ * ここを超えたものに data-align="end" を付けて、逃がし方はテーマに委ねる。
+ *
+ * 下げすぎると手前のスプリットまで左へ動き、後のタイムが前のタイムより左に
+ * 並んで順序が読めなくなる。実際に切れるのは終端付近だけなので高めに取る。
+ */
+const TEXT_ALIGN_END_RATIO = 0.95;
 
 export const Indicator = () => {
   const { timeline: timelineData, pbTimeline, theme, setting } = useContext(AppContext);
@@ -104,6 +120,12 @@ export const Indicator = () => {
   const pbLineItems = hasPB ? getTimelineLineItems(visiblePbTimeline, pbExtent, denominator) : [];
   const lineItems = getTimelineLineItems(timeline, paceIGT || 0, denominator);
 
+  // 出す・出さないはテーマCSSの --id-display-context が決める
+  const contextItems = useMemo(
+    () => getContextItems(timelineData.context ?? [], denominator),
+    [timelineData.context, denominator],
+  );
+
   return (
     <div
       className={classNames.join(' ')}
@@ -145,6 +167,19 @@ export const Indicator = () => {
           />
         ))}
       </div>
+      <div className="mcsr-indicator__context-container">
+        {contextItems.map(({ left, item }) => (
+          <div
+            key={`${item.type}_${item.igt}`}
+            className="mcsr-indicator__context"
+            style={{ left }}
+            data-context={item.type}
+            data-label={setting.contextLabel?.[item.type] ?? item.type}
+          >
+            <TimelineIcon className="mcsr-indicator__context-icon" type={item.type} />
+          </div>
+        ))}
+      </div>
       <div className="mcsr-indicator__timeline-container mcsr-indicator__timeline-container--pb">
         {displayItemTypes.map((itemType) => {
           const item = pbTimelineMap.get(itemType);
@@ -179,6 +214,7 @@ export const Indicator = () => {
               ? false
               : true;
           const highlighted = diffEnabled && item.igt < (pbTimelineMap.get(itemType)?.igt ?? 0);
+          const alignEnd = denominator > 0 && item.igt / denominator > TEXT_ALIGN_END_RATIO;
           return (
             <div
               key={itemType}
@@ -189,6 +225,7 @@ export const Indicator = () => {
               style={{ left: calcPosition(item.igt, denominator) }}
               data-segment={itemType}
               data-highlighted={highlighted}
+              data-align={alignEnd ? 'end' : 'start'}
             >
               <div className="mcsr-indicator__icon-container">
                 <TimelineIcon className="mcsr-indicator__icon" type={itemType} />

@@ -12,6 +12,9 @@ CSS reference for `indicator.css`. For general theme development, see [Theme Dev
   .mcsr-indicator__dot-container                    Minute marker dots
     .mcsr-indicator__dot.mcsr-indicator__dot--pb    PB dots
     .mcsr-indicator__dot.mcsr-indicator__dot--pace  Pace dots
+  .mcsr-indicator__context-container                Context marker layer (opt-in)
+    .mcsr-indicator__context                        [data-context] [data-label]
+      .mcsr-indicator__context-icon                 Item icon (background-image)
   .mcsr-indicator__timeline-container--pb           PB icon layer
     .mcsr-indicator__item                           [data-segment] [data-status]
       .mcsr-indicator__icon-container
@@ -65,6 +68,30 @@ On PB `.mcsr-indicator__item`.
 | `done` | Pace has passed this PB split  |
 | `todo` | Pace has not reached this split|
 
+### `data-align`
+
+On Pace `.mcsr-indicator__item`. Whether this split sits close enough to the right edge
+that its time, which runs down-right from the split, would be cut off. `credits` lands at
+100% on every finished run, so its time is always at risk.
+
+| Value   | Description                          |
+| ------- | ------------------------------------ |
+| `start` | Normal position                      |
+| `end`   | Near the right edge (past 95%)       |
+
+The `default` theme leaves this alone because `--id-edge-space` already reserves room on
+both sides. `standard-full` and `paceman-list` keep their narrower margins and pull the
+time left instead:
+
+```css
+.mcsr-indicator__item[data-align="end"] .mcsr-indicator__text {
+  left: calc(-1 * var(--id-pace-text-end-shift, 64px));
+}
+```
+
+`left` sits outside the rotation, so it moves the time horizontally without changing its
+angle or its vertical position.
+
 ### `data-highlighted`
 
 On Pace `.mcsr-indicator__item`. Whether this split is faster than PB.
@@ -73,6 +100,32 @@ On Pace `.mcsr-indicator__item`. Whether this split is faster than PB.
 | ------- | -------------------------- |
 | `true`  | Split faster than PB       |
 | `false` | Split same or slower than PB |
+
+### `data-context`
+
+On `.mcsr-indicator__context`. The context marker's type. Context markers are the points
+inside a segment (getting iron, looting a bastion) rather than the segment boundaries, so
+they live in their own layer and never affect how the bar is painted.
+
+| Value                    | Marker                        |
+| ------------------------ | ----------------------------- |
+| `obtain_iron_ingot`      | Smelted the first iron        |
+| `obtain_iron_pickaxe`    | Crafted an iron pickaxe       |
+| `obtain_lava_bucket`     | Filled a lava bucket          |
+| `distract_piglin`        | Distracted a piglin with gold |
+| `loot_bastion`           | Looted a bastion chest        |
+| `obtain_obsidian`        | Obtained obsidian             |
+| `obtain_crying_obsidian` | Obtained crying obsidian      |
+| `obtain_blaze_rod`       | Obtained a blaze rod          |
+
+Every marker is drawn at its own position; markers close in time overlap rather than
+being merged. `data-label` carries the marker's name and is available to CSS through
+`attr(data-label)`.
+
+Whether they are drawn is decided entirely by `--id-display-context`, which is `none`
+unless the theme sets it. A theme that styles nothing here renders the markers at zero
+size, so leaving the token alone costs nothing. Names come from `"contextLabel"` in
+`setting.json`.
 
 ## Face Classes
 
@@ -116,7 +169,8 @@ Default values are from the `default` theme.
 | `--id-highlighted-shadow-color` | Glow effect for highlighted icons | `rgba(255, 128, 128, 1)`                                                   |
 | `--id-background`               | Indicator background              | `transparent`                                                              |
 | `--id-font`                     | Font for labels                   | `normal bold 18px/1 sans-serif`                                            |
-| `--id-digits-font`              | Font for times/diffs              | `normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif` |
+| `--id-digits-font-size`         | Size of the time digits. Split out of the shorthand so it can be changed on its own | `22px`                      |
+| `--id-digits-font`              | Font for times/diffs              | built from `--id-digits-font-size` |
 
 ### Sizes
 
@@ -130,6 +184,31 @@ Default values are from the `default` theme.
 | `--id-done-pb-icon-size` | PB icon size after pace passes it | `32px`  |
 | `--id-pb-icon-offset`    | PB icon row vertical offset       | `-48px` |
 | `--id-pace-icon-offset`  | Pace icon row vertical offset     | `0px`   |
+
+### Pace Text Placement
+
+The time is rotated, so it runs away from its split in the direction of the rotation. These
+separate the horizontal drift from the vertical clearance; mixing them into the rotated
+`transform` moves the text diagonally and is what makes the time look detached from its split.
+
+| Variable                    | Description                                                     | Default             |
+| --------------------------- | --------------------------------------------------------------- | ------------------- |
+| `--id-edge-space`           | Left and right padding. Equal on both sides, so the bar stays centred while both ends have room for a time | `64px`              |
+| `--id-pace-text-gap`        | Distance from the split, along the rotated direction. `0` starts the text right at the split | one pace icon       |
+| `--id-pace-text-offset`     | Drop below the bar. Unrotated, so raising it never shifts the text right | `24px`              |
+| `--id-pace-text-end-shift`  | How far to pull a `data-align="end"` time left (unused by `default`) | `64px`              |
+
+`--id-pace-text-push` is set by the theme itself and should not be overridden: it cancels
+the row shift applied when there is no PB, which would otherwise drag the time onto the bar.
+
+### Context Markers
+
+| Variable                    | Description                                | Default                          |
+| --------------------------- | ------------------------------------------ | -------------------------------- |
+| `--id-context-icon-size`    | Marker icon size                           | `16px`                           |
+| `--id-context-icon-offset`  | Marker row vertical offset                 | clears the bar                   |
+| `--id-context-icon-opacity` | Marker icon opacity                        | `0.9`                            |
+| `--id-context-space`        | Height the marker row claims. The time drops by this much while markers are shown, and returns to its usual place when they are not | icon size + 10px |
 
 ### Face Character
 
@@ -244,6 +323,7 @@ Set to `none` to hide, or leave unset (commented out) to show.
 | `--id-display-pace-text-label` | Split name in pace text   |
 | `--id-display-pace-text-time`  | Split time in pace text   |
 | `--id-display-pace-text-diff`  | Diff in pace text         |
+| `--id-display-context`         | Context marker layer (`none` by default) |
 
 ### Text Layout
 

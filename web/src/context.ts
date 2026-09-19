@@ -16,6 +16,7 @@ export const AppContext = createContext<{
   timeline: {
     igt: null,
     timelines: [],
+    context: [],
   },
   pbTimeline: [],
 });

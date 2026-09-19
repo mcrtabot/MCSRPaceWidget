@@ -161,7 +161,11 @@ export const CustomizePage = () => {
 
   // IGT より後のスプリットはまだ起きていないものとして落とす
   const timeline = useMemo(
-    () => ({ igt, timelines: preset.timeline.timelines.filter((item) => item.igt <= igt) }),
+    () => ({
+      igt,
+      timelines: preset.timeline.timelines.filter((item) => item.igt <= igt),
+      context: (preset.timeline.context ?? []).filter((item) => item.igt <= igt),
+    }),
     [preset, igt],
   );
 

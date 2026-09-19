@@ -22,5 +22,17 @@
     "//": "hyphen: --:--, random: **:** (*: random number), igt: in-game-time",
     "nextItemStyle": "hyphen",
 
+    "//": "label for context marker type",
+    "contextLabel": {
+        "obtain_iron_ingot": "Iron Ingot",
+        "obtain_iron_pickaxe": "Iron Pickaxe",
+        "obtain_lava_bucket": "Lava Bucket",
+        "distract_piglin": "Distract Piglin",
+        "loot_bastion": "Loot Bastion",
+        "obtain_obsidian": "Obsidian",
+        "obtain_crying_obsidian": "Crying Obsidian",
+        "obtain_blaze_rod": "Blaze Rod"
+    },
+
     "//": ""
 }

@@ -9,8 +9,11 @@
   --id-background: transparent;
 
   --id-font: normal bold 18px/1 sans-serif;
+  /* 10px * sqrt(5)。rotate と揃えるとドットが整数pxに乗る */
+  --id-digits-font-size: 22.36px;
   --id-digits-font:
-    normal normal 18px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+    normal normal var(--id-digits-font-size)/1 Minecraft-Regular, Minecraft,
+    monospace, sans-serif;
 
   --id-width: 100%;
   --id-offset: 80px;
@@ -38,11 +41,25 @@
 
   --id-highlighted-shadow-color: rgba(255, 128, 128, 1);
 
-  --id-display-pace-text: none;
-  --id-display-pace-text-rotate: 32deg;
+  /* context markers (iron ingot, lava bucket, ...) */
+  --id-display-context: none;
+  --id-context-icon-size: 16px;
+  /* バーの下端とタイムの間に収まる位置 */
+  --id-context-icon-offset: calc(
+    var(--id-line-size) / 2 + var(--id-context-icon-size) / 2 + 1px
+  );
+  --id-context-icon-opacity: 0.9;
+
+  --id-display-pace-text: block;
+  --id-pace-text-gap: 0px;
+  --id-pace-text-offset: 34px;
+  /* 左右の余白。100% に来る credits のタイムが切れない幅 */
+  --id-edge-space: 64px;
+  /* tan = 1/2。font-size とセットで変える */
+  --id-display-pace-text-rotate: 26.565deg;
   --id-display-pace-text-label: none;
   /* --id-display-pace-text-time: none; */
-  /* --id-display-pace-text-diff: none; */
+  --id-display-pace-text-diff: none;
 }
 
 /*
@@ -52,6 +69,8 @@
  */
 .mcsr-indicator[data-has-pb="false"] {
   --id-pace-icon-offset: var(--id-pb-icon-offset);
+  /* 上げるのはアイコンだけ。タイムは戻す */
+  --id-pace-text-push: calc(-1 * var(--id-pb-icon-offset));
 }
 
 .mcsr-indicator {
@@ -60,9 +79,8 @@
   font: var(--id-font);
   color: var(--id-text-color);
   background: var(--id-background);
-  padding-left: calc(var(--id-face-icon-size) / 2);
-  /* 0% と 100% のアイコンは中央基準なので、両端に半個分の余白が要る */
-  padding-right: calc(var(--id-face-icon-size) / 2);
+  padding-left: var(--id-edge-space);
+  padding-right: var(--id-edge-space);
 }
 
 .mcsr-indicator[data-run-status="empty"] {
@@ -136,6 +154,7 @@
   position: absolute;
   width: 0;
   height: 0;
+  top: calc(var(--id-pace-text-offset) + var(--id-pace-text-push, 0px));
   transform: rotate(var(--id-display-pace-text-rotate));
   display: var(--id-display-pace-text);
 }
@@ -143,7 +162,12 @@
 .mcsr-indicator__text-inner {
   position: absolute;
   display: flex;
-  transform: translate3d(calc(var(--id-pace-icon-size)), -50%, 0);
+  /* 区切り位置から離す量。回転方向に進む。未指定はアイコン1個分 */
+  transform: translate3d(
+    var(--id-pace-text-gap, var(--id-pace-icon-size)),
+    -50%,
+    0
+  );
   min-width: 500px;
 }
 
@@ -276,3 +300,29 @@
     drop-shadow(0 0 3px var(--id-highlighted-shadow-color))
     drop-shadow(0 0 3px var(--id-highlighted-shadow-color));
 }
+
+/* context マーカー。区間の境目ではないので別レイヤーにしてバーの下へ置く */
+.mcsr-indicator__context-container {
+  width: 100%;
+  position: relative;
+  top: var(--id-context-icon-offset);
+  display: var(--id-display-context, block);
+}
+
+.mcsr-indicator__context {
+  position: absolute;
+  height: var(--id-context-icon-size);
+  width: var(--id-context-icon-size);
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.mcsr-indicator__context-icon {
+  height: var(--id-context-icon-size);
+  width: var(--id-context-icon-size);
+  background-size: var(--id-context-icon-size);
+  background-repeat: no-repeat;
+  opacity: var(--id-context-icon-opacity);
+  image-rendering: pixelated;
+}
+
+

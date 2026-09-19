@@ -9,8 +9,11 @@
   --id-background: transparent;
 
   --id-font: normal bold 18px/1 sans-serif;
+  /* タイムの文字サイズ。余白の計算にも使うので数値だけ別に持つ */
+  --id-digits-font-size: 22px;
   --id-digits-font:
-    normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+    normal normal var(--id-digits-font-size)/1 Minecraft-Regular, Minecraft,
+    monospace, sans-serif;
 
   --id-width: 100%;
   --id-offset: 80px;
@@ -52,6 +55,8 @@
  */
 .mcsr-indicator[data-has-pb="false"] {
   --id-pace-icon-offset: var(--id-pb-icon-offset);
+  /* 上げるのはアイコンだけ。タイムは戻す */
+  --id-pace-text-push: calc(-1 * var(--id-pb-icon-offset));
 }
 
 .mcsr-indicator {
@@ -136,6 +141,7 @@
   position: absolute;
   width: 0;
   height: 0;
+  top: calc(var(--id-pace-text-offset, 0px) + var(--id-pace-text-push, 0px));
   transform: rotate(var(--id-display-pace-text-rotate));
   display: var(--id-display-pace-text);
 }
@@ -143,7 +149,12 @@
 .mcsr-indicator__text-inner {
   position: absolute;
   display: flex;
-  transform: translate3d(calc(var(--id-pace-icon-size)), -50%, 0);
+  /* 区切り位置から離す量。回転方向に進む。未指定はアイコン1個分 */
+  transform: translate3d(
+    var(--id-pace-text-gap, var(--id-pace-icon-size)),
+    -50%,
+    0
+  );
   min-width: 500px;
 }
 

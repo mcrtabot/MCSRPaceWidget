@@ -10,6 +10,15 @@
     "second_portal": "overworld.png",
     "enter_stronghold": "stronghold.png",
     "enter_end": "end.png",
-    "credits": "credits.png"
+    "credits": "credits.png",
+
+    "obtain_iron_ingot": "context/iron_ingot.png",
+    "obtain_iron_pickaxe": "context/iron_pickaxe.png",
+    "obtain_lava_bucket": "context/lava_bucket.png",
+    "distract_piglin": "context/gold_ingot.png",
+    "loot_bastion": "context/chest.png",
+    "obtain_obsidian": "context/obsidian.png",
+    "obtain_crying_obsidian": "context/crying_obsidian.png",
+    "obtain_blaze_rod": "context/blaze_rod.png"
   }
 }

@@ -93,6 +93,7 @@ Uploading writes to disk, so it is accepted only from the machine running the wi
 | `pbTimelineTitle` | Title shown above PB timeline (empty string = hidden) |
 | `paceTimelineTitle` | Title shown above pace timeline (empty string = hidden) |
 | `nextItemStyle` | How to show the next split: `"hyphen"` (--:--), `"random"` (animated), `"igt"` (current IGT) |
+| `contextLabel` | Display name for each context marker type |
 
 ## Split Types
 
@@ -107,6 +108,25 @@ These are the event type identifiers used in class names, `setting.json`, and da
 | `enter_stronghold` | Entered Stronghold |
 | `enter_end` | Entered the End |
 | `credits` | Finished (credits roll) |
+
+## Context Marker Types
+
+Points inside a segment rather than boundaries between them. They only appear on the
+Visual Timeline, and only when the theme sets `--id-display-context` — see the
+[Visual Timeline CSS Reference](THEME_GUIDE_VISUAL_TIMELINE.md).
+
+| Type | Event |
+|---|---|
+| `obtain_iron_ingot` | Smelted the first iron |
+| `obtain_iron_pickaxe` | Crafted an iron pickaxe |
+| `obtain_lava_bucket` | Filled a lava bucket |
+| `distract_piglin` | Distracted a piglin with gold |
+| `loot_bastion` | Looted a bastion chest |
+| `obtain_obsidian` | Obtained obsidian |
+| `obtain_crying_obsidian` | Obtained crying obsidian |
+| `obtain_blaze_rod` | Obtained a blaze rod |
+
+They are keyed like split types, so `icons.json` and `--icon-{type}` work the same way.
 
 ## Icons
 

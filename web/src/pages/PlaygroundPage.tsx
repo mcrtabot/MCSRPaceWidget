@@ -161,6 +161,10 @@ export const PlaygroundPage = () => {
       igt: timeline.igt,
       timelines:
         timeline.igt !== null ? timeline.timelines.filter((item) => item.igt <= timeline.igt!) : timeline.timelines,
+      context:
+        timeline.igt !== null
+          ? (timeline.context ?? []).filter((item) => item.igt <= timeline.igt!)
+          : (timeline.context ?? []),
     }),
     [timeline],
   );

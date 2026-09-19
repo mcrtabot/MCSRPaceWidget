@@ -9,8 +9,11 @@
   --id-background: transparent;
 
   --id-font: normal bold 18px/1 sans-serif;
+  /* 10px * sqrt(5)。rotate と揃えるとドットが整数pxに乗る */
+  --id-digits-font-size: 22.36px;
   --id-digits-font:
-    normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+    normal normal var(--id-digits-font-size)/1 Minecraft-Regular, Minecraft,
+    monospace, sans-serif;
 
   --id-width: 100%;
   --id-offset: 80px;
@@ -39,7 +42,8 @@
   --id-highlighted-shadow-color: rgba(255, 128, 128, 1);
 
   /* --id-display-pace-text: none; */
-  --id-display-pace-text-rotate: 32deg;
+  /* tan = 1/2。font-size とセットで変える */
+  --id-display-pace-text-rotate: 26.565deg;
   --id-display-pace-text-label: none;
   /* --id-display-pace-text-time: none; */
   /* --id-display-pace-text-diff: none; */
@@ -52,6 +56,8 @@
  */
 .mcsr-indicator[data-has-pb="false"] {
   --id-pace-icon-offset: var(--id-pb-icon-offset);
+  /* 上げるのはアイコンだけ。タイムは戻す */
+  --id-pace-text-push: calc(-1 * var(--id-pb-icon-offset));
 }
 
 .mcsr-indicator {
@@ -109,6 +115,7 @@
   position: absolute;
   width: 0;
   height: 0;
+  top: calc(var(--id-pace-text-offset, 0px) + var(--id-pace-text-push, 0px));
   transform: rotate(var(--id-display-pace-text-rotate));
   display: var(--id-display-pace-text);
 }
@@ -116,7 +123,12 @@
 .mcsr-indicator__text-inner {
   position: absolute;
   display: flex;
-  transform: translate3d(calc(var(--id-pace-icon-size) * 0.75), 0, 0);
+  /* 区切り位置からテキストを離す量。未指定ならこのテーマ本来の値 */
+  transform: translate3d(
+    var(--id-pace-text-gap, calc(var(--id-pace-icon-size) * 0.75)),
+    0,
+    0
+  );
   min-width: 500px;
 }
 
@@ -248,4 +260,11 @@
   filter: drop-shadow(0 0 3px var(--id-highlighted-shadow-color))
     drop-shadow(0 0 3px var(--id-highlighted-shadow-color))
     drop-shadow(0 0 3px var(--id-highlighted-shadow-color));
+}
+
+/* 右端のタイムは左へ寄せる。left は回転の外側なので傾きは変わらない */
+.mcsr-indicator__timeline-container--pace
+  .mcsr-indicator__item[data-align="end"]
+  .mcsr-indicator__text {
+  left: calc(-1 * var(--id-pace-text-end-shift, 64px));
 }

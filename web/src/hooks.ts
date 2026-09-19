@@ -47,15 +47,23 @@ const fetchTimeline = async ([path, demo]: [string, boolean?]) => {
 
 export const useTimeline = (demo?: boolean, igt?: number) => {
   const path = '/api/timeline';
-  let { isLoading, data = { timelines: [], igt: null } } = useSWR<TimelineData>([path, demo], fetchTimeline, {
-    refreshInterval: TIMELINE_REFRESH_INTERVAL,
-    dedupingInterval: TIMELINE_REFRESH_INTERVAL,
-    errorRetryInterval: TIMELINE_REFRESH_INTERVAL,
-    refreshWhenHidden: true,
-  });
+  let { isLoading, data = { timelines: [], context: [], igt: null } } = useSWR<TimelineData>(
+    [path, demo],
+    fetchTimeline,
+    {
+      refreshInterval: TIMELINE_REFRESH_INTERVAL,
+      dedupingInterval: TIMELINE_REFRESH_INTERVAL,
+      errorRetryInterval: TIMELINE_REFRESH_INTERVAL,
+      refreshWhenHidden: true,
+    },
+  );
 
   if (demo && igt !== undefined) {
-    data = { igt: igt * 1000, timelines: demoTimelineData.timelines.filter((item) => item.igt <= igt * 1000) };
+    data = {
+      igt: igt * 1000,
+      timelines: demoTimelineData.timelines.filter((item) => item.igt <= igt * 1000),
+      context: (demoTimelineData.context ?? []).filter((item) => item.igt <= igt * 1000),
+    };
   }
 
   // whether user left from world
@@ -71,7 +79,16 @@ export const useTimeline = (demo?: boolean, igt?: number) => {
       ? data.timelines.slice(0, enableCheatsIndex)
       : data.timelines;
 
-  return { isLoading, data: { ...data, timelines: filteredTimelines }, hasError: false };
+  /*
+   * context も同じ扱いにする。enable_cheats の igt はサーバーが 0 で入れるので、
+   * timelines のように index では切れない。RTA で切る。
+   */
+  const enableCheatsRTA = enableCheatsIndex >= 0 ? data.timelines[enableCheatsIndex].rta : undefined;
+  const filteredContext = left
+    ? []
+    : (data.context ?? []).filter((item) => enableCheatsRTA === undefined || (item.rta ?? 0) < enableCheatsRTA);
+
+  return { isLoading, data: { ...data, timelines: filteredTimelines, context: filteredContext }, hasError: false };
 };
 
 const fetchPBTimeline = async ([path, demo]: [string, boolean?]) => {

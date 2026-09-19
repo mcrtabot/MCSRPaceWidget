@@ -6,8 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
@@ -19,9 +23,36 @@ import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 public class EventList {
     public List<Event> timelines;
+    /** 区間の境目ではない「途中の一点」。詳細は CONTEXT_ADVANCEMENTS を参照 */
+    public List<Event> context = new ArrayList<>();
     public Long igt = null;
     public Long retimedIgt = null;
     public Long retimeAmount = null;
+
+    /**
+     * context として拾う advancement。値は SpeedRunIGT の events/rsg.json と同じ名前に
+     * 揃えてあるので、テーマ側は PaceMan の contextEventList と同じキーで書ける。
+     *
+     * events.log にも同じイベントが出るが、あちらの igt は getRetimedInGameTime()
+     * つまりリタイム込みで、timelines[] の igt (getInGameTime(false)) とは基準が違う。
+     * 同じ時間軸に並べたいので、基準の揃っている advancement 側を使う。
+     *
+     * 区間の境目になるもの(enter_nether / find_bastion / find_fortress /
+     * follow_ender_eye / enter_the_end)は timelines[] に出るので、ここには入れない。
+     */
+    private static final Map<String, String> CONTEXT_ADVANCEMENTS;
+    static {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("story/smelt_iron", "obtain_iron_ingot");
+        map.put("story/iron_tools", "obtain_iron_pickaxe");
+        map.put("story/lava_bucket", "obtain_lava_bucket");
+        map.put("nether/distract_piglin", "distract_piglin");
+        map.put("nether/loot_bastion", "loot_bastion");
+        map.put("story/form_obsidian", "obtain_obsidian");
+        map.put("nether/obtain_crying_obsidian", "obtain_crying_obsidian");
+        map.put("nether/obtain_blaze_rod", "obtain_blaze_rod");
+        CONTEXT_ADVANCEMENTS = Collections.unmodifiableMap(map);
+    }
 
     public EventList(List<Event> timelines, Long igt, Long retimedIgt, Long retimeAmount) {
         this.timelines = timelines;
@@ -178,7 +209,55 @@ public class EventList {
 
                 });
 
-        return new EventList(items, currentIgt, retimedIgt, retimeAmount);
+        EventList eventList = new EventList(items, currentIgt, retimedIgt, retimeAmount);
+        eventList.context = parseContext(json);
+        return eventList;
+    }
+
+    /**
+     * timer.igt の advancementsTracker から context を組み立てる。
+     * 取り損ねても本体の表示には影響しないので、形が違えば黙って空で返す。
+     */
+    private static List<Event> parseContext(JsonNode json) {
+        List<Event> context = new ArrayList<>();
+
+        JsonNode advancements = json.path("advancementsTracker").path("advancements");
+        if (!advancements.isObject()) {
+            return context;
+        }
+
+        Iterator<Map.Entry<String, JsonNode>> fields = advancements.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fields.next();
+
+            // キーは "minecraft:story/smelt_iron" 形式。名前空間は見ずにパスだけで引く
+            String key = entry.getKey();
+            String path = key.substring(key.indexOf(':') + 1);
+            String type = CONTEXT_ADVANCEMENTS.get(path);
+            if (type == null) {
+                continue;
+            }
+
+            // 条件の一部だけ満たした advancement も入っているので、完了したものだけ拾う
+            JsonNode track = entry.getValue();
+            if (!track.path("complete").asBoolean(false)) {
+                continue;
+            }
+
+            context.add(new Event("rsg." + type, type, track.path("rta").asLong(), track.path("igt").asLong()));
+        }
+
+        context.sort(
+                new Comparator<Event>() {
+
+                    @Override
+                    public int compare(Event o1, Event o2) {
+                        return o1.igt.compareTo(o2.igt);
+                    }
+
+                });
+
+        return context;
     }
 
     private Event getEvent(String type) {

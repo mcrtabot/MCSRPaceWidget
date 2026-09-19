@@ -44,5 +44,56 @@
             "rta": 1200000,
             "igt": 1200000
         }
+    ],
+    "context":
+    [
+        {
+            "id": "rsg.obtain_iron_ingot",
+            "type": "obtain_iron_ingot",
+            "rta": 95000,
+            "igt": 95000
+        },
+        {
+            "id": "rsg.obtain_iron_pickaxe",
+            "type": "obtain_iron_pickaxe",
+            "rta": 104000,
+            "igt": 104000
+        },
+        {
+            "id": "rsg.obtain_lava_bucket",
+            "type": "obtain_lava_bucket",
+            "rta": 151000,
+            "igt": 151000
+        },
+        {
+            "id": "rsg.distract_piglin",
+            "type": "distract_piglin",
+            "rta": 318000,
+            "igt": 318000
+        },
+        {
+            "id": "rsg.loot_bastion",
+            "type": "loot_bastion",
+            "rta": 352000,
+            "igt": 352000
+        },
+        {
+            "id": "rsg.obtain_crying_obsidian",
+            "type": "obtain_crying_obsidian",
+            "rta": 361000,
+            "igt": 361000
+        },
+        {
+            "id": "rsg.obtain_blaze_rod",
+            "type": "obtain_blaze_rod",
+            "rta": 684000,
+            "igt": 684000
+        },
+        {
+            "id": "rsg.obtain_obsidian",
+            "type": "obtain_obsidian",
+            "rta": 731000,
+            "igt": 731000
+        }
     ]
 }
