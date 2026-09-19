@@ -12,7 +12,7 @@ works as an OBS browser source, just pick a theme and add it to your scene.
 
 ## Quick Start
 
-Requires SpeedRunIGT 14.0 or later and Java 17 or later.
+Requires SpeedRunIGT 14.0 or later and Java 8 or later.
 **Set "Auto Save Interval" (SpeedRunIGT Options > Timer) to `Ticks`** — without it, splits are not written in real time.
 The widget checks this for you and says so on its page if it is set to anything else.
 

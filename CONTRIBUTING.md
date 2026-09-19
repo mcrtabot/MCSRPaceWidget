@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js 18+
-- Java 17+ (for server build)
+- Java 8+ (for server build)
 - Maven 3.9+ (for server build)
 
 ## Setup
