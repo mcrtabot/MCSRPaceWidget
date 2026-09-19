@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useTimelineInfo } from '../../hooks';
 import { TimelineItem, TimelineNextItemStyle } from '../../types';
-import { hasPBTime } from '../../utils/utils';
 import { RandomTime } from './RandomTime';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon as TLIcon } from './TimelineIcon';
@@ -33,9 +32,6 @@ export const Timeline = ({
     pbTimeline ?? [],
     labels,
   );
-
-  // PB が無いと差分は "+--:--" が並ぶだけなので出さない
-  const hasPB = hasPBTime(pbTimeline);
 
   const classNames: string[] = className?.split(' ') ?? [];
   if (timeline.length === 0) {
@@ -106,19 +102,17 @@ export const Timeline = ({
                   </div>
                 </td>
 
-                {hasPB && (
-                  <td className="timeline__item__cell timeline__item__cell__diff">
-                    <div className="timeline__item__diff">
-                      {timelineStatus === 'next' && nextItemStyle === 'random' ? (
-                        <RandomTime />
-                      ) : timelineStatus === 'next' && nextItemStyle === 'igt' ? (
-                        <DiffTime time={igt} pbTime={pbTime} displayDiff={diffEnabled} />
-                      ) : (
-                        <DiffTime time={time} pbTime={pbTime} displayDiff={diffEnabled} />
-                      )}
-                    </div>
-                  </td>
-                )}
+                <td className="timeline__item__cell timeline__item__cell__diff">
+                  <div className="timeline__item__diff">
+                    {timelineStatus === 'next' && nextItemStyle === 'random' ? (
+                      <RandomTime />
+                    ) : timelineStatus === 'next' && nextItemStyle === 'igt' ? (
+                      <DiffTime time={igt} pbTime={pbTime} displayDiff={diffEnabled} />
+                    ) : (
+                      <DiffTime time={time} pbTime={pbTime} displayDiff={diffEnabled} />
+                    )}
+                  </div>
+                </td>
               </tr>
             );
           })}

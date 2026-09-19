@@ -13,6 +13,8 @@
   --tl-digits-font:
     normal normal 30px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
   --icon-size: 28px;
+  /* アイコンとタイムの間 */
+  --tl-icon-gap: 10px;
 
   --tl-pb-timeline-width: 0;
   --tl-pace-timeline-width: 250px;
@@ -115,6 +117,10 @@
   background-repeat: no-repeat;
 }
 
+.timeline__item__cell__icon {
+  padding-right: var(--tl-icon-gap);
+}
+
 .timeline__item__time {
   font: var(--tl-digits-font);
 }
@@ -200,4 +206,9 @@
   background-image: url(./niwatori.png);
   background-repeat: no-repeat;
   background-position: right;
+}
+
+/* PB 未設定のとき。列は残して中身だけ消し、列幅を保つ */
+.mcsr-widget[data-has-pb="false"] .timeline__item__cell__diff {
+  visibility: hidden;
 }

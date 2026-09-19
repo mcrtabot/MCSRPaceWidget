@@ -192,3 +192,8 @@
     var(--tl-display-pace-timeline-item-status-next, table-row)
   );
 }
+
+/* PB 未設定のとき。列は残して中身だけ消し、列幅を保つ */
+.mcsr-widget[data-has-pb="false"] .timeline__item__cell__diff {
+  visibility: hidden;
+}
