@@ -10,91 +10,51 @@ OBS のブラウザソースとしてテーマを切り替えるだけで配信�
 <img src="docs/timeline_texture-bar.gif" alt="タイムライン表示例">
 <img src="docs/indicator_texture-bar.gif" alt="ビジュアルタイムライン表示例">
 
-## 特徴
+## Quick Start
 
-- **タイムライン** — 現在のペースと自己ベスト（PB）との差分をテーブル表示
-- **ビジュアルタイムライン** — バー形式で進行状況を視覚的に表示
-- **セグメント** — 現在の区間を表示。バナー演出や常時表示などCSSで自由にカスタマイズ可能
-- CSSのdata属性による柔軟なテーマスタイリング
-- SpeedRunIGT と連携したリアルタイム更新
-- MCSRリタイム対応（13分以内のランで自動的にポーズ時間を加算）
+SpeedRunIGT 14.0 以降と Java 17 以降が必要です。
+**SpeedRunIGT オプション > タイマー で「自動保存間隔」を `Ticks` にしてください。** これが無いとスプリットがリアルタイムで書き出されません。
+設定が違う場合はウィジェットの画面で知らせます。
 
-## 必要条件
+1. [リリースページ](https://github.com/mcrtabot/MCSRPaceWidget/releases)から `mcsr-pace-widget.jar` をダウンロード
+2. どちらかの方法で起動
+   - **スタンドアロン**: `mcsr-pace-widget.jar` を実行
+   - **Jingle プラグイン**: `C:\Users\<ユーザー名>\.config\Jingle\plugins` にコピーして Jingle を再起動
+3. OBS のブラウザソースにこの URL を設定
 
-- SpeedRunIGT 14.0 以降
-  - **SpeedRunIGT オプション > タイマー で「自動保存間隔」を `Ticks` に設定してください** — スプリットをリアルタイムで表示するために必要です
-    設定が違う場合はウィジェットの画面で知らせます。
+   ```
+   http://127.0.0.1:1161/indicator?theme=default
+   ```
 
-## インストール
+   横に伸ばしたいときはブラウザソースの **幅** を変えてください。
 
-[リリースページ](https://github.com/mcrtabot/MCSRPaceWidget/releases)から zip をダウンロードし、解凍します。
+以上です。必要なものはすべて jar に入っています。
 
-### スタンドアロン実行
+## ウィジェット
 
-1. `mcsr-pace-widget.jar` を実行
-2. `open MCSR Pace Widget` をクリック（http://127.0.0.1:1161 が開きます）
-3. テーマを選択し、ウィジェット URL をコピー
-4. OBS のブラウザソースに URL を設定
+URL のパスを変えるとウィジェットが切り替わります。どれも `?theme=<テーマ名>` を受け付けます。
 
-### Jingle プラグインとして実行
+| ウィジェット | URL | 表示内容 |
+| --- | --- | --- |
+| Visual Timeline | `/indicator?theme=default` | バー形式で目標ペースに対する現在位置を表示 |
+| Timeline | `/timeline?theme=default` | 各スプリットのタイムと目標ペースとの差分をテーブル表示 |
+| Segment | `/segment?theme=default` | 現在の区間を表示。バナー演出や常時表示などの登場アニメーション付き |
 
-1. ホームディレクトリに `.config/MCSRPaceWidget` ディレクトリを作成し、解凍した `theme` と `setting` をコピー
-   - Windows: `C:\Users\<ユーザー名>\.config\MCSRPaceWidget`
-2. `mcsr-pace-widget.jar` を Jingle プラグインディレクトリにコピー
-   - `C:\Users\<ユーザー名>\.config\Jingle\plugins`
-3. Jingle を再起動し、Plugins > MCSR Pace Widget タブを開く
-4. `open MCSR Pace Widget` をクリックし、テーマを選択
-5. OBS のブラウザソースにウィジェット URL を設定
+13 分以内のランは MCSR のリタイム規定に合わせてポーズ時間を自動で加算します。
 
-## 設定
+## 次のステップ
 
-`setting` と `theme` ディレクトリは以下のいずれかに配置します（上が優先）:
+### 目標ペースを設定して差分を出す
 
-1. `~/.config/MCSRPaceWidget/` 内
-2. `mcsr-pace-widget.jar` と同じディレクトリ内
+設定しなくても動きます。PB が無いときの Visual Timeline はラン自体に合わせてスケールします。
+PB（または任意の目標ペース）を設定すると、すべてのウィジェットでその差分が出ます。
 
-### PB タイム設定
-
-PB を設定しなくてもウィジェットは動きます（Visual Timeline は PB が無ければランの長さに合わせて表示します）。
-自己ベストとの差分を表示したい場合に、PB タイムを設定します。
-
-- MCSRPaceWidget ウィンドウ（または Jingle タブ）で `Pace Settings...` をクリック
+- MCSRPaceWidget ウィンドウ（または Jingle タブ）の `Pace Settings...` をクリック
 - `12:34`（12分34秒）または `12:34.567`（12分34.567秒）の形式で入力
 
-### 顔を自分のスキンにする
+### テーマを選ぶ
 
-Visual Timeline の顔キャラクターを、自分の Minecraft スキンにできます。
-既定で有効です。アカウントはランのデータから自動で判別するため、入力は不要です。
-自前の顔画像を持つテーマはそちらが優先されます。どちらを使うかはテーマ側の CSS が
-決めるので、自作テーマにも同じルールが適用されます（同梱の `niwatori` テーマがこの形です）。
-
-テーマ側の画像に戻したい場合は URL に `?face=theme`、逆にスキンを強制したい場合は
-`?face=skin` を付けてください。別のアカウントを指定したい場合（他人のランを配信する
-場合など）は、`setting/player.json` の `id` に Minecraft ID か UUID を設定してください。
-スキンを読み込めなかったときは、テーマ側の顔画像が表示されます。
-
-### CSS を書かずにテーマを調整する
-
-[Playground](/playground) でベーステーマを選び、色・フォント・サイズ・各部分の表示を
-フォームから調整できます。変更内容を含んだウィジェット URL が生成されるので、それを
-OBS に貼るだけです。ファイルを編集する必要はなく、URL をそのまま人に渡せます。
-
-### カスタムテーマ
-
-1. `theme` ディレクトリ内のベーステーマ（例: `default`）をコピーしてリネーム
-2. `setting.json` とスタイルシート（`timeline.css` / `indicator.css` / `segment.css`）を編集
-3. [Playground](/playground) で様々なデータパターンでプレビュー
-
-スプリットのアイコンは `icon` ディレクトリの共通アイコンセットから読み込みます。
-`setting.json` の `"iconSet"`（`default` / `paceman` / `paceman-stat`）で選択するため、
-テーマごとに画像を持つ必要はありません。
-ウィジェットの URL に `?icons=<セット名>` を付けると、ファイルを編集せずに別のセットを試せます。
-
-Minecraft フォントが同梱されています。テーマ CSS で `font-family: 'Minecraft-Regular'` を指定すると、より Minecraft らしい見た目にできます。
-
-テーマ開発の詳細は [テーマ開発ガイド](resources/THEME_GUIDE.md) を参照してください。
-
-## テーマ一覧
+http://127.0.0.1:1161 を開き（`Open MCSR Pace Widget` でも開けます）、ウィジェットごとにテーマを選んで URL をコピーします。
 
 <details>
 <summary>Default / Texture-bar</summary>
@@ -118,7 +78,7 @@ Minecraft フォントが同梱されています。テーマ CSS で `font-fami
 </details>
 
 <details>
-<summary>Paceman（最新イベントのみ表示）</summary>
+<summary>Paceman（最新イベントのみ）</summary>
 
 <img src="docs/timeline_paceman.gif" alt="Paceman タイムライン">
 <img src="docs/indicator_paceman.gif" alt="Paceman ビジュアルタイムライン">
@@ -134,7 +94,7 @@ Minecraft フォントが同梱されています。テーマ CSS で `font-fami
 <details>
 <summary>Horizontal-timeline</summary>
 
-<img src="docs/timeline_horizontal.gif" alt="Horizontal-timeline タイムライン">
+<img src="docs/timeline_horizontal.gif" alt="Horizontal-timeline">
 </details>
 
 <details>
@@ -144,17 +104,71 @@ Minecraft フォントが同梱されています。テーマ CSS で `font-fami
 <img src="docs/indicator_niwatori.gif" alt="Niwatori ビジュアルタイムライン">
 </details>
 
+### CSS を書かずにテーマを調整する
+
+トップページでテーマの横の `Customize...` を押します（http://127.0.0.1:1161/customize でも開けます）。
+テーマエディタで色・フォント・サイズ・各パーツの表示/非表示を調整すると、その変更を含んだウィジェット URL が出るので、それを OBS に貼るだけです。
+ファイルには何も書き込まないので、URL をそのまま人に渡すこともできます。
+
+## 高度な設定
+
+### 設定フォルダ
+
+初回起動時に `~/.config/MCSRPaceWidget`（Windows は `C:\Users\<ユーザー名>\.config\MCSRPaceWidget`）を作り、同梱のファイルをコピーします。
+MCSRPaceWidget ウィンドウ（または Jingle タブ）の `Open Config Folder` で開けます。
+
+| パス | 内容 |
+| --- | --- |
+| `setting/pb.json` | 目標ペース。`Pace Settings...` が書き込む先 |
+| `setting/player.json` | スキン顔に使う Minecraft ID / UUID（後述） |
+| `theme/<テーマ名>/` | テーマ。自作テーマはここに置く |
+| `icon/<セット名>/` | スプリットアイコンのセット |
+| `upload/` | テーマエディタから追加した画像 |
+
+ここにあるファイルが同梱のものより優先されます。一度作られたフォルダは上書きされません。
+新しいリリースに同梱されたテーマやアイコンセットも一覧に出るので、アップデートは jar を差し替えるだけです。
+
+### 顔を自分のスキンにする
+
+Visual Timeline の顔キャラクターは自分の Minecraft スキンになります。標準で有効で、アカウントはランのデータから自動検出するので入力は不要です。
+テーマ側に顔の画像がある場合はそちらが使われます（同梱の `niwatori` がそうです）。これはテーマの CSS で決まります。
+
+- ウィジェット URL に `?face=theme` を付けるとテーマの画像、`?face=skin` を付けるとスキンを強制
+- 別のアカウントにしたいとき（他の人のランを配信するときなど）は `setting/player.json` の `id` に Minecraft ID か UUID を入れる
+- スキンが取得できないときはテーマの顔画像が出ます
+
+### アイコンセット
+
+スプリットアイコンは `icon/` の共通セット（`default`、`paceman`、`paceman-stat`）から出ます。
+テーマは `setting.json` の `"iconSet"` でどれを使うか選びます。ウィジェット URL に `?icons=<セット名>` を付けると、ファイルを触らずに別のセットを試せます。
+
+### カスタムテーマ
+
+1. 設定フォルダ内でベースとなるテーマ（例: `theme/default`）をコピーしてリネーム
+2. `setting.json` と CSS（`timeline.css` / `indicator.css` / `segment.css`）を編集
+3. http://127.0.0.1:1161/playground でさまざまなデータパターンを使って表示を確認
+
+テーマが対応するウィジェットの CSS だけを置いてください。サーバーは各ファイルの有無で対応ウィジェットを判定します。
+Minecraft フォントを同梱しています。CSS で `font-family: 'Minecraft-Regular'` を指定すると本家に近い見た目になります。
+
+CSS の詳しい仕様は [テーマ開発ガイド](resources/THEME_GUIDE.md) を参照してください。
+
 ## FAQ
 
 **Q: Enter Bastion や Enter Fortress などのスプリットがすぐに表示されない**
 
 A: SpeedRunIGT オプション > タイマー で「自動保存間隔」が `Ticks` になっているか確認してください。
-この設定がされていないと、スプリットデータがリアルタイムで書き出されず、表示が遅延します。
+この設定がないとスプリットデータがリアルタイムで書き込まれず、表示が遅れます。
+
+**Q: jar を更新したのに新しいテーマが出てこない**
+
+A: 同梱テーマは設定フォルダのテーマと合わせて一覧に出るので、再起動すれば表示されるはずです。
+設定フォルダに同名のテーマがある場合はそちらが使われます。
 
 ## 開発
 
-開発に参加する場合は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+開発環境のセットアップやビルド手順は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 
 ## 関連プロジェクト
 
-- [MCSRImageBuilder](https://github.com/mcrtabot/MCSRImageBuilder) — ランのタイムライン画像を生成するWebツール
+- [MCSRImageBuilder](https://github.com/mcrtabot/MCSRImageBuilder) — 完走したランからタイムライン画像を生成する Web ツール
