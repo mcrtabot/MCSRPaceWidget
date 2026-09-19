@@ -36,9 +36,9 @@ export type Setting = {
   faceSkin?: boolean;
   /** context マーカーの表示名。ツールチップと data-label に使う */
   contextLabel?: { [key: string]: string };
-  /** Visual Timeline で PB が無いときに最初から見せる幅（秒）。既定 780 */
+  /** Visual Timeline で PB が無いときに最初から見せる幅（秒）。既定 600 */
   scaleMinSeconds?: number;
-  /** Visual Timeline の横軸を伸ばす単位（秒）。既定 60 */
+  /** Visual Timeline の横軸を伸ばす単位（秒）。既定 180 */
   scaleStepSeconds?: number;
   segmentLabel: { [key: string]: string[] };
   enteringDuration: number;

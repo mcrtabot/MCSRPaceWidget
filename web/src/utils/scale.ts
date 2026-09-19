@@ -8,15 +8,9 @@
 
 const SECOND_MS = 1000;
 
-/**
- * 既定の下限は13分。sub 13 が一区切りなので、そこを右端に置くと目盛りとして
- * 意味を持つ。MCSR のリタイム判定 (EventList) が使っている境目とも同じ。
- *
- * 既定の刻みは1分。分の目盛りと一致するので、伸びたときにどこが増えたか
- * 分かりやすい。走り始めの数十秒で満幅になるのは下限が防ぐ。
- */
-export const DEFAULT_MIN_SECONDS = 13 * 60;
-export const DEFAULT_STEP_SECONDS = 60;
+/** 10分から始めて3分ずつ伸ばす */
+export const DEFAULT_MIN_SECONDS = 10 * 60;
+export const DEFAULT_STEP_SECONDS = 3 * 60;
 
 export type ScaleSetting = {
   /** PB が無いときに最初から見せる幅（秒） */
@@ -55,8 +49,14 @@ export const resolveScale = (
     return Math.max(currentIGT, 1);
   }
 
-  const minMs = toMs(setting.minSeconds, DEFAULT_MIN_SECONDS, 0);
   const stepMs = toMs(setting.stepSeconds, DEFAULT_STEP_SECONDS, 1);
+  // PB を超えたぶんは PB の右端から刻む。10分基準のままだと、超えた瞬間に
+  // PB と無関係な目盛りへ飛んでアイコンが一斉に動く
+  const baseMs = Math.max(toMs(setting.minSeconds, DEFAULT_MIN_SECONDS, 0), pbFinalIGT);
 
-  return Math.max(minMs, Math.ceil(currentIGT / stepMs) * stepMs);
+  // 下限を超えたら、そこから刻みぶんずつ伸ばす（10分→13分→16分…）
+  if (currentIGT <= baseMs) {
+    return baseMs;
+  }
+  return baseMs + Math.ceil((currentIGT - baseMs) / stepMs) * stepMs;
 };

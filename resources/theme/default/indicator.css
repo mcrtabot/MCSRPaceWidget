@@ -20,6 +20,8 @@
 
   --id-line-size: 20px;
   --id-dot-size: 6px;
+  --id-track-background: #666;
+  /* --id-display-track: none; */
   --id-face-icon-size: 32px;
   --id-pb-icon-size: 24px;
   --id-pace-icon-size: 32px;
@@ -92,6 +94,18 @@
   position: relative;
 }
 
+/* PB が無くてもバーの枠は出す。PB があるときは PB の線が上に乗る */
+.mcsr-indicator__line-container::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--id-line-size);
+  transform: translate3d(0, -50%, 0);
+  background: var(--id-track-background, #666);
+  display: var(--id-display-track, block);
+}
+
 .mcsr-indicator__line {
   position: absolute;
   height: var(--id-line-size);
@@ -141,6 +155,10 @@
   /* border-radius: 50%; */
   background: #333;
   transform: translate3d(-50%, -50%, 0);
+}
+
+.mcsr-indicator__dot--track {
+  display: var(--id-display-track, block);
 }
 
 .mcsr-indicator__dot--pace {
@@ -324,5 +342,3 @@
   opacity: var(--id-context-icon-opacity);
   image-rendering: pixelated;
 }
-
-

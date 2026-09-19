@@ -7,9 +7,11 @@ CSS reference for `indicator.css`. For general theme development, see [Theme Dev
 ```
 .mcsr-indicator                                     [data-segment] [data-run-status]
   .mcsr-indicator__line-container                   Background progress bars
+    ::before                                        Empty track, full width
     .mcsr-indicator__line.mcsr-indicator__line--pb   PB progress segments
     .mcsr-indicator__line.mcsr-indicator__line--pace Pace progress segments
   .mcsr-indicator__dot-container                    Minute marker dots
+    .mcsr-indicator__dot.mcsr-indicator__dot--track Track dots (only without a PB)
     .mcsr-indicator__dot.mcsr-indicator__dot--pb    PB dots
     .mcsr-indicator__dot.mcsr-indicator__dot--pace  Pace dots
   .mcsr-indicator__context-container                Context marker layer (opt-in)
@@ -185,6 +187,17 @@ Default values are from the `default` theme.
 | `--id-pb-icon-offset`    | PB icon row vertical offset       | `-48px` |
 | `--id-pace-icon-offset`  | Pace icon row vertical offset     | `0px`   |
 
+### Track
+
+The bar behind everything else, so the widget keeps its shape before the run fills it. With a PB
+the PB segments cover it, so it only shows up when there is no PB — otherwise the runner's face
+would float in empty space. Its minute dots are drawn the same way, across the full width.
+
+| Variable                 | Description                            | Default |
+| ------------------------ | -------------------------------------- | ------- |
+| `--id-track-background`  | Track color. Matches the PB segments    | `#666`  |
+| `--id-display-track`     | `none` hides the track and its dots     | shown   |
+
 ### Pace Text Placement
 
 The time is rotated, so it runs away from its split in the direction of the rotation. These
@@ -252,15 +265,16 @@ The width it starts at and the unit it grows by are both settable in seconds, fr
 
 ```json
 {
-  "scaleMinSeconds": 780,
-  "scaleStepSeconds": 60
+  "scaleMinSeconds": 600,
+  "scaleStepSeconds": 180
 }
 ```
 
-`scaleMinSeconds` is the width shown before the run reaches it (default 780 = 13 minutes), and
-`scaleStepSeconds` is how much the bar grows at a time once it does (default 60). A theme for
-shorter categories might use `90` and `30`; one that wants a smoother bar might use `600` and
-`10`. A step of 0 or less is treated as 1 second, so a bad value cannot break the layout.
+`scaleMinSeconds` is the width shown before the run reaches it (default 600 = 10 minutes), and
+`scaleStepSeconds` is how much the bar grows each time it does (default 180), so the bar spans
+10, then 13, then 16 minutes and so on. A theme for shorter categories might use `90` and `30`;
+one that wants a smoother bar might use `600` and `10`. A step of 0 or less is treated as
+1 second, so a bad value cannot break the layout.
 
 Both can be overridden per widget URL with `?scaleMin=` and `?scaleStep=`, in seconds, which
 is the quickest way to try a value before writing it into a theme:
@@ -324,6 +338,7 @@ Set to `none` to hide, or leave unset (commented out) to show.
 | `--id-display-pace-text-time`  | Split time in pace text   |
 | `--id-display-pace-text-diff`  | Diff in pace text         |
 | `--id-display-context`         | Context marker layer (`none` by default) |
+| `--id-display-track`           | Empty track and its minute dots |
 
 ### Text Layout
 

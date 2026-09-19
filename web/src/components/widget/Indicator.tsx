@@ -11,6 +11,7 @@ import {
 } from '../../utils/indicator';
 import { ThemeOverrides } from '../../utils/overrides';
 import { resolveScale } from '../../utils/scale';
+import { hasPBTime } from '../../utils/utils';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon } from './TimelineIcon';
 
@@ -49,7 +50,9 @@ export const Indicator = () => {
   const skinVariable = useMemo<ThemeOverrides>(() => {
     const variables: ThemeOverrides = {};
     if (offerSkin && skinUrl) {
-      variables['--mcsr-skin-face'] = skinUrl;
+      // スキンは外部(mc-heads)から来るので、取れなかったときのために後ろへ既定の顔を重ねる。
+      // 変数を立てた時点でテーマ側 var() のフォールバックは使われなくなるため
+      variables['--mcsr-skin-face'] = `${skinUrl}, var(--mcsr-face-fallback, url(/setting/face.png))`;
     }
     return variables;
   }, [offerSkin, skinUrl]);
@@ -75,6 +78,8 @@ export const Indicator = () => {
   const pbTimelineMap = useMemo(() => new Map(pbTimeline.map((item) => [item.type, item])), [pbTimeline]);
 
   const pbFinalIGT = useMemo(() => pbTimeline.find((item) => item.type === 'credits')?.igt ?? 0, [pbTimeline]);
+  // PB の終端。credits が空でも、入っているスプリットまでは比較できる
+  const pbLastIGT = useMemo(() => Math.max(0, ...pbTimeline.map((item) => item.igt)), [pbTimeline]);
   const paceIGT = useMemo(() => {
     const finalIGT = timeline.find((item) => item.type === 'credits')?.igt;
     if (finalIGT) {
@@ -91,7 +96,9 @@ export const Indicator = () => {
     minSeconds: setting.scaleMinSeconds,
     stepSeconds: setting.scaleStepSeconds,
   });
-  const hasPB = pbFinalIGT > 0;
+  // 判定は Timeline / Segment と同じ hasPBTime に揃える。ここだけ credits で見ると、
+  // 途中まで入れた pb.json でウィジェットごとに差分の出る・出ないが食い違う
+  const hasPB = hasPBTime(pbTimeline);
 
   // fit のときは分母がランの長さなので、PB の後半は分母を超える。
   // そのまま描くと画面の外へ出ていくだけなので、収まる範囲だけ描く
@@ -99,7 +106,7 @@ export const Indicator = () => {
     () => pbTimeline.filter((item) => item.igt <= denominator),
     [pbTimeline, denominator],
   );
-  const pbExtent = Math.min(pbFinalIGT, denominator);
+  const pbExtent = Math.min(pbLastIGT, denominator);
 
   const latestItem = timeline[timeline.length - 1];
   // PB が無ければ「速い/遅い」の判定もできない
@@ -152,6 +159,14 @@ export const Indicator = () => {
         ))}
       </div>
       <div className="mcsr-indicator__dot-container">
+        {/* PB が無いと目盛りが現在地までで切れるので、枠と同じく右端まで引く */}
+        {(hasPB ? [] : getTimelineDotItems(timeline, denominator, denominator)).map((dotItem, index) => (
+          <div
+            key={`track_${dotItem.type}_${index}`}
+            className={`mcsr-indicator__dot mcsr-indicator__dot--track mcsr-indicator__dot--${dotItem.type}`}
+            style={{ left: dotItem.left }}
+          />
+        ))}
         {(hasPB ? getTimelineDotItems(visiblePbTimeline, pbExtent, denominator) : []).map((dotItem, index) => (
           <div
             key={`${dotItem.type}_${index}`}

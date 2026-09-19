@@ -87,7 +87,8 @@ export const getFaceStatus = (
     return 'normal';
   }
 
-  if (paceIGT > pbFinalIGT) {
+  // PB に credits が無いと完走タイムが分からない。その場合はスプリット単位の比較だけで見る
+  if (pbFinalIGT > 0 && paceIGT > pbFinalIGT) {
     return 'sad';
   }
 
