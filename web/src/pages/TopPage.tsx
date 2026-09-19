@@ -146,7 +146,7 @@ export const TopPage = () => {
               MCSR Pace Widget
             </Title>
             <Badge variant="light" color="gray" size="lg">
-              v3.2.2
+              v3.3.0
             </Badge>
           </Group>
           <Group mt="xs" gap="md">
