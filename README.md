@@ -54,7 +54,8 @@ The `setting` and `theme` directories can be placed in either location (first ta
 
 ### PB Time
 
-To display the difference from your personal best, configure your PB times.
+The widgets work without this — the Visual Timeline scales itself to the run when no PB is
+set. Configure your PB times to see the difference from it.
 
 - Click `Pace Settings...` in the MCSRPaceWidget window (or Jingle tab)
 - Enter times in `12:34` (12m34s) or `12:34.567` (12m34.567s) format
@@ -62,11 +63,14 @@ To display the difference from your personal best, configure your PB times.
 ### Runner's Skin as the Face
 
 The Visual Timeline's face character can show your own Minecraft skin.
-Add `?face=skin` to the widget URL, or set `"faceSkin": true` in the theme's `setting.json`.
+This is on by default. Your account is detected from the run data, so there is nothing to
+enter. Themes that ship their own face art keep it — that is decided by the theme's own CSS,
+so the same rule applies to themes you write (the bundled `niwatori` theme keeps its art).
 
-Your account is detected from the run data, so there is nothing to enter. To pick a different
-account (for example when streaming someone else's run), set `id` in `setting/player.json` to
-a Minecraft ID or UUID. If the skin cannot be loaded, the theme's own face image is shown.
+Add `?face=theme` to the widget URL for the theme's image instead, or `?face=skin` to force
+the skin. To pick a different account (for example when streaming someone else's run), set
+`id` in `setting/player.json` to a Minecraft ID or UUID. If the skin cannot be loaded, the
+theme's own face image is shown.
 
 ### Customizing a Theme Without CSS
 

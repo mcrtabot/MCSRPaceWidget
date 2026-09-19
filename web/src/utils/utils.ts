@@ -37,3 +37,9 @@ export const convertMillisecondsToTime = (milliseconds?: number, displayMilliSec
 
   return timeFormat + msPart;
 };
+
+/**
+ * PB が設定されているか。
+ * 出荷時の pb.json は全項目が 00:00 なので、項目の有無ではなく値で見る。
+ */
+export const hasPBTime = (pbTimeline?: { igt: number }[]) => (pbTimeline ?? []).some((item) => item.igt > 0);

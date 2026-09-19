@@ -18,6 +18,10 @@ export type Setting = {
   iconSet?: string;
   /** true で Indicator の顔を走者のスキンにする */
   faceSkin?: boolean;
+  /** Visual Timeline で PB が無いときに最初から見せる幅（秒）。既定 780 */
+  scaleMinSeconds?: number;
+  /** Visual Timeline の横軸を伸ばす単位（秒）。既定 60 */
+  scaleStepSeconds?: number;
   segmentLabel: { [key: string]: string[] };
   enteringDuration: number;
   pbTimelineTitle: string;

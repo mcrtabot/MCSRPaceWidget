@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AppContext } from '../../context';
 import { useThemeCSS, useTimelineInfo } from '../../hooks';
+import { hasPBTime } from '../../utils/utils';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon } from './TimelineIcon';
 import { RandomTime } from './RandomTime';
@@ -20,6 +21,8 @@ export const Segment = () => {
   );
 
   const pbTimelineMap = useMemo(() => new Map(pbTimeline.map((item) => [item.type, item])), [pbTimeline]);
+  // PB が無いと差分は "+--:--" になるだけなので中身を出さない
+  const hasPB = hasPBTime(pbTimeline);
 
   // Current segment = last completed timeline event
   const currentItem = timeline.length > 0 ? timeline[timeline.length - 1] : null;
@@ -78,6 +81,7 @@ export const Segment = () => {
       data-segment={currentType ?? ''}
       data-run-status={status}
       data-highlighted={highlighted}
+      data-has-pb={hasPB}
     >
       <div className={`mcsr-segment__background mcsr-segment__background--${currentType ?? 'none'}`} />
 
@@ -102,8 +106,9 @@ export const Segment = () => {
           )}
         </div>
 
+        {/* PB が無くても要素は残す。出す・出さないはテーマCSSの data-has-pb が決める */}
         <div className="mcsr-segment__diff">
-          {currentItem && diffEnabled ? <DiffTime time={currentItem.igt} pbTime={pbTime} /> : ''}
+          {hasPB && currentItem && diffEnabled ? <DiffTime time={currentItem.igt} pbTime={pbTime} /> : ''}
         </div>
       </div>
 

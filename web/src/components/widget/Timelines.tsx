@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 
 import { AppContext } from '../../context';
 import { useThemeCSS } from '../../hooks';
+import { hasPBTime } from '../../utils/utils';
 import { Timeline } from './Timeline';
 
 export const Timelines = () => {
@@ -13,7 +14,12 @@ export const Timelines = () => {
   const status = timeline.timelines.length === 0 ? 'empty' : isCompleted ? 'completed' : 'running';
 
   return (
-    <div className="mcsr-widget" data-segment={currentSegment} data-run-status={status}>
+    <div
+      className="mcsr-widget"
+      data-segment={currentSegment}
+      data-run-status={status}
+      data-has-pb={hasPBTime(pbTimeline)}
+    >
       <div className="mcsr-widget-container">
         <Timeline
           className="timeline timeline--pb"

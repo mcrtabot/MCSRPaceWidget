@@ -142,34 +142,94 @@ Default values are from the `default` theme.
 | `--id-face-completed-offset`   | Face position on completion | `-48px`                      |
 | `--mcsr-face-fallback`         | Face shown when the runner's skin cannot be loaded | `url(/setting/face.png)` |
 
-### Runner's Skin as the Face
+### What the Bar Spans
 
-The face character can show the runner's own Minecraft skin instead of the theme's image.
-Turn it on with `"faceSkin": true` in the theme's `setting.json`, or with `?face=skin` on the
-widget URL (`?face=theme` forces the theme's image back).
+By default the bar spans your PB, so the right edge is your PB's finish — until the run passes
+it. From then on the bar grows a minute at a time, because a run that is already slower than
+the PB would otherwise keep going off the right edge. Finishing lands the run exactly on the
+right edge.
 
-The widget resolves the runner from `setting/player.json` first, then from the world save,
-so nothing has to be typed in for the common case. When it is on, the widget sets the three
-`--id-face-*` variables to the skin image layered over `--mcsr-face-fallback`, and marks the
-root element with `data-face="skin"`.
+    IGT 8:40   -> spans 17:29 (the PB)
+    IGT 17:29  -> spans 17:29, the run sits exactly at 100%
+    IGT 17:30  -> spans 18:00
+    IGT 20:00  -> spans 21:00
+    finished at 26:40 -> spans 26:40
 
-The skin is a single image, so it cannot change expression. Use `data-face="skin"` to keep
-the ahead/behind states readable:
+With no PB set, the bar uses those steps from the start, and never spans less than 13 minutes —
+sub 13 is the line runners care about, and it keeps the first minute of a run from filling the
+whole thing:
 
-```css
-.mcsr-indicator[data-face="skin"] .mcsr-indicator__face--sad {
-  filter: grayscale(1) brightness(0.7);
+    IGT 1:00   -> spans 13:00, the run sits at 7.7%
+    IGT 12:59  -> spans 13:00
+    IGT 13:00  -> spans 13:00, the run sits exactly at 100%
+    IGT 13:01  -> spans 14:00
+
+Nothing has to be configured for this — without it every split would be positioned at 0% and
+pile up at the left edge. The root element carries `data-has-pb`, so a theme can tell the two
+situations apart.
+
+The width it starts at and the unit it grows by are both settable in seconds, from the theme's
+`setting.json`:
+
+```json
+{
+  "scaleMinSeconds": 780,
+  "scaleStepSeconds": 60
 }
 ```
 
-A theme with its own face art should point `--mcsr-face-fallback` at it, so that a network
-failure falls back to the theme's image rather than the bundled one:
+`scaleMinSeconds` is the width shown before the run reaches it (default 780 = 13 minutes), and
+`scaleStepSeconds` is how much the bar grows at a time once it does (default 60). A theme for
+shorter categories might use `90` and `30`; one that wants a smoother bar might use `600` and
+`10`. A step of 0 or less is treated as 1 second, so a bad value cannot break the layout.
+
+Both can be overridden per widget URL with `?scaleMin=` and `?scaleStep=`, in seconds, which
+is the quickest way to try a value before writing it into a theme:
+
+    /indicator?theme=default&scaleMin=90&scaleStep=30
+
+A value that is not a number is ignored, and the theme's setting (or the default) is used.
+
+The PB row is drawn on whichever scale is in use. PB splits beyond the current length are left
+out rather than drawn off-screen, so they come into view as the run gets longer.
+
+### Runner's Skin as the Face
+
+The widget hands the runner's own Minecraft skin to the theme as `--mcsr-skin-face`. Whether
+to use it is the theme's call, expressed in its CSS:
 
 ```css
 :root {
-  --mcsr-face-fallback: url(/theme/my-theme/face.png);
+  /* use the skin, and fall back to the shared face when it cannot be loaded */
+  --id-face-file: var(--mcsr-skin-face, url(/setting/face.png));
+  --id-face-smile-file: var(--mcsr-skin-face, url(/setting/face.png));
+  --id-face-sad-file: var(--mcsr-skin-face, url(/setting/face-sad.png));
 }
 ```
+
+A theme with its own face art simply does not reference the variable, and keeps its image —
+the bundled `niwatori` theme works that way. Nothing names a theme on the widget side, so a
+theme you write follows the same rule.
+
+Note that the substitution happens where the property is **declared**, not where it is used,
+so these have to be declared in `:root` for the variable to reach them.
+
+The runner is resolved from `setting/player.json` first, then from the world save, so nothing
+has to be typed in. `?face=theme` on the widget URL stops the skin being offered at all, and
+`?face=skin` forces it onto the `--id-face-*` variables even on a theme that ignores it.
+
+The root element carries `data-face="skin"` whenever a skin is on offer. The skin is a single
+image and cannot change expression, so the bundled themes use that to keep the ahead/behind
+states readable:
+
+```css
+.mcsr-indicator[data-face="skin"] .mcsr-indicator__face--sad {
+  filter: grayscale(0.85) brightness(0.75);
+}
+```
+
+`--mcsr-face-fallback` is only consulted by the `?face=skin` override; point it at your own
+image if you want that override to fall back to the theme's art rather than the bundled one.
 
 ### Visibility Controls
 

@@ -20,13 +20,22 @@ export const IndicatorPage = () => {
   // ?face=skin で走者のスキンを顔にする（?face=theme でテーマの絵に戻す）
   const faceParam = searchParams.get('face');
   const faceSkinOverride = faceParam === null ? undefined : faceParam === 'skin';
+  // ?scaleMin= / ?scaleStep= で横軸の初期幅と伸縮単位を秒で上書きする
+  const seconds = (key: string) => {
+    const raw = searchParams.get(key);
+    if (raw === null) {
+      return undefined;
+    }
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : undefined;
+  };
 
-  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(
-    theme,
-    isDemo,
-    iconSetOverride,
-    faceSkinOverride,
-  );
+  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, {
+    iconSet: iconSetOverride,
+    faceSkin: faceSkinOverride,
+    scaleMinSeconds: seconds('scaleMin'),
+    scaleStepSeconds: seconds('scaleStep'),
+  });
 
   if (isLoading) {
     return <></>;

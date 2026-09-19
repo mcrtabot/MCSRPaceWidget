@@ -228,3 +228,8 @@
 .mcsr-segment__decoration {
   display: var(--sg-display-decoration, none);
 }
+
+/* PB 未設定のとき。差分は出さない（テーマ側で見せたければ上書きする） */
+.mcsr-segment[data-has-pb="false"] .mcsr-segment__diff {
+  display: none;
+}

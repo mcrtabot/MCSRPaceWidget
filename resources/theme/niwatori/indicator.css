@@ -3,7 +3,7 @@
   --id-text-color: rgba(255, 255, 255, 1);
 
   /* highlighted text color for items faster than PB pace */
-  --tl-highlighted-text-color: rgba(255, 192, 128, 1);
+  --id-highlighted-text-color: rgba(255, 192, 128, 1);
 
   /* timeline's background (color) */
   --id-background: transparent;
@@ -43,6 +43,15 @@
   --id-display-pace-text-label: none; */
   /* --id-display-pace-text-time: none; */
   /* --id-display-pace-text-diff: none; */
+}
+
+/*
+ * PB が無いときは上段(PB行)が空になる。通過済みのアイコンをそこへ上げて、
+ * PB の有無にかかわらず「上にアイコン、下にバー」で揃える。
+ * テーマごとの値に追従させたいので PB 行の位置をそのまま借りる。
+ */
+.mcsr-indicator[data-has-pb="false"] {
+  --id-pace-icon-offset: var(--id-pb-icon-offset);
 }
 
 .mcsr-indicator {

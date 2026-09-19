@@ -25,9 +25,9 @@
   --id-pace-icon-offset: 0px;
 
   /* face setting */
-  --id-face-file: url(/setting/face.png);
-  --id-face-smile-file: url(/setting/face.png);
-  --id-face-sad-file: url(/setting/face-sad.png);
+  --id-face-file: var(--mcsr-skin-face, url(/setting/face.png));
+  --id-face-smile-file: var(--mcsr-skin-face, url(/setting/face.png));
+  --id-face-sad-file: var(--mcsr-skin-face, url(/setting/face-sad.png));
   --id-face-smile-shadow-color: rgba(255, 128, 128, 1);
   /* --id-display-face-completed: none; */
   --id-face-completed-offset: -48px;
@@ -43,6 +43,15 @@
   --id-display-pace-text-label: none;
   /* --id-display-pace-text-time: none; */
   /* --id-display-pace-text-diff: none; */
+}
+
+/*
+ * PB が無いときは上段(PB行)が空になる。通過済みのアイコンをそこへ上げて、
+ * PB の有無にかかわらず「上にアイコン、下にバー」で揃える。
+ * テーマごとの値に追従させたいので PB 行の位置をそのまま借りる。
+ */
+.mcsr-indicator[data-has-pb="false"] {
+  --id-pace-icon-offset: var(--id-pb-icon-offset);
 }
 
 .mcsr-indicator {
@@ -189,6 +198,11 @@
 
 .mcsr-indicator__face--sad {
   background-image: var(--id-face-sad-file);
+}
+
+/* スキンは1枚で表情を変えられないので、PBより遅いことは色味で出す */
+.mcsr-indicator[data-face="skin"] .mcsr-indicator__face--sad {
+  filter: grayscale(0.85) brightness(0.75);
 }
 
 .mcsr-indicator[data-run-status="completed"] .mcsr-indicator__face {

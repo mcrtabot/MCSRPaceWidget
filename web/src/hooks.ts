@@ -273,17 +273,26 @@ export const useThemeOverrides = (overrides: ThemeOverrides) => {
   }, [serialized]);
 };
 
-export const usePageData = (
-  theme: string,
-  isDemo: boolean,
-  iconSetOverride?: string,
-  faceSkinOverride?: boolean,
-) => {
+/**
+ * URL から渡された上書き。テーマの setting.json より優先する。
+ * 値が undefined の項目は「指定なし」として無視する。
+ */
+const applyOverrides = (setting: Setting, overrides: Partial<Setting>): Setting => {
+  const applied: Setting = { ...setting };
+  (Object.keys(overrides) as (keyof Setting)[]).forEach((key) => {
+    if (overrides[key] !== undefined) {
+      Object.assign(applied, { [key]: overrides[key] });
+    }
+  });
+  return applied;
+};
+
+export const usePageData = (theme: string, isDemo: boolean, overrides: Partial<Setting> = {}) => {
   const { isLoading: isLoadingTimeline, data: timeline, hasError: hasErrorTimeline } = useTimeline(isDemo);
   const { isLoading: isLoadingPBTimeline, data: pbTimeline, hasError: hasErrorPBTimeline } = usePBTimeline(isDemo);
   const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(theme, false);
   // URL の指定 > テーマの setting.json > テーマ同梱の icon/
-  const { iconSet, isLoading: isLoadingIconSet } = useIconSet(iconSetOverride || setting?.iconSet);
+  const { iconSet, isLoading: isLoadingIconSet } = useIconSet(overrides.iconSet || setting?.iconSet);
 
   const isLoading = isLoadingTimeline || isLoadingSetting || isLoadingPBTimeline || isLoadingIconSet;
 
@@ -294,9 +303,7 @@ export const usePageData = (
   if (hasErrorPBTimeline || (!isLoading && !pbTimeline))
     errors.push('file:setting/pb.json does not exist or is in an invalid data format.');
 
-  // URL の ?face=skin はテーマの設定より優先する
-  const resolvedSetting =
-    setting && faceSkinOverride !== undefined ? { ...setting, faceSkin: faceSkinOverride } : setting;
+  const resolvedSetting = setting ? applyOverrides(setting, overrides) : setting;
 
   return { isLoading, timeline, pbTimeline, setting: resolvedSetting, iconSet, errors };
 };

@@ -18,7 +18,7 @@ export const TimelinePage = () => {
   const themeOverrides = useMemo(() => decodeOverrides(searchParams.get('v')), [searchParams]);
   useThemeOverrides(themeOverrides);
 
-  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, iconSetOverride);
+  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, { iconSet: iconSetOverride });
 
   if (isLoading) {
     return <></>;
