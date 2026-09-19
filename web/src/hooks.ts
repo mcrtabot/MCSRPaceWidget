@@ -5,7 +5,7 @@ import useSWR from 'swr/immutable';
 import demoPBTimeline from './assets/demo/pb.json';
 import demoTimelineData from './assets/demo/timeline.json';
 import { defaultSetting } from './setting';
-import { Setting, Theme, TimelineData, TimelineItem } from './types';
+import { IconSet, IconSetData, Setting, Theme, TimelineData, TimelineItem } from './types';
 import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
@@ -120,6 +120,39 @@ export const useThemes = () => {
   return { isLoading, data: themes, hasError: !!error };
 };
 
+/**
+ * 共通アイコンセットを読む。id を渡さなければ何も取りに行かず undefined を返し、
+ * 呼び出し側はテーマ同梱の icon/ にフォールバックする。
+ *
+ * 読み込み中に描き始めるとフォールバック先(テーマ同梱の icon/)を一瞬叩いてしまうので、
+ * 呼び出し側は isLoading の間は描画を待つこと。
+ */
+export const useIconSet = (id?: string): { iconSet?: IconSet; isLoading: boolean } => {
+  const { data, isLoading } = useSWR<IconSetData>(id ? `/icon/${id}/icons.json` : null, fetcher, {
+    refreshInterval: REFRESH_INTERVAL,
+    dedupingInterval: REFRESH_INTERVAL,
+    refreshWhenHidden: true,
+  });
+
+  return { iconSet: id && data?.icons ? { ...data, id } : undefined, isLoading: !!id && isLoading };
+};
+
+/** 一覧。テーマエディタのアイコン選択で使う */
+export const useIconSets = () => {
+  const path = `/api/icons`;
+  const {
+    isLoading,
+    data: iconSets,
+    error,
+  } = useSWR<IconSet[]>(path, fetcher, {
+    refreshInterval: REFRESH_INTERVAL,
+    dedupingInterval: REFRESH_INTERVAL,
+    refreshWhenHidden: true,
+  });
+
+  return { isLoading, data: iconSets, hasError: !!error };
+};
+
 export const useTimelineInfo = (
   rawTimeline: TimelineItem[],
   pbTimeline: TimelineItem[],
@@ -172,12 +205,14 @@ export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator' | '
   }, [theme, cssFile]);
 };
 
-export const usePageData = (theme: string, isDemo: boolean) => {
+export const usePageData = (theme: string, isDemo: boolean, iconSetOverride?: string) => {
   const { isLoading: isLoadingTimeline, data: timeline, hasError: hasErrorTimeline } = useTimeline(isDemo);
   const { isLoading: isLoadingPBTimeline, data: pbTimeline, hasError: hasErrorPBTimeline } = usePBTimeline(isDemo);
   const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(theme, false);
+  // URL の指定 > テーマの setting.json > テーマ同梱の icon/
+  const { iconSet, isLoading: isLoadingIconSet } = useIconSet(iconSetOverride || setting?.iconSet);
 
-  const isLoading = isLoadingTimeline || isLoadingSetting || isLoadingPBTimeline;
+  const isLoading = isLoadingTimeline || isLoadingSetting || isLoadingPBTimeline || isLoadingIconSet;
 
   const errors: string[] = [];
   if (hasErrorTimeline || (!isLoading && !timeline)) errors.push('No timeline data.');
@@ -186,5 +221,5 @@ export const usePageData = (theme: string, isDemo: boolean) => {
   if (hasErrorPBTimeline || (!isLoading && !pbTimeline))
     errors.push('file:setting/pb.json does not exist or is in an invalid data format.');
 
-  return { isLoading, timeline, pbTimeline, setting, errors };
+  return { isLoading, timeline, pbTimeline, setting, iconSet, errors };
 };

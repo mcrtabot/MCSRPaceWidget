@@ -41,6 +41,12 @@
   /* --tl-display-pace-timeline-item-status-current: none; */
   --tl-display-pace-timeline-item-status-next: none;
   --tl-display-pace-timeline-item-status-todo: none;
+  /* このテーマは向きの違う絵柄を使う。共通セットのうち4枚だけ差し替える */
+  --icon-enter_bastion: url(/icon/default/bastion-alt.png);
+  --icon-enter_fortress: url(/icon/default/fortress-alt.png);
+  --icon-enter_end: url(/icon/default/end-alt.png);
+  --icon-credits: url(/icon/default/credits-alt.png);
+
 }
 
 .mcsr-widget {

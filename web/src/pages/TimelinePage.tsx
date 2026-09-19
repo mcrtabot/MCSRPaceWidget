@@ -11,8 +11,10 @@ export const TimelinePage = () => {
   const [searchParams] = useSearchParams({ theme: 'default', demo: '0' });
   const theme = searchParams.get('theme') || 'default';
   const isDemo = searchParams.get('demo') === '1';
+  // ?icons=<セットid> でテーマの指定を上書きする
+  const iconSetOverride = searchParams.get('icons') || undefined;
 
-  const { isLoading, timeline, pbTimeline, setting, errors } = usePageData(theme, isDemo);
+  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, iconSetOverride);
 
   if (isLoading) {
     return <></>;
@@ -31,7 +33,7 @@ export const TimelinePage = () => {
   }
 
   return (
-    <AppContext.Provider value={{ timeline, pbTimeline, theme, setting }}>
+    <AppContext.Provider value={{ timeline, pbTimeline, theme, setting, iconSet }}>
       {isDemo && <DemoWarning />}
       <Timelines />
     </AppContext.Provider>

@@ -1,0 +1,14 @@
+{
+  "name": "PaceMan",
+  "//": "split type -> image file in this directory",
+  "icons": {
+    "enter_nether": "nether.png",
+    "enter_bastion": "bastion.png",
+    "enter_fortress": "fortress.png",
+    "first_portal": "portal.png",
+    "second_portal": "portal.png",
+    "enter_stronghold": "stronghold.png",
+    "enter_end": "end.png",
+    "credits": "credits.png"
+  }
+}

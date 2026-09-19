@@ -106,7 +106,8 @@
 .mcsr-segment[data-segment=""] .mcsr-segment__icon-area {
   width: var(--sg-icon-size);
   height: var(--sg-icon-size);
-  background-image: url(icon/overworld.png);
+  /* テーマ同梱ではなく共通アイコンセットを指す */
+  background-image: url(/icon/default/overworld.png);
   background-size: var(--sg-icon-size);
   background-repeat: no-repeat;
   image-rendering: pixelated;

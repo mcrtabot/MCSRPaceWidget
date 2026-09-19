@@ -1,0 +1,15 @@
+{
+  "name": "Default",
+  "//": "split type -> image file in this directory",
+  "icons": {
+    "overworld": "overworld.png",
+    "enter_nether": "nether_portal.png",
+    "enter_bastion": "bastion.png",
+    "enter_fortress": "fortress.png",
+    "first_portal": "nether_portal.png",
+    "second_portal": "overworld.png",
+    "enter_stronghold": "stronghold.png",
+    "enter_end": "end.png",
+    "credits": "credits.png"
+  }
+}

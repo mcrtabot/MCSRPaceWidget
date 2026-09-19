@@ -1,4 +1,7 @@
 {
+    "//": "shared icon set (icon/<id>/). remove this to use this theme's own icon/ directory",
+    "iconSet": "default",
+
     "//": "label for timeline item type",
     "label": {
         "enter_nether": "Nether",

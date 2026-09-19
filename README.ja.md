@@ -65,7 +65,10 @@ OBS のブラウザソースとしてテーマを切り替えるだけで配信�
 2. `setting.json` とスタイルシート（`timeline.css` / `indicator.css` / `segment.css`）を編集
 3. [Playground](/playground) で様々なデータパターンでプレビュー
 
-テーマが対応するウィジェットは、各 CSS ファイルの有無で自動判定されます。
+スプリットのアイコンは `icon` ディレクトリの共通アイコンセットから読み込みます。
+`setting.json` の `"iconSet"`（`default` / `paceman`）で選択するため、
+テーマごとに画像を持つ必要はありません。
+ウィジェットの URL に `?icons=<セット名>` を付けると、ファイルを編集せずに別のセットを試せます。
 
 Minecraft フォントが同梱されています。テーマ CSS で `font-family: 'Minecraft-Regular'` を指定すると、より Minecraft らしい見た目にできます。
 

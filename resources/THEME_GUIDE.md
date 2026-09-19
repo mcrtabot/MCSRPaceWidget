@@ -8,7 +8,7 @@ Each theme is a folder in `theme/{theme-name}/` containing:
 - `indicator.css` — Visual Timeline widget styles (see [Visual Timeline Reference](THEME_GUIDE_VISUAL_TIMELINE.md))
 - `segment.css` — Segment widget styles (see [Segment Reference](THEME_GUIDE_SEGMENT.md))
 - `setting.json` — Labels and display options
-- `icon/` — Split icon images
+- `icon/` — Split icon images (optional; prefer a shared icon set, see [Icons](#icons))
 
 Include only the CSS files your theme supports. The server detects supported widgets by the presence of each CSS file.
 
@@ -67,16 +67,75 @@ These are the event type identifiers used in class names, `setting.json`, and da
 
 ## Icons
 
-Place icon images in `theme/{theme-name}/icon/`. The file name must match the split type:
+Split icons live in shared icon sets, outside of any theme, so several themes can use
+the same artwork without each shipping its own copy:
 
 ```
-icon/enter_nether.png
-icon/enter_bastion.png
-icon/enter_fortress.png
-icon/first_portal.png
-icon/enter_stronghold.png
-icon/enter_end.png
-icon/credits.png
+icon/{set-name}/icons.json    split type -> image file in this directory
+icon/{set-name}/*.png
+```
+
+Pick a set from your theme's `setting.json`:
+
+```json
+{
+  "iconSet": "default"
+}
+```
+
+Bundled sets: `default` and `paceman`. `GET /api/icons` lists every available set with its
+mapping.
+
+`icons.json` maps a split type to a file, so one image can serve several splits:
+
+```json
+{
+  "name": "Default",
+  "icons": {
+    "enter_nether": "nether_portal.png",
+    "first_portal": "nether_portal.png",
+    "second_portal": "overworld.png",
+    "enter_bastion": "bastion.png",
+    "enter_fortress": "fortress.png",
+    "enter_stronghold": "stronghold.png",
+    "enter_end": "end.png",
+    "credits": "credits.png"
+  }
+}
+```
+
+To add your own set, create `icon/{your-set}/` with an `icons.json` next to the images.
+Put it in `~/.config/MCSRPaceWidget/icon/` so it survives updates.
+
+### Theme-owned icons
+
+A theme with no `iconSet` falls back to its own `theme/{theme-name}/icon/` directory,
+where the file name must match the split type (`icon/enter_nether.png`, ...).
+Themes made before icon sets existed keep working this way.
+
+### Overriding a single icon
+
+A theme (or a widget URL) can replace one icon without changing the whole set,
+using a `--icon-{split type}` custom property:
+
+```css
+:root {
+  --icon-credits: url(/icon/paceman/credits.png);
+}
+```
+
+Use this instead of adding a near-duplicate set when a theme only needs a few different
+images — a set is a choice the user has to make, so it should be worth making. The bundled
+`stack-timeline` and `horizontal-timeline` themes do exactly this: they use the `default`
+set and swap four icons for the `*-alt.png` variants that sit alongside it.
+
+### Overriding the set from the widget URL
+
+`?icons={set-name}` overrides whatever the theme selected — useful for trying artwork
+without editing files:
+
+```
+http://127.0.0.1:1161/timeline?theme=default&icons=paceman
 ```
 
 ## CSS Reference

@@ -11,8 +11,10 @@ export const IndicatorPage = () => {
   const [searchParams] = useSearchParams({ theme: 'default' });
   const theme = searchParams.get('theme') || 'default';
   const isDemo = searchParams.get('demo') === '1';
+  // ?icons=<セットid> でテーマの指定を上書きする
+  const iconSetOverride = searchParams.get('icons') || undefined;
 
-  const { isLoading, timeline, pbTimeline, setting, errors } = usePageData(theme, isDemo);
+  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, iconSetOverride);
 
   if (isLoading) {
     return <></>;
@@ -31,7 +33,7 @@ export const IndicatorPage = () => {
   }
 
   return (
-    <AppContext.Provider value={{ timeline, pbTimeline, theme, setting }}>
+    <AppContext.Provider value={{ timeline, pbTimeline, theme, setting, iconSet }}>
       {isDemo && <DemoWarning />}
       <Indicator />
     </AppContext.Provider>

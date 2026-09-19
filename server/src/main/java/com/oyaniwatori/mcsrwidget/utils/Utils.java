@@ -9,12 +9,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oyaniwatori.mcsrwidget.IconSet;
 import com.oyaniwatori.mcsrwidget.PaceItem;
 import com.oyaniwatori.mcsrwidget.Theme;
 
@@ -50,6 +54,68 @@ public class Utils {
         });
 
         return themes.toArray(new Theme[themes.size()]);
+    }
+
+    public static IconSet[] getIconSets() {
+        File iconDir;
+
+        File homeIconDir = getHomeResourceDir("icon");
+        if (homeIconDir.exists()) {
+            iconDir = homeIconDir;
+        } else {
+            iconDir = new File("icon");
+        }
+
+        List<IconSet> iconSets = new ArrayList<IconSet>();
+
+        File[] files = iconDir.listFiles();
+        if (files == null) {
+            return new IconSet[] {};
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        for (File file : files) {
+            if (!file.isDirectory()) {
+                continue;
+            }
+            File settingFile = new File(file, "icons.json");
+            if (!settingFile.exists()) {
+                continue;
+            }
+            try {
+                JsonNode json = mapper.readTree(settingFile);
+                JsonNode iconsNode = json.get("icons");
+                if (iconsNode == null) {
+                    continue;
+                }
+                Map<String, String> icons = new LinkedHashMap<String, String>();
+                Iterator<Map.Entry<String, JsonNode>> fields = iconsNode.fields();
+                while (fields.hasNext()) {
+                    Map.Entry<String, JsonNode> entry = fields.next();
+                    // `//` 始まりは JSON にコメントを書くための慣習。スプリット種別ではない
+                    if (entry.getKey().startsWith("//")) {
+                        continue;
+                    }
+                    icons.put(entry.getKey(), entry.getValue().asText());
+                }
+
+                JsonNode nameNode = json.get("name");
+                String name = nameNode != null ? nameNode.asText() : file.getName();
+
+                iconSets.add(new IconSet(file.getName(), name, icons));
+            } catch (IOException e) {
+                // 壊れたセットは一覧から落とすだけにして、他のセットは返す
+                // Skip a broken set rather than failing the whole listing
+                System.out.println("load icon set failed: " + file.getName());
+            }
+        }
+
+        Collections.sort(iconSets, new Comparator<IconSet>() {
+            public int compare(IconSet i1, IconSet i2) {
+                return i1.id.compareTo(i2.id);
+            }
+        });
+
+        return iconSets.toArray(new IconSet[iconSets.size()]);
     }
 
     public static File getHomeResourceDir(String path) {

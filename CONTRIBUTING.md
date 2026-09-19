@@ -12,8 +12,9 @@
 cd web
 npm install
 
-# Create symlinks for theme and setting files
+# Create symlinks for theme, icon and setting files
 ln -s ../../resources/theme public/theme
+ln -s ../../resources/icon public/icon
 ln -s ../../resources/setting public/setting
 ```
 
@@ -63,7 +64,8 @@ web/
     assets/demo/    # Demo data
   public-widget/    # Static files for Widget
 resources/
-  theme/            # Theme CSS, settings & icons
+  theme/            # Theme CSS & settings
+  icon/             # Shared split icon sets (icon/<set>/icons.json + images)
   setting/          # PB settings, etc.
 server/             # Java backend (NanoHTTPD)
 ```
@@ -72,7 +74,7 @@ server/             # Java backend (NanoHTTPD)
 
 Each theme is located at `resources/theme/<theme-name>/` and contains the following files:
 
-- `setting.json` — Label and title settings
+- `setting.json` — Label and title settings, and `iconSet` (which shared icon set to use)
 - `timeline.css` — Timeline table styles
 - `indicator.css` — Visual timeline styles
-- `icon/` — Event icon images
+- `icon/` — Event icon images (optional; only for themes that do not use a shared icon set)

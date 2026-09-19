@@ -1,4 +1,7 @@
 {
+    "//": "shared icon set (icon/<id>/). remove this to use this theme's own icon/ directory",
+    "iconSet": "default",
+
     "label": {
         "enter_nether": "Enter Nether",
         "enter_bastion": "Enter Bastion",

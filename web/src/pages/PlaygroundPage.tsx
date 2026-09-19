@@ -24,7 +24,7 @@ import { Indicator } from '../components/widget/Indicator';
 import { Segment } from '../components/widget/Segment';
 import { Timelines } from '../components/widget/Timelines';
 import { AppContext } from '../context';
-import { useSetting, useThemes } from '../hooks';
+import { useIconSet, useSetting, useThemes } from '../hooks';
 import { defaultSetting } from '../setting';
 import { Theme, TimelineData, TimelineItem } from '../types';
 import { convertMillisecondsToTime, convertTimeToMilliSeconds } from '../utils/utils';
@@ -78,6 +78,7 @@ export const PlaygroundPage = () => {
 
   const { isLoading: isLoadingSetting, setting } = useSetting(timelineTheme, true);
   const { setting: segmentSetting } = useSetting(segmentTheme, true);
+  const { setting: indicatorSetting } = useSetting(indicatorTheme, true);
   const { data: themes = [] } = useThemes();
 
   const applyPreset = useCallback(
@@ -202,7 +203,12 @@ export const PlaygroundPage = () => {
   const resolvedSetting = setting ?? defaultSetting;
   const resolvedSegmentSetting = segmentSetting ?? defaultSetting;
 
-  if (isLoadingSetting) {
+  // アイコンセットはタブごとに選んでいるテーマの設定から引く
+  const { iconSet: timelineIconSet, isLoading: isLoadingTimelineIconSet } = useIconSet(resolvedSetting.iconSet);
+  const { iconSet: indicatorIconSet, isLoading: isLoadingIndicatorIconSet } = useIconSet(indicatorSetting?.iconSet);
+  const { iconSet: segmentIconSet, isLoading: isLoadingSegmentIconSet } = useIconSet(resolvedSegmentSetting.iconSet);
+
+  if (isLoadingSetting || isLoadingTimelineIconSet || isLoadingIndicatorIconSet || isLoadingSegmentIconSet) {
     return (
       <Center h="100vh">
         <Loader size="lg" />
@@ -338,6 +344,7 @@ export const PlaygroundPage = () => {
                 pbTimeline: pbItems,
                 theme: timelineTheme,
                 setting: resolvedSetting,
+                iconSet: timelineIconSet,
               }}
             >
               <div style={{ transformOrigin: 'top left', transform: `scale(${tlScale / 100})` }}>
@@ -394,6 +401,7 @@ export const PlaygroundPage = () => {
                 pbTimeline: pbItems,
                 theme: indicatorTheme,
                 setting: resolvedSetting,
+                iconSet: indicatorIconSet,
               }}
             >
               <div style={{ transformOrigin: 'top left', transform: `scale(${vtScale / 100})` }}>
@@ -448,6 +456,7 @@ export const PlaygroundPage = () => {
                 pbTimeline: pbItems,
                 theme: segmentTheme,
                 setting: resolvedSegmentSetting,
+                iconSet: segmentIconSet,
               }}
             >
               <div style={{ transformOrigin: 'top left', transform: `scale(${sgScale / 100})` }}>

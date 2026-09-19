@@ -38,6 +38,20 @@ public class MCSRPaceServer extends NanoHTTPD {
                         return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
                                 "{\"error\": \"load events failed.\"}");
                     }
+                } else if (uri.equals("/api/icons")) {
+                    IconSet[] iconSets = Utils.getIconSets();
+
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return newFixedLengthResponse(Response.Status.OK, "application/json",
+                                mapper.writeValueAsString(Arrays.asList(iconSets)));
+                    } catch (JsonProcessingException e) {
+                        System.out.println("load icon sets failed.");
+                        e.printStackTrace();
+                        return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
+                                "{\"error\": \"load icon sets failed.\"}");
+                    }
+
                 } else if (uri.equals("/api/themes")) {
                     Theme[] themes = Utils.getThemes();
 
@@ -57,6 +71,8 @@ public class MCSRPaceServer extends NanoHTTPD {
                 return this.responseFromStaticFile("/setting", uri.substring("/setting".length()));
             } else if (uri.startsWith("/theme/")) {
                 return this.responseFromStaticFile("/theme", uri.substring("/theme".length()));
+            } else if (uri.startsWith("/icon/")) {
+                return this.responseFromStaticFile("/icon", uri.substring("/icon".length()));
             } else {
                 if (uri.startsWith("/timeline") || uri.startsWith("/indicator") || uri.startsWith("/segment") || uri.startsWith("/playground")) {
                     uri = "/";
