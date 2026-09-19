@@ -73,12 +73,15 @@ export const TopPage = () => {
     data: pbTimeline,
     hasError: hasErrorPBTimeline,
   } = usePBTimeline(dataType === 'demo');
-  const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(timelineTheme, true);
-  const { setting: segmentSetting } = useSetting(segmentTheme, true);
-  const { setting: indicatorSetting } = useSetting(indicatorTheme, true);
+  // タブごとに別のテーマを選べるので、3つとも読む。
+  // 直しながら見る画面ではないので取り直しは通常の間隔でよい
+  const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(timelineTheme, false);
+  const { isLoading: isLoadingSegmentSetting, setting: segmentSetting } = useSetting(segmentTheme, false);
+  const { isLoading: isLoadingIndicatorSetting, setting: indicatorSetting } = useSetting(indicatorTheme, false);
 
   // アイコンはテーマ同梱ではなく共通セットから来るので、プレビューにも渡す。
-  // 読み込みを待たずに描くと、解決前にテーマ同梱のパスを叩いて404になる
+  // 読み込みを待たずに描くと、解決前にテーマ同梱のパスを叩いて404になる。
+  // セットidは setting.json に書いてあるので、setting の読み込みも待つ
   const { iconSet: timelineIconSet, isLoading: isLoadingTimelineIcons } = useIconSet(setting?.iconSet);
   const { iconSet: indicatorIconSet, isLoading: isLoadingIndicatorIcons } = useIconSet(indicatorSetting?.iconSet);
   const { iconSet: segmentIconSet, isLoading: isLoadingSegmentIcons } = useIconSet(segmentSetting?.iconSet);
@@ -87,6 +90,8 @@ export const TopPage = () => {
     isLoadingTimeline ||
     isLoadingPBTimeline ||
     isLoadingSetting ||
+    isLoadingSegmentSetting ||
+    isLoadingIndicatorSetting ||
     isLoadingTimelineIcons ||
     isLoadingIndicatorIcons ||
     isLoadingSegmentIcons
@@ -98,14 +103,15 @@ export const TopPage = () => {
     );
   }
 
-  if (hasErrorTimeline || !timeline || hasErrorSetting || !setting || hasErrorPBTimeline || !pbTimeline) {
+  // テーマが読めないと何も描けない。PB は任意なので、読めなくても続ける
+  if (hasErrorTimeline || !timeline || hasErrorSetting || !setting) {
     return (
       <Container size="sm" py="xl">
-        {(hasErrorSetting || !setting) && (
-          <Alert color="red" title="Error">
-            file:theme/{timelineTheme}/setting.json does not exist or is in an invalid data format.
-          </Alert>
-        )}
+        <Alert color="red" title="Error">
+          {hasErrorSetting || !setting
+            ? `file:theme/${timelineTheme}/setting.json does not exist or is in an invalid data format.`
+            : 'Failed to load the timeline. Check that the widget server is running.'}
+        </Alert>
       </Container>
     );
   }
@@ -157,6 +163,12 @@ export const TopPage = () => {
 
         {/* Widget Preview */}
         <EnvironmentWarning />
+        {hasErrorPBTimeline && (
+          <Alert color="yellow" title="Personal best not loaded">
+            file:setting/pb.json does not exist or is in an invalid data format. The preview runs without a personal
+            best.
+          </Alert>
+        )}
         {/* 表示中のタブだけ中身を持つ。各カードが iframe なので、3タブ分を
             同時に抱えると 23 個のウィジェットを常時描くことになる */}
         <Tabs value={activeTab} onChange={setActiveTab} keepMounted={false}>
@@ -220,7 +232,9 @@ export const TopPage = () => {
                     p="md"
                     style={{ background: bgColor, borderRadius: 8, minHeight: 200, overflow: 'hidden' }}
                   >
-                    <AppContext.Provider value={{ timeline, pbTimeline, theme: indicatorTheme, setting, iconSet: indicatorIconSet }}>
+                    <AppContext.Provider
+                      value={{ timeline, pbTimeline, theme: indicatorTheme, setting: indicatorSetting ?? setting, iconSet: indicatorIconSet }}
+                    >
                       <div style={{ width: '80%', ['--id-width' as any]: '100%' }}>
                         <Indicator />
                       </div>

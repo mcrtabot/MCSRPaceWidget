@@ -11,6 +11,8 @@ import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
 const TIMELINE_REFRESH_INTERVAL = 500;
+/** テーマを直しながら見る画面用。ファイルを保存したらすぐ反映したいので短くする */
+const LIVE_REFRESH_INTERVAL = 500;
 
 const fetcher = async (path: string) => {
   const response = await fetch(path, { cache: 'no-store' });
@@ -20,9 +22,14 @@ const fetcher = async (path: string) => {
   return await response.json();
 };
 
-export const useSetting = (theme: string | null, isDemo: boolean) => {
+/**
+ * テーマの setting.json。
+ * isLive は Playground のようにファイルを直しながら見る画面だけで使う。
+ * 短い間隔で取り直すので、テーマの数だけ常時ポーリングが増える
+ */
+export const useSetting = (theme: string | null, isLive: boolean) => {
   const path = `/theme/${theme}/setting.json`;
-  const refreshInterval = isDemo ? 500 : REFRESH_INTERVAL;
+  const refreshInterval = isLive ? LIVE_REFRESH_INTERVAL : REFRESH_INTERVAL;
   const {
     isLoading,
     data: rawSetting,

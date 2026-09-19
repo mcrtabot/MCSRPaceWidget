@@ -2,9 +2,21 @@ import { useEffect, useState } from 'react';
 
 import { ThemeToken, parseThemeTokens } from '../../utils/cssTokens';
 
+type State = { key: string; tokens: ThemeToken[]; loaded: boolean };
+
 /** テーマCSSを読んで、編集できるトークンの一覧にする */
 export const useThemeTokens = (theme: string, cssFile: string) => {
-  const [tokens, setTokens] = useState<ThemeToken[]>([]);
+  const key = `${theme}/${cssFile}`;
+  const [state, setState] = useState<State>({ key, tokens: [], loaded: false });
+
+  /*
+   * 別のテーマ/種別に移ったら、その場で空に戻す。effect の実行を待つと、
+   * 1レンダーだけ「前のトークン一覧」と「新しい URL の上書き」が並ぶ。
+   * 呼び出し側がその隙に両者を突き合わせると、上書きを消してしまう。
+   */
+  if (state.key !== key) {
+    setState({ key, tokens: [], loaded: false });
+  }
 
   useEffect(() => {
     let aborted = false;
@@ -12,12 +24,12 @@ export const useThemeTokens = (theme: string, cssFile: string) => {
       .then((r) => (r.ok ? r.text() : ''))
       .then((css) => {
         if (!aborted) {
-          setTokens(parseThemeTokens(css));
+          setState({ key: `${theme}/${cssFile}`, tokens: parseThemeTokens(css), loaded: true });
         }
       })
       .catch(() => {
         if (!aborted) {
-          setTokens([]);
+          setState({ key: `${theme}/${cssFile}`, tokens: [], loaded: true });
         }
       });
     return () => {
@@ -25,5 +37,5 @@ export const useThemeTokens = (theme: string, cssFile: string) => {
     };
   }, [theme, cssFile]);
 
-  return tokens;
+  return { tokens: state.tokens, loaded: state.loaded };
 };

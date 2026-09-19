@@ -109,7 +109,7 @@ export const CustomizePage = () => {
 
   const { data: themes } = useThemes();
   const { data: iconSets } = useIconSets();
-  const { isLoading: isLoadingSetting, setting } = useSetting(theme, true);
+  const { isLoading: isLoadingSetting, setting } = useSetting(theme, false);
   const resolvedSetting = setting ?? defaultSetting;
   const iconSetId = iconsParam ?? resolvedSetting.iconSet;
   // 読み込み完了までプレビューを出さない。出すとセット解決前に
@@ -117,7 +117,7 @@ export const CustomizePage = () => {
   const { iconSet, isLoading: isLoadingIconSet } = useIconSet(iconSetId);
 
   const widgetDef = WIDGETS.find((w) => w.id === widget) ?? WIDGETS[0];
-  const tokens = useThemeTokens(theme, widgetDef.cssFile);
+  const { tokens, loaded: tokensLoaded } = useThemeTokens(theme, widgetDef.cssFile);
 
   useThemeOverrides(overrides);
 
@@ -148,6 +148,23 @@ export const CustomizePage = () => {
       setParam('w', supported[0].id);
     }
   });
+
+  /*
+   * テーマを変えると、前のテーマにしか無いトークンの上書きが残る。
+   * 一覧に出ないので消しようが無いまま OBS 用 URL に載り続けるため、落とす。
+   */
+  useEffect(() => {
+    if (!tokensLoaded) {
+      return;
+    }
+    const known = new Set(tokens.map((t) => t.property));
+    const kept = Object.keys(overrides).filter((key) => known.has(key));
+    if (kept.length !== Object.keys(overrides).length) {
+      setOverrides(Object.fromEntries(kept.map((key) => [key, overrides[key]])));
+    }
+    // setOverrides は毎レンダー作り直されるので依存に入れない
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokensLoaded, tokens, overrides]);
 
   const preset = presets[presetIndex] ?? presets[0];
 

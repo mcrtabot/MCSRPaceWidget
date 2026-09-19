@@ -72,9 +72,10 @@ export const PlaygroundPage = () => {
     [setSearchParams],
   );
 
+  // テーマを直しながら見る画面なので、setting.json は短い間隔で取り直す
   const { isLoading: isLoadingSetting, setting } = useSetting(timelineTheme, true);
-  const { setting: segmentSetting } = useSetting(segmentTheme, true);
-  const { setting: indicatorSetting } = useSetting(indicatorTheme, true);
+  const { isLoading: isLoadingSegmentSetting, setting: segmentSetting } = useSetting(segmentTheme, true);
+  const { isLoading: isLoadingIndicatorSetting, setting: indicatorSetting } = useSetting(indicatorTheme, true);
   const { data: themes = [] } = useThemes();
 
   const applyPreset = useCallback(
@@ -202,6 +203,7 @@ export const PlaygroundPage = () => {
 
   const resolvedSetting = setting ?? defaultSetting;
   const resolvedSegmentSetting = segmentSetting ?? defaultSetting;
+  const resolvedIndicatorSetting = indicatorSetting ?? defaultSetting;
 
   // アイコンセットはタブごとに選んでいるテーマの設定から引く
   // 編集中のトークン差分。タブごとに持ち、URLに載せてリロードでも戻るようにする
@@ -216,10 +218,20 @@ export const PlaygroundPage = () => {
   useThemeOverrides(overrides);
 
   const { iconSet: timelineIconSet, isLoading: isLoadingTimelineIconSet } = useIconSet(resolvedSetting.iconSet);
-  const { iconSet: indicatorIconSet, isLoading: isLoadingIndicatorIconSet } = useIconSet(indicatorSetting?.iconSet);
+  const { iconSet: indicatorIconSet, isLoading: isLoadingIndicatorIconSet } = useIconSet(
+    resolvedIndicatorSetting.iconSet,
+  );
   const { iconSet: segmentIconSet, isLoading: isLoadingSegmentIconSet } = useIconSet(resolvedSegmentSetting.iconSet);
 
-  if (isLoadingSetting || isLoadingTimelineIconSet || isLoadingIndicatorIconSet || isLoadingSegmentIconSet) {
+  // アイコンセットの id は setting.json に書いてあるので、setting も揃うまで描かない
+  if (
+    isLoadingSetting ||
+    isLoadingSegmentSetting ||
+    isLoadingIndicatorSetting ||
+    isLoadingTimelineIconSet ||
+    isLoadingIndicatorIconSet ||
+    isLoadingSegmentIconSet
+  ) {
     return (
       <Center h="100vh">
         <Loader size="lg" />
@@ -421,7 +433,7 @@ export const PlaygroundPage = () => {
                 timeline: filteredTimeline,
                 pbTimeline: pbItems,
                 theme: indicatorTheme,
-                setting: resolvedSetting,
+                setting: resolvedIndicatorSetting,
                 iconSet: indicatorIconSet,
               }}
             >
@@ -435,7 +447,7 @@ export const PlaygroundPage = () => {
               theme={indicatorTheme}
               cssFile="indicator"
               widgetPath="/indicator"
-              iconSet={indicatorSetting?.iconSet}
+              iconSet={resolvedIndicatorSetting.iconSet}
               overrides={overrides}
               onChange={setOverrides}
             />
