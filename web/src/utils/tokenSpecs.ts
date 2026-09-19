@@ -107,7 +107,7 @@ export const TOKEN_SPECS: { [property: string]: TokenSpec } = {
   '--id-digits-font': { label: 'Time font', input: 'font' },
   '--id-width': {
     label: 'Bar width',
-    hint: 'The whole bar spans your PB, so a longer bar spreads the splits out',
+    hint: '100% fills the browser source. Use px for a fixed width',
     input: 'slider',
     min: 200,
     max: 2560,

@@ -8,7 +8,6 @@
   --sg-display-empty: none;
   --sg-display-time: none;
   --sg-display-diff: none;
-  --sg-display-background: block;
   --sg-display-decoration: none;
 
   /* Banner timing — synced with JS ENTERING_DURATION (5s) */

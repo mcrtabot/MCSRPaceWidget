@@ -18,7 +18,6 @@
 
   /*  If you want to hide an item, uncomment it (--tl-display-*: none;). */
 
-  /* --tl-display-pb-timeline: none; */
   --tl-display-pb-timeline-empty: none;
   /* --tl-display-pb-timeline-title: none; */
   --tl-display-pb-timeline-separator: none;
@@ -27,7 +26,6 @@
   /* --tl-display-pb-timeline-item-time: none; */
   --tl-display-pb-timeline-item-diff: none;
 
-  /* --tl-display-pace-timeline: none; */
   /* --tl-display-pace-timeline-empty: none; */
   /* --tl-display-pace-timeline-title: none; */
   --tl-display-pace-timeline-separator: none;

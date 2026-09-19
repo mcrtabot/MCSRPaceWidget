@@ -104,7 +104,7 @@ Default values are from the `default` theme.
 
 | Variable      | Description           | Default  |
 | ------------- | --------------------- | -------- |
-| `--id-width`  | Total indicator width | `1280px` |
+| `--id-width`  | Total indicator width. `100%` fills the browser source | `100%` |
 | `--id-offset` | Top padding           | `80px`   |
 
 ### Appearance

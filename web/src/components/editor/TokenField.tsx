@@ -113,6 +113,12 @@ export const TokenField = ({ token, value, onChange, showProperty = false }: Tok
   const numeric = spec?.input === 'slider' || spec?.input === 'duration' ? parseNumeric(current) : null;
   if (numeric) {
     const unit = numeric.unit || (spec?.input === 'duration' ? 's' : 'px');
+    // % は辞書の範囲(px前提)ではなく 0..100 で扱う。同じ項目が px でも % でも
+    // 指定できるため、単位を見て決める
+    const percent = unit === '%';
+    const min = percent ? 0 : spec?.min;
+    const max = percent ? 100 : spec?.max;
+    const step = percent ? 1 : spec?.step;
     const emit = (amount: number) => onChange(`${Number(amount.toFixed(3))}${unit}`);
     return (
       <div>
@@ -125,9 +131,9 @@ export const TokenField = ({ token, value, onChange, showProperty = false }: Tok
             w={88}
             value={numeric.amount}
             onChange={(v) => typeof v === 'number' && emit(v)}
-            min={spec?.min}
-            max={spec?.max}
-            step={spec?.step}
+            min={min}
+            max={max}
+            step={step}
             suffix={unit}
             hideControls
           />
@@ -137,9 +143,9 @@ export const TokenField = ({ token, value, onChange, showProperty = false }: Tok
           size="sm"
           value={numeric.amount}
           onChange={emit}
-          min={spec?.min ?? 0}
-          max={spec?.max ?? 100}
-          step={spec?.step ?? 1}
+          min={min ?? 0}
+          max={max ?? 100}
+          step={step ?? 1}
           label={(v) => `${v}${unit}`}
         />
         {note}

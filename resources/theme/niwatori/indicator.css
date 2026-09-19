@@ -12,7 +12,7 @@
   --id-digits-font:
     normal normal 18px/1 Minecraft-Regular, Minecraft, , monospace, sans-serif;
 
-  --id-width: 960px;
+  --id-width: 100%;
   --id-offset: 80px;
 
   --id-line-size: 20px;
@@ -61,6 +61,8 @@
   color: var(--id-text-color);
   background: var(--id-background);
   padding-left: calc(var(--id-face-icon-size) / 2);
+  /* 0% と 100% のアイコンは中央基準なので、両端に半個分の余白が要る */
+  padding-right: calc(var(--id-face-icon-size) / 2);
 }
 
 .mcsr-indicator[data-run-status="empty"] {
