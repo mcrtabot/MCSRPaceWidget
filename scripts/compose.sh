@@ -15,9 +15,10 @@ fi
 rm -f ${TARGET_NAME}
 
 # build web app
+# ソースマップは配布物に要らない。jar の 4 割近くを占めるので外す
 cd web
 rm -rf build
-yarn build
+GENERATE_SOURCEMAP=false yarn build
 rm -rf build/theme build/setting build/icon
 cd -
 
