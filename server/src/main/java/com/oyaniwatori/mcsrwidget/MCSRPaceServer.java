@@ -42,6 +42,16 @@ public class MCSRPaceServer extends NanoHTTPD {
                         return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
                                 "{\"error\": \"load events failed.\"}");
                     }
+                } else if (uri.equals("/api/environment")) {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return newFixedLengthResponse(Response.Status.OK, "application/json",
+                                mapper.writeValueAsString(Utils.getEnvironment()));
+                    } catch (JsonProcessingException e) {
+                        return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
+                                "{\"error\": \"load environment failed.\"}");
+                    }
+
                 } else if (uri.equals("/api/uploads")) {
                     try {
                         ObjectMapper mapper = new ObjectMapper();

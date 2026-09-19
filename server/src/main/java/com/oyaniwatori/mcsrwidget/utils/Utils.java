@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import com.oyaniwatori.mcsrwidget.Environment;
 import com.oyaniwatori.mcsrwidget.IconSet;
 import com.oyaniwatori.mcsrwidget.PaceItem;
 import com.oyaniwatori.mcsrwidget.Player;
@@ -282,6 +284,67 @@ public class Utils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 前提が揃っているかを調べる。
+     *
+     * SpeedRunIGT の Auto Save Interval が Ticks でないと timer.igt が
+     * ポーズ時にしか書かれず、ウィジェットが止まって見える。
+     * 設定は SpeedRunOption と同じ手順で探す。インスタンス側の speedrunigt/ に
+     * .useglobaloption があればホーム側 (~/speedrunigt/options.txt) を見る。
+     */
+    public static Environment getEnvironment() {
+        String worldPath;
+        try {
+            worldPath = getInstancePath();
+        } catch (IOException e) {
+            return new Environment(null, null, null);
+        }
+
+        String separator = File.separator;
+        // worldPath は <.minecraft>/saves/<ワールド名>
+        File minecraftDir = new File(worldPath).getParentFile();
+        if (minecraftDir != null) {
+            minecraftDir = minecraftDir.getParentFile();
+        }
+        if (minecraftDir == null) {
+            return new Environment(worldPath, null, null);
+        }
+
+        File speedrunigtDir = new File(minecraftDir, "speedrunigt");
+        File optionsFile;
+        if (new File(speedrunigtDir, ".useglobaloption").exists()) {
+            optionsFile = new File(System.getProperty("user.home") + separator + "speedrunigt" + separator
+                    + "options.txt");
+        } else {
+            optionsFile = new File(speedrunigtDir, "options.txt");
+        }
+
+        if (!optionsFile.exists()) {
+            return new Environment(worldPath, null, optionsFile.getAbsolutePath());
+        }
+
+        String interval = readOption(optionsFile, "speedrunigt:auto_save_interval:");
+        // 既定は PAUSE。一度も触っていなければ行自体が無い
+        if (interval == null) {
+            interval = "PAUSE";
+        }
+        return new Environment(worldPath, interval, optionsFile.getAbsolutePath());
+    }
+
+    /** options.txt は `名前空間:キー:値` を1行ずつ並べた形式 */
+    private static String readOption(File file, String prefix) {
+        try {
+            for (String line : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
+                if (line.startsWith(prefix)) {
+                    return line.substring(prefix.length()).trim();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("could not read " + file.getName());
+        }
+        return null;
     }
 
     public static String getInstancePath() throws IOException {

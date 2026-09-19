@@ -50,3 +50,12 @@ export type Player = {
   id: string;
   source: 'setting' | 'stats' | 'record';
 };
+
+/** /api/environment の応答。ウィジェットが動く前提が揃っているか */
+export type Environment = {
+  worldPath: string | null;
+  /** SpeedRunIGT の Auto Save Interval。TICKS / PAUSE / NONE。読めなければ null */
+  autoSaveInterval: string | null;
+  optionsPath: string | null;
+  autoSaveIntervalOk: boolean;
+};

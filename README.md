@@ -22,7 +22,8 @@ works as an OBS browser source, just pick a theme and add it to your scene.
 ## Requirements
 
 - SpeedRunIGT 14.0 or later
-  - **Set "Auto Save Interval" (SpeedRunIGT Options > Timer) to `Ticks`** — required for real-time split updates
+  - **Set "Auto Save Interval" (SpeedRunIGT Options > Timer) to `Ticks`** — required for real-time split updates.
+    The widget checks this for you and says so on its page if it is set to anything else.
 
 ## Installation
 

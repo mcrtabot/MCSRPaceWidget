@@ -20,6 +20,7 @@ import {
 } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 
+import { EnvironmentWarning } from '../components/ui/EnvironmentWarning';
 import { ThemeSelector, ThemeSelectorCondition } from '../components/ui/ThemeSelector';
 import { Indicator } from '../components/widget/Indicator';
 import { Segment } from '../components/widget/Segment';
@@ -121,6 +122,7 @@ export const TopPage = () => {
         <Divider />
 
         {/* Widget Preview */}
+        <EnvironmentWarning />
         <Tabs value={activeTab} onChange={setActiveTab}>
           <Tabs.List>
             <Tabs.Tab value="timeline">Timeline</Tabs.Tab>
@@ -249,16 +251,13 @@ export const TopPage = () => {
             </Accordion.Control>
             <Accordion.Panel>
               <List type="ordered" spacing="xs" size="sm">
-                <List.Item>Set up your personal best splits from the Settings GUI</List.Item>
                 <List.Item>Choose a theme from the preview above</List.Item>
                 <List.Item>Copy the widget URL and add it as a Browser Source in OBS</List.Item>
               </List>
-              <Alert color="orange" variant="light" mt="md" p="sm">
-                <Text size="xs" fw={600}>
-                  For real-time updates, set <b>"Auto Save Interval"</b> to <b>"Ticks"</b> in SpeedRunIGT Options &gt;
-                  Timer.
-                </Text>
-              </Alert>
+              <Text size="xs" c="dimmed" mt="sm">
+                That is all you need. The widgets work without a personal best — set your PB splits from the Settings
+                GUI when you want to see the difference from it.
+              </Text>
               <Text size="xs" c="dimmed" mt="sm">
                 Tip: A Minecraft font is bundled. Use <Code>font-family: 'Minecraft-Regular'</Code> in your theme CSS
                 for a more authentic look.

@@ -5,7 +5,7 @@ import useSWR from 'swr/immutable';
 import demoPBTimeline from './assets/demo/pb.json';
 import demoTimelineData from './assets/demo/timeline.json';
 import { defaultSetting } from './setting';
-import { IconSet, IconSetData, Player, Setting, Theme, TimelineData, TimelineItem } from './types';
+import { Environment, IconSet, IconSetData, Player, Setting, Theme, TimelineData, TimelineItem } from './types';
 import { ThemeOverrides } from './utils/overrides';
 import { convertTimeToMilliSeconds } from './utils/utils';
 
@@ -136,6 +136,15 @@ export const useIconSet = (id?: string): { iconSet?: IconSet; isLoading: boolean
   });
 
   return { iconSet: id && data?.icons ? { ...data, id } : undefined, isLoading: !!id && isLoading };
+};
+
+/** ウィジェットが動く前提が揃っているか。トップページの注意書きに使う */
+export const useEnvironment = () => {
+  const { data } = useSWR<Environment>(`/api/environment`, fetcher, {
+    refreshInterval: REFRESH_INTERVAL,
+    dedupingInterval: REFRESH_INTERVAL,
+  });
+  return data;
 };
 
 /** アップロードした画像の一覧 */
