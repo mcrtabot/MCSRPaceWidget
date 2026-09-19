@@ -146,7 +146,7 @@ Pick a set from your theme's `setting.json`:
 }
 ```
 
-Bundled sets: `default` and `paceman`. `GET /api/icons` lists every available set with its
+Bundled sets: `default`, `paceman` and `paceman-stat`. `GET /api/icons` lists every available set with its
 mapping.
 
 `icons.json` maps a split type to a file, so one image can serve several splits:

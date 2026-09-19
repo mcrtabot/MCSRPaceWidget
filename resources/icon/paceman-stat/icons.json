@@ -1,0 +1,24 @@
+{
+  "name": "PaceMan Stat",
+  "//": "split type -> image file in this directory",
+  "//second_portal": "PaceMan に second_portal の絵は無いので first_portal を流用する",
+  "icons": {
+    "enter_nether": "nether.webp",
+    "enter_bastion": "bastion.webp",
+    "enter_fortress": "fortress.webp",
+    "first_portal": "first_portal.webp",
+    "second_portal": "first_portal.webp",
+    "enter_stronghold": "stronghold.webp",
+    "enter_end": "end.webp",
+    "credits": "finish.webp",
+
+    "obtain_iron_ingot": "context/iron_ingot.png",
+    "obtain_iron_pickaxe": "context/iron_pickaxe.png",
+    "obtain_lava_bucket": "context/lava_bucket.png",
+    "distract_piglin": "context/gold_ingot.png",
+    "loot_bastion": "context/chest.png",
+    "obtain_obsidian": "context/obsidian.png",
+    "obtain_crying_obsidian": "context/crying_obsidian.png",
+    "obtain_blaze_rod": "context/blaze_rod.png"
+  }
+}

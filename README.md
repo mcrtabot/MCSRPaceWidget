@@ -88,7 +88,7 @@ OBS. Nothing has to be edited on disk, and the link can be shared as-is.
 Only include the CSS files your theme supports. The server detects supported widgets by the presence of each file.
 
 Split icons come from shared icon sets in the `icon` directory, chosen with `"iconSet"` in
-`setting.json` (`default`, `paceman`), so themes no longer carry their own copies.
+`setting.json` (`default`, `paceman`, `paceman-stat`), so themes no longer carry their own copies.
 Add `?icons=<set>` to the widget URL to try another set without editing files.
 
 A Minecraft font is bundled. Specify `font-family: 'Minecraft-Regular'` in your theme CSS for a more authentic look.

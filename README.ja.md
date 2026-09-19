@@ -86,7 +86,7 @@ OBS に貼るだけです。ファイルを編集する必要はなく、URL を
 3. [Playground](/playground) で様々なデータパターンでプレビュー
 
 スプリットのアイコンは `icon` ディレクトリの共通アイコンセットから読み込みます。
-`setting.json` の `"iconSet"`（`default` / `paceman`）で選択するため、
+`setting.json` の `"iconSet"`（`default` / `paceman` / `paceman-stat`）で選択するため、
 テーマごとに画像を持つ必要はありません。
 ウィジェットの URL に `?icons=<セット名>` を付けると、ファイルを編集せずに別のセットを試せます。
 

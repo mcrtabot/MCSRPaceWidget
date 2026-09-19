@@ -173,6 +173,14 @@ public class MCSRPaceServer extends NanoHTTPD {
         }
     }
 
+    /** NanoHTTPD の表に webp が無く、そのままだと octet-stream になる */
+    private static String mimeTypeOf(String path) {
+        if (path.toLowerCase().endsWith(".webp")) {
+            return "image/webp";
+        }
+        return getMimeTypeForFile(path);
+    }
+
     private Response responseFromStaticFile(String dir, String path) {
         File homeResourceDir = Utils.getHomeResourceDir(dir);
         if (homeResourceDir.exists()) {
@@ -182,7 +190,7 @@ public class MCSRPaceServer extends NanoHTTPD {
                 // ファイルをストリームにして返す
                 // Return the file as a stream
                 try {
-                    return newChunkedResponse(Response.Status.OK, getMimeTypeForFile(path),
+                    return newChunkedResponse(Response.Status.OK, mimeTypeOf(path),
                             new FileInputStream(file.getAbsolutePath()));
                 } catch (IOException ioe) {
                     return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "");
@@ -193,7 +201,7 @@ public class MCSRPaceServer extends NanoHTTPD {
         if (is == null) {
             return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
         }
-        return newChunkedResponse(Response.Status.OK, getMimeTypeForFile(path),
+        return newChunkedResponse(Response.Status.OK, mimeTypeOf(path),
                 getClass().getResourceAsStream(dir + path));
 
     }
