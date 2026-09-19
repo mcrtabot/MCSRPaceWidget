@@ -1,4 +1,15 @@
-import { TimelineData } from '../../types';
+import { TimelineData, TimelineItem } from '../../types';
+
+/** プレビュー用の PB。プリセットの IGT はこれを基準に作ってある */
+export const defaultPBTimeline: TimelineItem[] = [
+  { type: 'enter_nether', igt: 267704 },
+  { type: 'enter_bastion', igt: 318752 },
+  { type: 'enter_fortress', igt: 523752 },
+  { type: 'first_portal', igt: 756002 },
+  { type: 'enter_stronghold', igt: 871511 },
+  { type: 'enter_end', igt: 935511 },
+  { type: 'credits', igt: 1049704 },
+];
 
 export type Preset = {
   name: string;

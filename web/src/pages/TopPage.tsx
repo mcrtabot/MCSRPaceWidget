@@ -272,7 +272,13 @@ export const TopPage = () => {
             </Accordion.Control>
             <Accordion.Panel>
               <Text size="sm" mb="xs">
-                You can create your own themes with a little CSS knowledge.
+                <strong>Adjust an existing theme</strong> — colors, fonts, sizes and which parts are shown, without
+                touching any files. Press <strong>Customize...</strong> next to the theme above, or open the{' '}
+                <Anchor href="/customize">Theme Editor</Anchor>. It gives you a widget URL that carries your changes,
+                so you only have to paste that into OBS.
+              </Text>
+              <Text size="sm" mt="md" mb="xs">
+                <strong>Build a theme from scratch</strong> — this part needs CSS.
               </Text>
               <List type="ordered" spacing="xs" size="sm">
                 <List.Item>

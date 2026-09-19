@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useSearchParams } from 'react-router-dom';
 
 import { DemoWarning } from '../components/ui/DemoWarning';
 import { Segment } from '../components/widget/Segment';
 import { AppContext } from '../context';
-import { usePageData } from '../hooks';
+import { decodeOverrides } from '../utils/overrides';
+import { usePageData, useThemeOverrides } from '../hooks';
 
 export const SegmentPage = () => {
   const [searchParams] = useSearchParams({ theme: 'default' });
@@ -13,6 +14,9 @@ export const SegmentPage = () => {
   const isDemo = searchParams.get('demo') === '1';
   // ?icons=<セットid> でテーマの指定を上書きする
   const iconSetOverride = searchParams.get('icons') || undefined;
+  // ?v=<base64> でテーマのトークンを上書きする
+  const themeOverrides = useMemo(() => decodeOverrides(searchParams.get('v')), [searchParams]);
+  useThemeOverrides(themeOverrides);
 
   const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, iconSetOverride);
 

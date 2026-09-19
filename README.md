@@ -68,6 +68,12 @@ Your account is detected from the run data, so there is nothing to enter. To pic
 account (for example when streaming someone else's run), set `id` in `setting/player.json` to
 a Minecraft ID or UUID. If the skin cannot be loaded, the theme's own face image is shown.
 
+### Customizing a Theme Without CSS
+
+Open the [Playground](/playground), pick a base theme, and adjust colors, fonts, sizes and
+which parts are shown. It generates a widget URL that carries your changes — paste that into
+OBS. Nothing has to be edited on disk, and the link can be shared as-is.
+
 ### Custom Themes
 
 1. Copy a base theme (e.g., `default`) in the `theme` directory and rename it

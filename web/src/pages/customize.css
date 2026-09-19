@@ -1,0 +1,322 @@
+/*
+ * テーマ編集画面のデザイントークン。
+ *
+ * ウィジェット用のページは OBS に重ねる前提で body を透明にしているため、
+ * ここのスタイルは .editor 以下だけに閉じ込める。
+ */
+
+.editor {
+  /* 面 */
+  --e-bg: #f4f5f7;
+  --e-surface: #ffffff;
+  --e-surface-sunken: #eceef1;
+  --e-border: #dcdfe4;
+  --e-border-strong: #c4c9d1;
+
+  /* 文字 */
+  --e-text: #1b1f26;
+  --e-text-dim: #646c78;
+  --e-text-faint: #949aa4;
+
+  /* アクセント。プレビュー台の暗さに対して沈まない彩度にしてある */
+  --e-accent: #2f6df0;
+  --e-accent-weak: rgba(47, 109, 240, 0.1);
+
+  /* プレビューを置く台。ウィジェットは暗い配信画面に載るので既定も暗くする */
+  --e-stage: #2b2f36;
+
+  --e-radius: 10px;
+  --e-radius-sm: 6px;
+
+  --e-gap: 12px;
+  --e-gap-lg: 20px;
+
+  --e-shadow: 0 1px 2px rgba(16, 20, 28, 0.06), 0 6px 20px rgba(16, 20, 28, 0.06);
+
+  --e-font:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  --e-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* サイドパネルの幅。狭いとフィールドのラベルが折り返して読みにくくなる */
+  --e-panel-width: 380px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .editor {
+    --e-bg: #15171c;
+    --e-surface: #1d2027;
+    --e-surface-sunken: #14161b;
+    --e-border: #2c313b;
+    --e-border-strong: #3a4150;
+    --e-text: #e7e9ee;
+    --e-text-dim: #98a0ad;
+    --e-text-faint: #6d7684;
+    --e-accent: #5b9dff;
+    --e-accent-weak: rgba(91, 157, 255, 0.14);
+    --e-stage: #0f1114;
+    --e-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.editor {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--e-bg);
+  color: var(--e-text);
+  font-family: var(--e-font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ヘッダー ------------------------------------------------------------- */
+
+.editor__header {
+  display: flex;
+  align-items: center;
+  gap: var(--e-gap-lg);
+  padding: 0 var(--e-gap-lg);
+  height: 56px;
+  background: var(--e-surface);
+  border-bottom: 1px solid var(--e-border);
+}
+
+.editor__title {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.editor__title span {
+  color: var(--e-text-faint);
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+/* ウィジェット種別の切り替え */
+.editor__widgets {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--e-surface-sunken);
+  border-radius: var(--e-radius-sm);
+}
+
+.editor__widget {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--e-text-dim);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editor__widget:hover {
+  color: var(--e-text);
+}
+
+.editor__widget[aria-selected='true'] {
+  background: var(--e-surface);
+  color: var(--e-text);
+  box-shadow: 0 1px 2px rgba(16, 20, 28, 0.12);
+}
+
+.editor__header-spacer {
+  flex: 1;
+}
+
+/* 本体 ----------------------------------------------------------------- */
+
+.editor__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--e-panel-width);
+  min-height: 0;
+}
+
+/* 左: プレビュー -------------------------------------------------------- */
+
+.editor__preview {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.editor__stage {
+  display: flex;
+  align-items: center;
+  overflow: auto;
+  padding: var(--e-gap-lg);
+  background: var(--e-stage);
+}
+
+/*
+ * 縮小表示したときに中身が中央からずれないようにする。
+ *
+ * 幅を明示するのは --id-width: 100% のようなテーマの指定を解決させるため。
+ * flex の子は内容幅に縮むので、幅が決まっていないと 100% が自分自身を指して
+ * 潰れ、Visual Timeline のアイコンが中央に固まってしまう。
+ */
+.editor__stage-inner {
+  transform-origin: center center;
+  width: 100%;
+}
+
+.editor__preview-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--e-gap-lg);
+  padding: 10px var(--e-gap-lg);
+  background: var(--e-surface);
+  border-top: 1px solid var(--e-border);
+}
+
+.editor__field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--e-text-dim);
+  white-space: nowrap;
+}
+
+/* 右: 設定パネル -------------------------------------------------------- */
+
+.editor__panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 0;
+  background: var(--e-surface);
+  border-left: 1px solid var(--e-border);
+}
+
+.editor__panel-head,
+.editor__panel-foot {
+  padding: var(--e-gap) var(--e-gap-lg);
+}
+
+.editor__panel-head {
+  border-bottom: 1px solid var(--e-border);
+  display: grid;
+  gap: 10px;
+}
+
+.editor__panel-body {
+  overflow-y: auto;
+  padding: 4px 0 var(--e-gap-lg);
+}
+
+.editor__panel-foot {
+  border-top: 1px solid var(--e-border);
+  background: var(--e-surface-sunken);
+  display: grid;
+  gap: 8px;
+}
+
+/* 見出しつきのグループ */
+.editor__group {
+  border-bottom: 1px solid var(--e-border);
+}
+
+.editor__group:last-child {
+  border-bottom: 0;
+}
+
+.editor__group-head {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px var(--e-gap-lg);
+  cursor: pointer;
+  text-align: left;
+}
+
+.editor__group-head:hover {
+  background: var(--e-surface-sunken);
+}
+
+.editor__group-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.editor__group-count {
+  font-size: 11px;
+  color: var(--e-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.editor__group-changed {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--e-accent);
+  background: var(--e-accent-weak);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.editor__chevron {
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid var(--e-text-faint);
+  border-bottom: 1.5px solid var(--e-text-faint);
+  transform: rotate(-45deg);
+  transition: transform 120ms ease;
+  flex: none;
+  margin-left: -2px;
+}
+
+.editor__group[data-open='true'] .editor__chevron {
+  transform: rotate(45deg);
+}
+
+.editor__group-body {
+  display: grid;
+  gap: 14px;
+  padding: 2px var(--e-gap-lg) 18px;
+}
+
+/* 出力URL --------------------------------------------------------------- */
+
+.editor__url {
+  font-family: var(--e-mono);
+  font-size: 11px;
+}
+
+.editor__hint {
+  font-size: 11px;
+  color: var(--e-text-faint);
+}
+
+.editor__empty {
+  padding: var(--e-gap-lg);
+  color: var(--e-text-dim);
+  font-size: 13px;
+}
+
+/* 幅が足りないときは 1 カラムに落とす */
+@media (max-width: 900px) {
+  .editor__body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(200px, 40%) 1fr;
+  }
+
+  .editor__panel {
+    border-left: 0;
+    border-top: 1px solid var(--e-border);
+  }
+}

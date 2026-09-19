@@ -6,6 +6,7 @@ import demoPBTimeline from './assets/demo/pb.json';
 import demoTimelineData from './assets/demo/timeline.json';
 import { defaultSetting } from './setting';
 import { IconSet, IconSetData, Player, Setting, Theme, TimelineData, TimelineItem } from './types';
+import { ThemeOverrides } from './utils/overrides';
 import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
@@ -137,6 +138,29 @@ export const useIconSet = (id?: string): { iconSet?: IconSet; isLoading: boolean
   return { iconSet: id && data?.icons ? { ...data, id } : undefined, isLoading: !!id && isLoading };
 };
 
+/** アップロードした画像の一覧 */
+export const useUploads = () => {
+  const { data, mutate } = useSWR<string[]>(`/api/uploads`, fetcher, {
+    refreshInterval: REFRESH_INTERVAL,
+    dedupingInterval: 0,
+  });
+
+  /** 画像を1枚置いて、一覧を取り直す。書き込みなのでサーバー側はローカルからのみ受け付ける */
+  const upload = async (file: File) => {
+    const body = new FormData();
+    body.append('file', file);
+    const response = await fetch('/api/upload', { method: 'POST', body });
+    if (!response.ok) {
+      throw new Error('upload failed');
+    }
+    const { name } = (await response.json()) as { name: string };
+    await mutate();
+    return `/upload/${name}`;
+  };
+
+  return { uploads: data ?? [], upload };
+};
+
 /** 一覧。テーマエディタのアイコン選択で使う */
 export const useIconSets = () => {
   const path = `/api/icons`;
@@ -226,6 +250,27 @@ export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator' | '
       head.removeChild(link);
     };
   }, [theme, cssFile]);
+};
+
+/**
+ * テーマのトークンを上書きする。テーマCSSの `:root` より後ろから効かせたいので、
+ * `<style>` を足すのではなく documentElement に直接立てる。
+ * CSSOM 経由なので、値に何が入っていても宣言ブロックの外へは出られない。
+ */
+export const useThemeOverrides = (overrides: ThemeOverrides) => {
+  // 依存配列に置くため、中身が同じなら同じ文字列になる形に畳んでおく
+  const serialized = JSON.stringify(overrides);
+
+  useEffect(() => {
+    const entries: [string, string][] = Object.entries(JSON.parse(serialized) as ThemeOverrides);
+    const style = document.documentElement.style;
+
+    entries.forEach(([property, value]) => style.setProperty(property, value));
+
+    return () => {
+      entries.forEach(([property]) => style.removeProperty(property));
+    };
+  }, [serialized]);
 };
 
 export const usePageData = (

@@ -19,25 +19,17 @@ import {
 } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 
-import { presets } from '../assets/playground/presets';
+import { defaultPBTimeline, presets } from '../assets/playground/presets';
+import { ThemeEditor } from '../components/playground/ThemeEditor';
 import { Indicator } from '../components/widget/Indicator';
 import { Segment } from '../components/widget/Segment';
 import { Timelines } from '../components/widget/Timelines';
 import { AppContext } from '../context';
-import { useIconSet, useSetting, useThemes } from '../hooks';
+import { useIconSet, useSetting, useThemeOverrides, useThemes } from '../hooks';
 import { defaultSetting } from '../setting';
 import { Theme, TimelineData, TimelineItem } from '../types';
+import { ThemeOverrides, decodeOverrides, encodeOverrides } from '../utils/overrides';
 import { convertMillisecondsToTime, convertTimeToMilliSeconds } from '../utils/utils';
-
-const defaultPBTimeline: TimelineItem[] = [
-  { type: 'enter_nether', igt: 267704 },
-  { type: 'enter_bastion', igt: 318752 },
-  { type: 'enter_fortress', igt: 523752 },
-  { type: 'first_portal', igt: 756002 },
-  { type: 'enter_stronghold', igt: 871511 },
-  { type: 'enter_end', igt: 935511 },
-  { type: 'credits', igt: 1049704 },
-];
 
 const getNumParam = (params: URLSearchParams, key: string, fallback: number) => {
   const v = params.get(key);
@@ -67,7 +59,11 @@ export const PlaygroundPage = () => {
     (key: string, value: string) => {
       setSearchParams(
         (prev) => {
-          prev.set(key, value);
+          if (value === '') {
+            prev.delete(key);
+          } else {
+            prev.set(key, value);
+          }
           return prev;
         },
         { replace: true },
@@ -204,6 +200,17 @@ export const PlaygroundPage = () => {
   const resolvedSegmentSetting = segmentSetting ?? defaultSetting;
 
   // アイコンセットはタブごとに選んでいるテーマの設定から引く
+  // 編集中のトークン差分。タブごとに持ち、URLに載せてリロードでも戻るようにする
+  const activeTab = searchParams.get('tab') || 'timeline';
+  const overridesParam = { timeline: 'tlV', 'visual-timeline': 'vtV', segment: 'sgV' }[activeTab] ?? 'tlV';
+  const overrides = useMemo(() => decodeOverrides(searchParams.get(overridesParam)), [searchParams, overridesParam]);
+  const setOverrides = useCallback(
+    (next: ThemeOverrides) => updateParam(overridesParam, Object.keys(next).length ? encodeOverrides(next) : ''),
+    [overridesParam, updateParam],
+  );
+  // 表示中のタブのぶんだけ効かせる。タブ間で同じ変数名を使うテーマがあるため
+  useThemeOverrides(overrides);
+
   const { iconSet: timelineIconSet, isLoading: isLoadingTimelineIconSet } = useIconSet(resolvedSetting.iconSet);
   const { iconSet: indicatorIconSet, isLoading: isLoadingIndicatorIconSet } = useIconSet(indicatorSetting?.iconSet);
   const { iconSet: segmentIconSet, isLoading: isLoadingSegmentIconSet } = useIconSet(resolvedSegmentSetting.iconSet);
@@ -354,6 +361,16 @@ export const PlaygroundPage = () => {
               </div>
             </AppContext.Provider>
           </Box>
+          <Box mt="md">
+            <ThemeEditor
+              theme={timelineTheme}
+              cssFile="timeline"
+              widgetPath="/timeline"
+              iconSet={resolvedSetting.iconSet}
+              overrides={overrides}
+              onChange={setOverrides}
+            />
+          </Box>
         </Tabs.Panel>
 
         <Tabs.Panel value="visual-timeline" pt="md" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -409,6 +426,16 @@ export const PlaygroundPage = () => {
               </div>
             </AppContext.Provider>
           </Box>
+          <Box mt="md">
+            <ThemeEditor
+              theme={indicatorTheme}
+              cssFile="indicator"
+              widgetPath="/indicator"
+              iconSet={indicatorSetting?.iconSet}
+              overrides={overrides}
+              onChange={setOverrides}
+            />
+          </Box>
         </Tabs.Panel>
 
         <Tabs.Panel value="segment" pt="md" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -463,6 +490,16 @@ export const PlaygroundPage = () => {
                 <Segment />
               </div>
             </AppContext.Provider>
+          </Box>
+          <Box mt="md">
+            <ThemeEditor
+              theme={segmentTheme}
+              cssFile="segment"
+              widgetPath="/segment"
+              iconSet={resolvedSegmentSetting.iconSet}
+              overrides={overrides}
+              onChange={setOverrides}
+            />
           </Box>
         </Tabs.Panel>
       </Tabs>

@@ -111,7 +111,7 @@
   width: var(--id-dot-size);
   /* border-radius: 50%; */
   background: #333;
-  transform: translate3d(0, -50%, 0);
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .mcsr-indicator__dot--pace {

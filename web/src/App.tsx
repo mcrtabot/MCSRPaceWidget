@@ -2,6 +2,7 @@ import React from 'react';
 
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import { CustomizePage } from './pages/CustomizePage';
 import { IndicatorPage } from './pages/IndicatorPage';
 import { PlaygroundPage } from './pages/PlaygroundPage';
 import { SegmentPage } from './pages/SegmentPage';
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: '/playground',
     element: <PlaygroundPage />,
+  },
+  {
+    path: '/customize',
+    element: <CustomizePage />,
   },
 ]);
 

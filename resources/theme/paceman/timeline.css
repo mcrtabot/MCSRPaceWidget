@@ -48,6 +48,7 @@
 }
 
 .mcsr-widget {
+  font: var(--tl-font);
   position: relative;
   top: 0;
   bottom: 0;

@@ -5,10 +5,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oyaniwatori.mcsrwidget.gui.AppFrame;
+import com.oyaniwatori.mcsrwidget.utils.Uploads;
 import com.oyaniwatori.mcsrwidget.utils.Utils;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -38,6 +42,19 @@ public class MCSRPaceServer extends NanoHTTPD {
                         return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
                                 "{\"error\": \"load events failed.\"}");
                     }
+                } else if (uri.equals("/api/uploads")) {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return newFixedLengthResponse(Response.Status.OK, "application/json",
+                                mapper.writeValueAsString(Arrays.asList(Uploads.list())));
+                    } catch (JsonProcessingException e) {
+                        return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
+                                "{\"error\": \"load uploads failed.\"}");
+                    }
+
+                } else if (uri.equals("/api/upload")) {
+                    return this.handleUpload(session);
+
                 } else if (uri.equals("/api/player")) {
                     Player player = Utils.getPlayer();
 
@@ -85,10 +102,13 @@ public class MCSRPaceServer extends NanoHTTPD {
                 return this.responseFromStaticFile("/setting", uri.substring("/setting".length()));
             } else if (uri.startsWith("/theme/")) {
                 return this.responseFromStaticFile("/theme", uri.substring("/theme".length()));
+            } else if (uri.startsWith("/upload/")) {
+                return this.responseFromStaticFile("/upload", uri.substring("/upload".length()));
             } else if (uri.startsWith("/icon/")) {
                 return this.responseFromStaticFile("/icon", uri.substring("/icon".length()));
             } else {
-                if (uri.startsWith("/timeline") || uri.startsWith("/indicator") || uri.startsWith("/segment") || uri.startsWith("/playground")) {
+                if (uri.startsWith("/timeline") || uri.startsWith("/indicator") || uri.startsWith("/segment") || uri.startsWith("/playground")
+                        || uri.startsWith("/customize")) {
                     uri = "/";
                 }
                 if (uri.equals("/")) {
@@ -102,6 +122,44 @@ public class MCSRPaceServer extends NanoHTTPD {
         } catch (Exception e) {
             e.printStackTrace();
             return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "");
+        }
+    }
+
+    /**
+     * 画像の受け取り。
+     *
+     * バインド先は変えずに、書き込みだけループバックからに限定する。
+     * 配信PCとOBSを別マシンにしている構成では読み取りにLAN越しのアクセスが要るため、
+     * サーバー全体を閉じるわけにはいかない。
+     */
+    private Response handleUpload(IHTTPSession session) {
+        if (session.getMethod() != Method.POST) {
+            return newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT, "POST only");
+        }
+        // NanoHTTPD はループバックからのアクセスを 127.0.0.1 に正規化する
+        if (!"127.0.0.1".equals(session.getRemoteIpAddress())) {
+            System.out.println("rejected an upload from " + session.getRemoteIpAddress());
+            return newFixedLengthResponse(Response.Status.FORBIDDEN, MIME_PLAINTEXT, "Forbidden");
+        }
+
+        try {
+            Map<String, String> files = new HashMap<String, String>();
+            session.parseBody(files);
+
+            String tempPath = files.get("file");
+            if (tempPath == null) {
+                return newFixedLengthResponse(Response.Status.BAD_REQUEST, "application/json",
+                        "{\"error\": \"no file\"}");
+            }
+
+            String saved = Uploads.save(new File(tempPath), session.getParms().get("file"));
+            ObjectMapper mapper = new ObjectMapper();
+            return newFixedLengthResponse(Response.Status.OK, "application/json",
+                    mapper.writeValueAsString(Collections.singletonMap("name", saved)));
+        } catch (Exception e) {
+            System.out.println("upload failed: " + e.getMessage());
+            return newFixedLengthResponse(Response.Status.BAD_REQUEST, "application/json",
+                    "{\"error\": \"upload failed\"}");
         }
     }
 

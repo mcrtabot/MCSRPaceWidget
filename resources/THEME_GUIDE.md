@@ -12,6 +12,49 @@ Each theme is a folder in `theme/{theme-name}/` containing:
 
 Include only the CSS files your theme supports. The server detects supported widgets by the presence of each CSS file.
 
+## Customizing Without Writing CSS
+
+Most of what makes a theme look the way it does lives in the `:root` block at the top of its
+CSS — colors, fonts, sizes, and which parts are shown. The [Playground](/playground) reads that
+block and turns it into a form, so a theme can be adjusted without touching CSS at all.
+
+Open the Playground, pick a base theme, change the fields, and copy the **Widget URL** it
+generates. That URL is the whole customization:
+
+```
+http://127.0.0.1:1161/timeline?theme=default&icons=default&v=eyItLXRsLXRleHQtY29sb3IiOiIj...
+```
+
+`v` carries only the values that differ from the base theme, so it stays short — a handful of
+changes is about 200-300 characters. The base theme's CSS is untouched, which means improvements
+to it still reach anyone using a customized URL, and the customization travels as a single link
+that can be pasted into OBS or shared.
+
+The form is built from the CSS itself rather than from a fixed list, so a custom theme gets an
+editor for free: any variable declared in its `:root` shows up. Comments are used as labels, so
+
+```css
+:root {
+  /* base text color */
+  --tl-text-color: rgba(255, 255, 255, 1);
+}
+```
+
+appears as a color field named "base text color". A commented-out declaration is treated as an
+available-but-unset option, and a variable used as `display: var(--x, table-cell)` becomes a
+show/hide switch.
+
+Images can be added from the editor. They are stored in `~/.config/MCSRPaceWidget/upload/`
+and served from `/upload/<name>`, so a URL that points at one keeps working after an update.
+The editor also offers the runner's own skin for the face.
+
+What a URL still cannot carry is the files themselves — an uploaded image lives on the machine
+that runs the widget, so a URL shared with someone else falls back to whatever their setup has.
+Icons, textures and fonts likewise live in a theme directory or a [shared icon set](#icons).
+
+Uploading writes to disk, so it is accepted only from the machine running the widget
+(`127.0.0.1`). Reading is unchanged, so setups that run OBS on a second PC still work.
+
 ## Getting Started
 
 1. Duplicate an existing theme folder (e.g. `theme/default`) and rename it

@@ -24,6 +24,9 @@ export const ThemeSelector = ({ type, theme, onChangeTheme }: ThemeSelectorProps
     <Stack gap="sm">
       <Group align="flex-end">
         <Select label="Theme" value={theme} onChange={(val) => val && onChangeTheme(val)} data={themeOptions} w={360} />
+        <Button component="a" href={`/customize?w=${type}&theme=${theme}`} variant="light">
+          Customize...
+        </Button>
       </Group>
       <Group gap="xs" align="center">
         <Text size="sm" fw={600}>

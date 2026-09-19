@@ -114,7 +114,7 @@
   height: var(--id-dot-size);
   width: var(--id-dot-size);
   background: #000;
-  transform: translate3d(0, -50%, 0);
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .mcsr-indicator__dot--pace {

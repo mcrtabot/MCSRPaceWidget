@@ -68,6 +68,9 @@ resources/
   icon/             # Shared split icon sets (icon/<set>/icons.json + images)
   setting/          # PB settings, runner id for the skin face, etc.
 server/             # Java backend (NanoHTTPD)
+
+Images added from the Theme Editor are written to `~/.config/MCSRPaceWidget/upload/`
+and served from `/upload/`. `POST /api/upload` only accepts requests from 127.0.0.1.
 ```
 
 ## Theme Structure
