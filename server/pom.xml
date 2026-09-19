@@ -142,12 +142,9 @@
       </plugin>
     </plugins>
     <resources>
+      <!-- theme / setting / icon は初回起動時にホームへコピーするので jar にも入れる -->
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
-        <excludes>
-          <exclude>setting/</exclude>
-          <exclude>theme/</exclude>
-        </excludes>
       </resource>
     </resources>
   </build>

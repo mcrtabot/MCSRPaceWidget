@@ -3,18 +3,32 @@ package com.oyaniwatori.mcsrwidget.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.CodeSource;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -31,32 +45,123 @@ import com.oyaniwatori.mcsrwidget.Theme;
 public class Utils {
     private static final String DEFAULT_THEME = "default";
 
+    /** 起動時にホームへ配る配布物のディレクトリ */
+    private static final List<String> DEFAULT_RESOURCE_DIRS = Arrays.asList("theme", "setting", "icon");
+
+    /** 前回ホームへ配った配布物の指紋を置くファイル */
+    private static final String INSTALLED_DIGESTS = ".installed.json";
+
     private static final Pattern UUID_PATTERN = Pattern
             .compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
-    public static Theme[] getThemes() {
-        File themeDir;
-
-        File homeThemeDir = getHomeResourceDir("theme");
-        if (homeThemeDir.exists()) {
-            themeDir = homeThemeDir;
-        } else {
-            themeDir = new File("theme");
-        }
-        List<Theme> themes = new ArrayList<Theme>();
-
-        File[] files = themeDir.listFiles();
-        if (files == null) {
-            return new Theme[] {};
-        }
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
-            if (!file.isDirectory()) {
+    /** <dir>/ 直下のディレクトリ名。ホーム → 配布物 → jar 同梱 の和集合 */
+    private static Set<String> listResourceDirs(String dir) {
+        Set<String> names = new TreeSet<String>();
+        for (File base : new File[] { getHomeResourceDir(dir), getAppResourceDir(dir) }) {
+            File[] files = base.listFiles();
+            if (files == null) {
                 continue;
             }
-            themes.add(new Theme(file.getName(), new File(file.getPath() + File.separator + "timeline.css").exists(),
-                    new File(file.getPath() + File.separator + "indicator.css").exists(),
-                    new File(file.getPath() + File.separator + "segment.css").exists()));
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    names.add(file.getName());
+                }
+            }
+        }
+        names.addAll(listBundledDirs(dir));
+        return names;
+    }
+
+    /** jar に同梱した <dir>/ 直下のディレクトリ名。IDE から動かすと file: になるのでそちらも見る */
+    private static Set<String> listBundledDirs(String dir) {
+        Set<String> names = new HashSet<String>();
+        try {
+            URL url = Utils.class.getResource("/" + dir);
+            if (url == null) {
+                return names;
+            }
+            if ("file".equals(url.getProtocol())) {
+                File[] files = new File(url.toURI()).listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isDirectory()) {
+                            names.add(file.getName());
+                        }
+                    }
+                }
+                return names;
+            }
+            // クラスローダと共有しているので閉じない
+            JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+            String prefix = dir + "/";
+            Enumeration<JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                String rest = entries.nextElement().getName();
+                if (!rest.startsWith(prefix)) {
+                    continue;
+                }
+                rest = rest.substring(prefix.length());
+                int slash = rest.indexOf('/');
+                if (slash > 0) {
+                    names.add(rest.substring(0, slash));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("list bundled " + dir + " failed: " + e);
+        }
+        return names;
+    }
+
+    /** <dir>/<path> を ホーム → 配布物 → jar 同梱 の順で開く。無ければ null */
+    public static InputStream openResource(String dir, String path) throws IOException {
+        // path はリクエスト由来。<dir> の外へ出ないものだけ通す
+        String safePath = toSafeResourcePath(path);
+        if (safePath == null) {
+            return null;
+        }
+        for (File base : new File[] { getHomeResourceDir(dir), getAppResourceDir(dir) }) {
+            File file = new File(base, safePath);
+            if (file.isFile()) {
+                return new FileInputStream(file);
+            }
+        }
+        return Utils.class.getResourceAsStream("/" + dir + "/" + safePath);
+    }
+
+    /** `a//./b` を `a/b` に均す。`..` や絶対パスなど <dir> の外を指すものは null */
+    private static String toSafeResourcePath(String path) {
+        if (path == null || path.indexOf('\0') >= 0) {
+            return null;
+        }
+        StringBuilder safe = new StringBuilder();
+        for (String segment : path.replace('\\', '/').split("/")) {
+            if (segment.isEmpty() || ".".equals(segment)) {
+                continue;
+            }
+            if ("..".equals(segment)) {
+                return null;
+            }
+            if (safe.length() > 0) {
+                safe.append('/');
+            }
+            safe.append(segment);
+        }
+        return safe.length() == 0 ? null : safe.toString();
+    }
+
+    private static boolean hasResource(String dir, String path) {
+        try (InputStream in = openResource(dir, path)) {
+            return in != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static Theme[] getThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+        for (String name : listResourceDirs("theme")) {
+            themes.add(new Theme(name, hasResource("theme", name + "/timeline.css"),
+                    hasResource("theme", name + "/indicator.css"), hasResource("theme", name + "/segment.css")));
         }
         // 名前順。ただし default は最初に置く。迷ったときの出発点になるテーマなので
         Collections.sort(themes, new Comparator<Theme>() {
@@ -78,32 +183,14 @@ public class Utils {
     }
 
     public static IconSet[] getIconSets() {
-        File iconDir;
-
-        File homeIconDir = getHomeResourceDir("icon");
-        if (homeIconDir.exists()) {
-            iconDir = homeIconDir;
-        } else {
-            iconDir = new File("icon");
-        }
-
         List<IconSet> iconSets = new ArrayList<IconSet>();
-
-        File[] files = iconDir.listFiles();
-        if (files == null) {
-            return new IconSet[] {};
-        }
         ObjectMapper mapper = new ObjectMapper();
-        for (File file : files) {
-            if (!file.isDirectory()) {
-                continue;
-            }
-            File settingFile = new File(file, "icons.json");
-            if (!settingFile.exists()) {
-                continue;
-            }
-            try {
-                JsonNode json = mapper.readTree(settingFile);
+        for (String id : listResourceDirs("icon")) {
+            try (InputStream in = openResource("icon", id + "/icons.json")) {
+                if (in == null) {
+                    continue;
+                }
+                JsonNode json = mapper.readTree(in);
                 JsonNode iconsNode = json.get("icons");
                 if (iconsNode == null) {
                     continue;
@@ -120,16 +207,15 @@ public class Utils {
                 }
 
                 JsonNode nameNode = json.get("name");
-                String name = nameNode != null ? nameNode.asText() : file.getName();
+                String name = nameNode != null ? nameNode.asText() : id;
 
-                iconSets.add(new IconSet(file.getName(), name, icons));
+                iconSets.add(new IconSet(id, name, icons));
             } catch (IOException e) {
                 // 壊れたセットは一覧から落とすだけにして、他のセットは返す
                 // Skip a broken set rather than failing the whole listing
-                System.out.println("load icon set failed: " + file.getName());
+                System.out.println("load icon set failed: " + id);
             }
         }
-
         Collections.sort(iconSets, new Comparator<IconSet>() {
             public int compare(IconSet i1, IconSet i2) {
                 return i1.id.compareTo(i2.id);
@@ -151,6 +237,181 @@ public class Utils {
         }
 
         return new File(homeWidgetPath);
+    }
+
+    /**
+     * ホームのコンフィグフォルダ (~/.config/MCSRPaceWidget) を起動時に用意する。
+     * 無ければ作り、配布物の theme / setting / icon を毎回配り直す。
+     * 更新で増えたテーマやアイコンセットを既存の環境にも届けるため。
+     * ユーザーが直したファイルは残す。詳しくは syncDefaultResources
+     */
+    public static void prepareHomeResourceDir() {
+        File dir = getHomeResourceDir(null);
+        if (!dir.isDirectory() && !dir.mkdirs()) {
+            System.out.println("could not create the config directory: " + dir);
+            return;
+        }
+
+        Map<String, String> installed = loadInstalledDigests(dir);
+        Map<String, String> updated = new LinkedHashMap<String, String>(installed);
+        for (String name : DEFAULT_RESOURCE_DIRS) {
+            try {
+                syncDefaultResources(name, new File(dir, name), installed, updated);
+            } catch (Exception e) {
+                // 配れなかった分は記録を残さない。次の起動でもう一度試す
+                System.out.println("could not copy the default " + name + ": " + e);
+            }
+        }
+        saveInstalledDigests(dir, updated);
+        Uploads.getDir().mkdirs();
+    }
+
+    /**
+     * 配布物の <name>/ をホームへ配る。ユーザーが直したファイルには触らない。
+     *
+     * 前回配ったときの指紋を残しておき、
+     * 指紋どおりのファイル = 手つかず とみなして新しい配布物で置き換える。
+     * 指紋が違うものはユーザーが直したものとして残す。
+     * 消されたファイルは配り直す。消して起動し直せば既定の内容に戻せるように
+     */
+    private static void syncDefaultResources(String name, final File dest, final Map<String, String> installed,
+            final Map<String, String> updated) throws Exception {
+        eachDefaultResource(name, new ResourceVisitor() {
+            public void visit(String path, InputStream in) throws IOException {
+                String key = dest.getName() + "/" + path;
+                File file = new File(dest, path);
+                // 指紋を知らないファイルも残す。この仕組みが無かった頃からあるものなので
+                if (file.isFile() && !digestOf(file).equals(installed.get(key))) {
+                    return;
+                }
+
+                file.getParentFile().mkdirs();
+                Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                updated.put(key, digestOf(file));
+            }
+        });
+    }
+
+    private interface ResourceVisitor {
+        void visit(String path, InputStream in) throws IOException;
+    }
+
+    /** 配布物の <name>/ 以下を1ファイルずつ渡す。jar の隣 → カレント → jar の中 の順に探す */
+    private static void eachDefaultResource(String name, ResourceVisitor visitor) throws Exception {
+        File local = getAppResourceDir(name);
+        if (local.isDirectory()) {
+            eachFile(local, "", visitor);
+            return;
+        }
+
+        URL url = Utils.class.getResource("/" + name);
+        if (url == null) {
+            throw new IOException("no default " + name);
+        }
+        if ("file".equals(url.getProtocol())) {
+            eachFile(new File(url.toURI()), "", visitor);
+            return;
+        }
+        eachJarResource((JarURLConnection) url.openConnection(), name, visitor);
+    }
+
+    private static void eachFile(File dir, String prefix, ResourceVisitor visitor) throws IOException {
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
+            String path = prefix + file.getName();
+            if (file.isDirectory()) {
+                eachFile(file, path + "/", visitor);
+            } else {
+                try (InputStream in = new FileInputStream(file)) {
+                    visitor.visit(path, in);
+                }
+            }
+        }
+    }
+
+    /** jar に同梱した <name>/ 以下を取り出す。Jingle プラグインではここが唯一のコピー元になる */
+    private static void eachJarResource(JarURLConnection connection, String name, ResourceVisitor visitor)
+            throws IOException {
+        // クラスローダと共有しているので閉じない
+        JarFile jar = connection.getJarFile();
+        String prefix = name + "/";
+        Enumeration<JarEntry> entries = jar.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            if (entry.isDirectory() || !entry.getName().startsWith(prefix)) {
+                continue;
+            }
+            try (InputStream in = jar.getInputStream(entry)) {
+                visitor.visit(entry.getName().substring(prefix.length()), in);
+            }
+        }
+    }
+
+    /** 前回ホームへ配った配布物の指紋 */
+    private static Map<String, String> loadInstalledDigests(File dir) {
+        File file = new File(dir, INSTALLED_DIGESTS);
+        if (!file.isFile()) {
+            return Collections.emptyMap();
+        }
+        try {
+            return new ObjectMapper().readValue(file, new TypeReference<LinkedHashMap<String, String>>() {
+            });
+        } catch (IOException e) {
+            System.out.println("load " + INSTALLED_DIGESTS + " failed: " + e);
+            return Collections.emptyMap();
+        }
+    }
+
+    private static void saveInstalledDigests(File dir, Map<String, String> digests) {
+        try {
+            new ObjectMapper().writeValue(new File(dir, INSTALLED_DIGESTS), digests);
+        } catch (IOException e) {
+            System.out.println("save " + INSTALLED_DIGESTS + " failed: " + e);
+        }
+    }
+
+    private static String digestOf(File file) throws IOException {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[8192];
+            try (InputStream in = new FileInputStream(file)) {
+                int read;
+                while ((read = in.read(buffer)) > 0) {
+                    digest.update(buffer, 0, read);
+                }
+            }
+            StringBuilder hex = new StringBuilder();
+            for (byte b : digest.digest()) {
+                hex.append(String.format("%02x", b));
+            }
+            return hex.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /** 配布物側 (jar と同じディレクトリ、無ければカレント) の theme / setting / icon */
+    public static File getAppResourceDir(String path) {
+        String name = path.startsWith("/") ? path.substring(1) : path;
+        File local = new File(getAppDir(), name);
+        return local.isDirectory() ? local : new File(name);
+    }
+
+    /** jar が置かれているディレクトリ。分からなければカレント */
+    private static File getAppDir() {
+        try {
+            CodeSource source = Utils.class.getProtectionDomain().getCodeSource();
+            if (source != null) {
+                File location = new File(source.getLocation().toURI());
+                return location.isDirectory() ? location : location.getParentFile();
+            }
+        } catch (Exception e) {
+            // 取れない環境ではカレントで探す
+        }
+        return new File(".");
     }
 
     // for pace settings utils

@@ -27,9 +27,9 @@ public class PluginGUI {
 
 		GridBagLayout gblContentPane = new GridBagLayout();
 		gblContentPane.columnWidths = new int[] {255};
-		gblContentPane.rowHeights = new int[] {32, 32, 32};
+		gblContentPane.rowHeights = new int[] {32, 32, 32, 32};
 		gblContentPane.columnWeights = new double[]{0.0};
-		gblContentPane.rowWeights = new double[]{0.0, 0.0, 0.0};
+		gblContentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
 		contentPane.setLayout(gblContentPane);
 		
 		JButton openButton = new JButton("Open MCSR Pace Widget");
@@ -61,9 +61,23 @@ public class PluginGUI {
         });
 		GridBagConstraints gbcSettingsButton = new GridBagConstraints();
 		gbcSettingsButton.fill = GridBagConstraints.BOTH;
+		gbcSettingsButton.insets = new Insets(0, 0, 5, 0);
 		gbcSettingsButton.gridx = 0;
 		gbcSettingsButton.gridy = 2;
 		contentPane.add(settingsButton, gbcSettingsButton);
+
+		JButton configFolderButton = new JButton("Open Config Folder");
+        configFolderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AppFrame.openConfigFolder();
+            }
+        });
+		GridBagConstraints gbcConfigFolderButton = new GridBagConstraints();
+		gbcConfigFolderButton.fill = GridBagConstraints.BOTH;
+		gbcConfigFolderButton.gridx = 0;
+		gbcConfigFolderButton.gridy = 3;
+		contentPane.add(configFolderButton, gbcConfigFolderButton);
     }
 
     public JComponent $$$getRootComponent$$$() {

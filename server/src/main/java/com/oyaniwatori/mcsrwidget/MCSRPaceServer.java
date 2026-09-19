@@ -1,7 +1,6 @@
 package com.oyaniwatori.mcsrwidget;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -182,33 +181,24 @@ public class MCSRPaceServer extends NanoHTTPD {
     }
 
     private Response responseFromStaticFile(String dir, String path) {
-        File homeResourceDir = Utils.getHomeResourceDir(dir);
-        if (homeResourceDir.exists()) {
-            File file = new File(homeResourceDir, path);
-
-            if (file.exists()) {
-                // ファイルをストリームにして返す
-                // Return the file as a stream
-                try {
-                    return newChunkedResponse(Response.Status.OK, mimeTypeOf(path),
-                            new FileInputStream(file.getAbsolutePath()));
-                } catch (IOException ioe) {
-                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "");
-                }
+        // ホーム → 配布物 (jar と同じディレクトリ) → jar の中 の順に探す
+        String name = dir.startsWith("/") ? dir.substring(1) : dir;
+        String file = path.startsWith("/") ? path.substring(1) : path;
+        try {
+            InputStream is = Utils.openResource(name, file);
+            if (is == null) {
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
             }
+            return newChunkedResponse(Response.Status.OK, mimeTypeOf(path), is);
+        } catch (IOException ioe) {
+            return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "");
         }
-        InputStream is = getClass().getResourceAsStream(dir + path);
-        if (is == null) {
-            return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
-        }
-        return newChunkedResponse(Response.Status.OK, mimeTypeOf(path),
-                getClass().getResourceAsStream(dir + path));
-
     }
 
     // for jingle plugin
     public static String start4Jingle() {
         final int PORT = 1161;
+        Utils.prepareHomeResourceDir();
         try {
             MCSRPaceServer server = new MCSRPaceServer(PORT);
             server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
@@ -221,6 +211,7 @@ public class MCSRPaceServer extends NanoHTTPD {
     public static void main(String[] args) {
         int port = 1161;
         FlatMacLightLaf.setup();
+        Utils.prepareHomeResourceDir();
         try {
             MCSRPaceServer server = new MCSRPaceServer(port);
             server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
