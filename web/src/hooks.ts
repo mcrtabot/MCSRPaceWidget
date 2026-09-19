@@ -1,11 +1,11 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import useSWR from 'swr/immutable';
 
 import demoPBTimeline from './assets/demo/pb.json';
 import demoTimelineData from './assets/demo/timeline.json';
 import { defaultSetting } from './setting';
-import { IconSet, IconSetData, Setting, Theme, TimelineData, TimelineItem } from './types';
+import { IconSet, IconSetData, Player, Setting, Theme, TimelineData, TimelineItem } from './types';
 import { convertTimeToMilliSeconds } from './utils/utils';
 
 const REFRESH_INTERVAL = 60000;
@@ -153,6 +153,29 @@ export const useIconSets = () => {
   return { isLoading, data: iconSets, hasError: !!error };
 };
 
+/**
+ * スキン顔に使う走者。サーバーが setting > ワールドの stats/ > timer.igt の順で解決する。
+ * ワールドに入り直した直後などは取れないことがあるので、一度取れた値は保持し続ける。
+ */
+export const usePlayer = (): Player | undefined => {
+  const { data } = useSWR<Player | Record<string, never>>(`/api/player`, fetcher, {
+    refreshInterval: REFRESH_INTERVAL,
+    dedupingInterval: REFRESH_INTERVAL,
+    refreshWhenHidden: true,
+  });
+
+  const lastKnown = useRef<Player | undefined>(undefined);
+  if (data && 'id' in data && data.id) {
+    lastKnown.current = data as Player;
+  }
+
+  return lastKnown.current;
+};
+
+/** mc-heads は Minecraft ID でも UUID でも引けて、外すと既定のスキンを返す */
+export const skinFaceUrl = (id: string, size = 64) =>
+  `https://mc-heads.net/avatar/${encodeURIComponent(id)}/${size}`;
+
 export const useTimelineInfo = (
   rawTimeline: TimelineItem[],
   pbTimeline: TimelineItem[],
@@ -205,7 +228,12 @@ export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator' | '
   }, [theme, cssFile]);
 };
 
-export const usePageData = (theme: string, isDemo: boolean, iconSetOverride?: string) => {
+export const usePageData = (
+  theme: string,
+  isDemo: boolean,
+  iconSetOverride?: string,
+  faceSkinOverride?: boolean,
+) => {
   const { isLoading: isLoadingTimeline, data: timeline, hasError: hasErrorTimeline } = useTimeline(isDemo);
   const { isLoading: isLoadingPBTimeline, data: pbTimeline, hasError: hasErrorPBTimeline } = usePBTimeline(isDemo);
   const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(theme, false);
@@ -221,5 +249,9 @@ export const usePageData = (theme: string, isDemo: boolean, iconSetOverride?: st
   if (hasErrorPBTimeline || (!isLoading && !pbTimeline))
     errors.push('file:setting/pb.json does not exist or is in an invalid data format.');
 
-  return { isLoading, timeline, pbTimeline, setting, iconSet, errors };
+  // URL の ?face=skin はテーマの設定より優先する
+  const resolvedSetting =
+    setting && faceSkinOverride !== undefined ? { ...setting, faceSkin: faceSkinOverride } : setting;
+
+  return { isLoading, timeline, pbTimeline, setting: resolvedSetting, iconSet, errors };
 };

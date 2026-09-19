@@ -140,6 +140,36 @@ Default values are from the `default` theme.
 | `--id-face-sad-file`           | Sad face image              | `url(/setting/face-sad.png)` |
 | `--id-face-smile-shadow-color` | Glow color for smile        | `rgba(255, 128, 128, 1)`     |
 | `--id-face-completed-offset`   | Face position on completion | `-48px`                      |
+| `--mcsr-face-fallback`         | Face shown when the runner's skin cannot be loaded | `url(/setting/face.png)` |
+
+### Runner's Skin as the Face
+
+The face character can show the runner's own Minecraft skin instead of the theme's image.
+Turn it on with `"faceSkin": true` in the theme's `setting.json`, or with `?face=skin` on the
+widget URL (`?face=theme` forces the theme's image back).
+
+The widget resolves the runner from `setting/player.json` first, then from the world save,
+so nothing has to be typed in for the common case. When it is on, the widget sets the three
+`--id-face-*` variables to the skin image layered over `--mcsr-face-fallback`, and marks the
+root element with `data-face="skin"`.
+
+The skin is a single image, so it cannot change expression. Use `data-face="skin"` to keep
+the ahead/behind states readable:
+
+```css
+.mcsr-indicator[data-face="skin"] .mcsr-indicator__face--sad {
+  filter: grayscale(1) brightness(0.7);
+}
+```
+
+A theme with its own face art should point `--mcsr-face-fallback` at it, so that a network
+failure falls back to the theme's image rather than the bundled one:
+
+```css
+:root {
+  --mcsr-face-fallback: url(/theme/my-theme/face.png);
+}
+```
 
 ### Visibility Controls
 

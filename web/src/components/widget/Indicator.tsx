@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 
 import { AppContext } from '../../context';
-import { useThemeCSS, useTimelineInfo } from '../../hooks';
+import { skinFaceUrl, usePlayer, useThemeCSS, useTimelineInfo } from '../../hooks';
 import { calcPosition, getFaceStatus, getTimelineDotItems, getTimelineLineItems } from '../../utils/indicator';
 import { DiffTime, Time } from './Time';
 import { TimelineIcon } from './TimelineIcon';
@@ -9,6 +9,18 @@ import { TimelineIcon } from './TimelineIcon';
 export const Indicator = () => {
   const { timeline: timelineData, pbTimeline, theme, setting } = useContext(AppContext);
   useThemeCSS(theme, 'indicator');
+
+  // 顔を走者のスキンにする。読めなかったときに下のレイヤーが出るよう、
+  // テーマ側の絵を重ねて指定する（テーマは --mcsr-face-fallback で自分の絵を指せる）
+  const player = usePlayer();
+  const useSkinFace = !!setting.faceSkin && !!player;
+  const faceStyle = useSkinFace
+    ? ({
+        '--id-face-file': `url(${skinFaceUrl(player!.id)}), var(--mcsr-face-fallback, url(/setting/face.png))`,
+        '--id-face-smile-file': `url(${skinFaceUrl(player!.id)}), var(--mcsr-face-fallback, url(/setting/face.png))`,
+        '--id-face-sad-file': `url(${skinFaceUrl(player!.id)}), var(--mcsr-face-fallback, url(/setting/face-sad.png))`,
+      } as React.CSSProperties)
+    : undefined;
 
   const igt = timelineData.igt;
   const { timeline, pbTimelinePattern, timelinePattern, displayItemTypes } = useTimelineInfo(
@@ -49,7 +61,13 @@ export const Indicator = () => {
   const lineItems = getTimelineLineItems(timeline, paceIGT || 0, pbFinalIGT);
 
   return (
-    <div className={classNames.join(' ')} data-segment={currentSegment} data-run-status={indicatorStatus}>
+    <div
+      className={classNames.join(' ')}
+      data-segment={currentSegment}
+      data-run-status={indicatorStatus}
+      data-face={useSkinFace ? 'skin' : undefined}
+      style={faceStyle}
+    >
       <div className="mcsr-indicator__line-container">
         {pbLineItems.map((lineItem) => (
           <div

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,16 +14,22 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import com.oyaniwatori.mcsrwidget.IconSet;
 import com.oyaniwatori.mcsrwidget.PaceItem;
+import com.oyaniwatori.mcsrwidget.Player;
 import com.oyaniwatori.mcsrwidget.Theme;
 
 public class Utils {
+    private static final Pattern UUID_PATTERN = Pattern
+            .compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+
     public static Theme[] getThemes() {
         File themeDir;
 
@@ -158,6 +165,123 @@ public class Utils {
     public static void savePbJson(File location, List<PaceItem> paceItems) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(location, paceItems);
+    }
+
+    /** setting/player.json のロケーションを特定 */
+    public static File getPlayerJsonLocation() {
+        File homeSettingFile = new File(getHomeResourceDir("setting").toString() + File.separator + "player.json");
+        if (homeSettingFile.exists()) {
+            return homeSettingFile;
+        }
+        return new File("setting" + File.separator + "player.json");
+    }
+
+    /**
+     * スキン顔に使う走者を特定する。優先順は
+     * 1. setting/player.json の id（手動指定。別アカウントで配信する場合などの逃げ道）
+     * 2. ワールドの stats/<uuid>.json のファイル名（Minecraft が素で置くもの）
+     * 3. timer.igt の resultRecord 内 stats のキー
+     *
+     * 2 と 3 はワールドに入り直した直後などに取れないことがあるため、
+     * 呼び出し側は取れた値を覚えておくこと。
+     */
+    public static Player getPlayer() {
+        String fromSetting = getPlayerIdFromSetting();
+        if (fromSetting != null) {
+            return new Player(fromSetting, "setting");
+        }
+
+        String instancePath;
+        try {
+            instancePath = getInstancePath();
+        } catch (IOException e) {
+            return null;
+        }
+
+        String fromStats = getPlayerUuidFromStats(instancePath);
+        if (fromStats != null) {
+            return new Player(fromStats, "stats");
+        }
+
+        String fromRecord = getPlayerUuidFromRecord(instancePath);
+        if (fromRecord != null) {
+            return new Player(fromRecord, "record");
+        }
+
+        return null;
+    }
+
+    private static String getPlayerIdFromSetting() {
+        File file = getPlayerJsonLocation();
+        if (!file.exists()) {
+            return null;
+        }
+        try {
+            JsonNode json = new ObjectMapper().readTree(file);
+            JsonNode idNode = json.get("id");
+            if (idNode == null || idNode.isNull()) {
+                return null;
+            }
+            String id = idNode.asText().trim();
+            return id.isEmpty() ? null : id;
+        } catch (IOException e) {
+            System.out.println("load player.json failed.");
+            return null;
+        }
+    }
+
+    /** ワールドの stats/<uuid>.json。複数アカウントが遊んだワールドでは特定できないので諦める */
+    private static String getPlayerUuidFromStats(String instancePath) {
+        File statsDir = new File(instancePath + File.separator + "stats");
+        File[] files = statsDir.listFiles();
+        if (files == null) {
+            return null;
+        }
+
+        String uuid = null;
+        for (File file : files) {
+            String name = file.getName();
+            if (!name.endsWith(".json")) {
+                continue;
+            }
+            String candidate = name.substring(0, name.length() - ".json".length());
+            if (!UUID_PATTERN.matcher(candidate).matches()) {
+                continue;
+            }
+            if (uuid != null) {
+                return null;
+            }
+            uuid = candidate;
+        }
+        return uuid;
+    }
+
+    /** timer.igt の resultRecord は文字列のJSON。その中の stats のキーが走者のUUID */
+    private static String getPlayerUuidFromRecord(String instancePath) {
+        String separator = File.separator;
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode json;
+        try {
+            String path = instancePath + separator + "speedrunigt" + separator + "data" + separator + "timer.igt";
+            json = mapper.readTree(Crypto.decrypt(FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8)));
+        } catch (Exception e) {
+            return null;
+        }
+
+        try {
+            JsonNode recordNode = json.get("resultRecord");
+            if (recordNode == null || recordNode.isNull()) {
+                return null;
+            }
+            JsonNode stats = mapper.readTree(recordNode.asText()).get("stats");
+            if (stats == null || stats.size() != 1) {
+                return null;
+            }
+            String uuid = stats.fieldNames().next();
+            return UUID_PATTERN.matcher(uuid).matches() ? uuid : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static String getInstancePath() throws IOException {

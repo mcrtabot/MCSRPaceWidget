@@ -16,6 +16,8 @@ export type Setting = {
   label: { [key: string]: string };
   /** 共通アイコンセットの id (icon/<id>/)。未指定ならテーマ同梱の icon/ を使う */
   iconSet?: string;
+  /** true で Indicator の顔を走者のスキンにする */
+  faceSkin?: boolean;
   segmentLabel: { [key: string]: string[] };
   enteringDuration: number;
   pbTimelineTitle: string;
@@ -38,3 +40,9 @@ export type IconSetData = {
 
 /** 解決済みのアイコンセット。id は /icon/<id>/ のパスに使う */
 export type IconSet = IconSetData & { id: string };
+
+/** /api/player の応答。id は Minecraft ID か UUID */
+export type Player = {
+  id: string;
+  source: 'setting' | 'stats' | 'record';
+};

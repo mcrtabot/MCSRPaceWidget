@@ -38,6 +38,20 @@ public class MCSRPaceServer extends NanoHTTPD {
                         return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
                                 "{\"error\": \"load events failed.\"}");
                     }
+                } else if (uri.equals("/api/player")) {
+                    Player player = Utils.getPlayer();
+
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return newFixedLengthResponse(Response.Status.OK, "application/json",
+                                player == null ? "{}" : mapper.writeValueAsString(player));
+                    } catch (JsonProcessingException e) {
+                        System.out.println("load player failed.");
+                        e.printStackTrace();
+                        return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "application/json",
+                                "{\"error\": \"load player failed.\"}");
+                    }
+
                 } else if (uri.equals("/api/icons")) {
                     IconSet[] iconSets = Utils.getIconSets();
 

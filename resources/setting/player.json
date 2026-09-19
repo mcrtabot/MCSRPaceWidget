@@ -1,0 +1,4 @@
+{
+    "//": "Minecraft ID or UUID used for the skin face. Leave empty to detect it from the run.",
+    "id": ""
+}

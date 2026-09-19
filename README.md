@@ -59,6 +59,15 @@ To display the difference from your personal best, configure your PB times.
 - Click `Pace Settings...` in the MCSRPaceWidget window (or Jingle tab)
 - Enter times in `12:34` (12m34s) or `12:34.567` (12m34.567s) format
 
+### Runner's Skin as the Face
+
+The Visual Timeline's face character can show your own Minecraft skin.
+Add `?face=skin` to the widget URL, or set `"faceSkin": true` in the theme's `setting.json`.
+
+Your account is detected from the run data, so there is nothing to enter. To pick a different
+account (for example when streaming someone else's run), set `id` in `setting/player.json` to
+a Minecraft ID or UUID. If the skin cannot be loaded, the theme's own face image is shown.
+
 ### Custom Themes
 
 1. Copy a base theme (e.g., `default`) in the `theme` directory and rename it

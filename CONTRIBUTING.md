@@ -66,7 +66,7 @@ web/
 resources/
   theme/            # Theme CSS & settings
   icon/             # Shared split icon sets (icon/<set>/icons.json + images)
-  setting/          # PB settings, etc.
+  setting/          # PB settings, runner id for the skin face, etc.
 server/             # Java backend (NanoHTTPD)
 ```
 

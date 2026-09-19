@@ -13,8 +13,16 @@ export const IndicatorPage = () => {
   const isDemo = searchParams.get('demo') === '1';
   // ?icons=<セットid> でテーマの指定を上書きする
   const iconSetOverride = searchParams.get('icons') || undefined;
+  // ?face=skin で走者のスキンを顔にする（?face=theme でテーマの絵に戻す）
+  const faceParam = searchParams.get('face');
+  const faceSkinOverride = faceParam === null ? undefined : faceParam === 'skin';
 
-  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(theme, isDemo, iconSetOverride);
+  const { isLoading, timeline, pbTimeline, setting, iconSet, errors } = usePageData(
+    theme,
+    isDemo,
+    iconSetOverride,
+    faceSkinOverride,
+  );
 
   if (isLoading) {
     return <></>;
