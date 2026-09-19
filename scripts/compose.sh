@@ -2,12 +2,9 @@
 
 cd $(dirname $0)/..
 
-if [ "$1" == "" ]; then
-    echo input version
-    exit 1
-fi
-
-TARGET_NAME=MCSRPaceWidget-$1
+# theme / setting / icon は jar に同梱され初回起動時にホームへコピーされるので、配布物は jar 1 つ。
+# Jingle の plugins に置くファイルなので、版違いが並ばないよう名前に版は入れない
+TARGET_NAME=mcsr-pace-widget.jar
 
 MVN_PATH=$(find ~/.m2 -name "mvn")
 if [ "$?" == "" ]; then
@@ -15,32 +12,18 @@ if [ "$?" == "" ]; then
     exit 1
 fi
 
-rm -rf ${TARGET_NAME} ${TARGET_NAME}.zip
-mkdir -p ${TARGET_NAME}
+rm -f ${TARGET_NAME}
 
 # build web app
 cd web
 rm -rf build
 yarn build
-rm -rf build/theme build/setting
+rm -rf build/theme build/setting build/icon
 cd -
 
 # build server
 rm -rf server/target
 "${MVN_PATH}" package -f "./server/pom.xml"
 
-cp -pr server/target/mcsr-pace-widget-jar-with-dependencies.jar ${TARGET_NAME}/mcsr-pace-widget.jar
-
-rm -rf ${TARGET_NAME}/public/setting
-cp -pr resources/setting ${TARGET_NAME}/setting
-
-rm -rf ${TARGET_NAME}/public/theme
-cp -pr resources/theme ${TARGET_NAME}/theme
-
-rm -rf ${TARGET_NAME}/public/icon
-cp -pr resources/icon ${TARGET_NAME}/icon
-
-find ${TARGET_NAME} -name .DS_Store | xargs rm
-
-zip -r ${TARGET_NAME}.zip ${TARGET_NAME}/
-rm -rf ${TARGET_NAME}
+cp -p server/target/mcsr-pace-widget-jar-with-dependencies.jar ${TARGET_NAME}
+echo "built ${TARGET_NAME}"
