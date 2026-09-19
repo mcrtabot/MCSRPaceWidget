@@ -1,52 +1,67 @@
 import React from 'react';
 
-import { Button, Code, ColorInput, CopyButton, Group, Radio, Select, Slider, Stack, Text } from '@mantine/core';
+import { Badge, Button, Code, ColorInput, CopyButton, Divider, Group, Radio, Slider, Stack, Text } from '@mantine/core';
 
-import { useThemes } from '../../hooks';
-import { Theme } from '../../types';
+import { ThemeGallery, WidgetType, useMeasuredSize } from './ThemeGallery';
 import { Time } from '../widget/Time';
 
 type ThemeSelectorProps = {
-  type: 'timeline' | 'indicator' | 'segment';
+  type: WidgetType;
   theme: string;
   onChangeTheme: (theme: string) => void;
+  /** プレビューの下地。ウィジェットは透過なので背景が無いと見えない */
+  background: string;
+  /** 選択中テーマの大きいプレビュー。AppContext が要るので親から受け取る */
+  children?: React.ReactNode;
 };
 
-export const ThemeSelector = ({ type, theme, onChangeTheme }: ThemeSelectorProps) => {
-  const { data: themes = [] } = useThemes();
-
-  const baseURL = window.location.origin + `/${type}?theme=${theme}`;
-  const demoURL = baseURL + '&demo=1';
-
-  const themeOptions = themes.filter((item) => item[type]).map((t: Theme) => ({ value: t.name, label: t.name }));
+export const ThemeSelector = ({ type, theme, onChangeTheme, background, children }: ThemeSelectorProps) => {
+  // OBS に貼る URL はそのまま使えるものにする。
+  // デモ表示はページ内の Data Source で切り替えるので、URL には混ぜない
+  const url = window.location.origin + `/${type}?theme=${theme}`;
+  const { size, onMeasure } = useMeasuredSize();
 
   return (
     <Stack gap="sm">
-      <Group align="flex-end">
-        <Select label="Theme" value={theme} onChange={(val) => val && onChangeTheme(val)} data={themeOptions} w={360} />
-        <Button component="a" href={`/customize?w=${type}&theme=${theme}`} variant="light">
-          Customize...
-        </Button>
-      </Group>
+      {/*
+        プレビューと URL を先に出す。テーマが増えると一覧が縦に伸びて、
+        いちばん使う Copy URL が画面の下へ押し出されるため。
+      */}
+      {children}
       <Group gap="xs" align="center">
         <Text size="sm" fw={600}>
           URL:
         </Text>
-        <Code style={{ flex: 1, fontSize: 13, padding: '6px 8px' }}>
-          {baseURL}
-          <span style={{ color: 'var(--mantine-color-red-6)' }}>&demo=1</span>
-        </Code>
-        <CopyButton value={demoURL}>
+        <Code style={{ flex: 1, fontSize: 15, padding: '8px 10px' }}>{url}</Code>
+        <CopyButton value={url}>
           {({ copied, copy }) => (
-            <Button variant={copied ? 'filled' : 'light'} color={copied ? 'teal' : 'blue'} size="xs" onClick={copy}>
+            <Button variant={copied ? 'filled' : 'light'} color={copied ? 'teal' : 'blue'} size="sm" onClick={copy}>
               {copied ? 'Copied!' : 'Copy URL'}
             </Button>
           )}
         </CopyButton>
+        <Button component="a" href={`/customize?w=${type}&theme=${theme}`} variant="subtle" size="sm">
+          Customize...
+        </Button>
       </Group>
-      <Text size="xs" c="red" fw={700}>
-        * "&demo=1" is a parameter for display in demo data. After checking, delete "&demo=1" from the URL.
-      </Text>
+      <Group gap="xs">
+        <Text size="sm" c="dimmed">
+          Add it as a Browser Source in OBS.
+        </Text>
+        {size && (
+          <Badge size="sm" variant="light">
+            size {size.width} x {size.height}
+          </Badge>
+        )}
+      </Group>
+      <Divider my="xs" />
+      <ThemeGallery
+        type={type}
+        theme={theme}
+        onChangeTheme={onChangeTheme}
+        background={background}
+        onMeasure={onMeasure}
+      />
     </Stack>
   );
 };

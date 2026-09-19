@@ -26,7 +26,7 @@ import { Indicator } from '../components/widget/Indicator';
 import { Segment } from '../components/widget/Segment';
 import { Timelines } from '../components/widget/Timelines';
 import { AppContext } from '../context';
-import { usePBTimeline, useSetting, useTimeline } from '../hooks';
+import { useIconSet, usePBTimeline, useSetting, useTimeline } from '../hooks';
 
 export const TopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams({ timeline: 'default', indicator: 'default', segment: 'default', data: 'demo' });
@@ -75,8 +75,22 @@ export const TopPage = () => {
   } = usePBTimeline(dataType === 'demo');
   const { isLoading: isLoadingSetting, setting, hasError: hasErrorSetting } = useSetting(timelineTheme, true);
   const { setting: segmentSetting } = useSetting(segmentTheme, true);
+  const { setting: indicatorSetting } = useSetting(indicatorTheme, true);
 
-  if (isLoadingTimeline || isLoadingPBTimeline || isLoadingSetting) {
+  // アイコンはテーマ同梱ではなく共通セットから来るので、プレビューにも渡す。
+  // 読み込みを待たずに描くと、解決前にテーマ同梱のパスを叩いて404になる
+  const { iconSet: timelineIconSet, isLoading: isLoadingTimelineIcons } = useIconSet(setting?.iconSet);
+  const { iconSet: indicatorIconSet, isLoading: isLoadingIndicatorIcons } = useIconSet(indicatorSetting?.iconSet);
+  const { iconSet: segmentIconSet, isLoading: isLoadingSegmentIcons } = useIconSet(segmentSetting?.iconSet);
+
+  if (
+    isLoadingTimeline ||
+    isLoadingPBTimeline ||
+    isLoadingSetting ||
+    isLoadingTimelineIcons ||
+    isLoadingIndicatorIcons ||
+    isLoadingSegmentIcons
+  ) {
     return (
       <Center h="100vh">
         <Loader size="lg" />
@@ -97,7 +111,27 @@ export const TopPage = () => {
   }
 
   return (
-    <Container size="xl" py="xl">
+    /*
+     * この画面は既定の 12〜14px だと小さいので、ここだけ一段上げる。
+     *
+     * MantineThemeProvider では変わらない。Mantine のコンポーネントは
+     * size="sm" などを CSS変数 (--mantine-font-size-sm) で引いており、
+     * その変数を出すのはルートの MantineProvider だけのため。
+     * 変数は継承するので、この階層で上書きすればこの画面にだけ効く。
+     */
+    <Container
+      size="xl"
+      py="xl"
+      style={
+        {
+          '--mantine-font-size-xs': '0.875rem',
+          '--mantine-font-size-sm': '1rem',
+          '--mantine-font-size-md': '1.125rem',
+          '--mantine-font-size-lg': '1.25rem',
+          '--mantine-font-size-xl': '1.5rem',
+        } as React.CSSProperties
+      }
+    >
       <Stack gap="xl">
         {/* Hero */}
         <div>
@@ -123,7 +157,9 @@ export const TopPage = () => {
 
         {/* Widget Preview */}
         <EnvironmentWarning />
-        <Tabs value={activeTab} onChange={setActiveTab}>
+        {/* 表示中のタブだけ中身を持つ。各カードが iframe なので、3タブ分を
+            同時に抱えると 23 個のウィジェットを常時描くことになる */}
+        <Tabs value={activeTab} onChange={setActiveTab} keepMounted={false}>
           <Tabs.List>
             <Tabs.Tab value="timeline">Timeline</Tabs.Tab>
             <Tabs.Tab value="indicator">Visual Timeline</Tabs.Tab>
@@ -137,22 +173,23 @@ export const TopPage = () => {
                   type="timeline"
                   theme={timelineTheme}
                   onChangeTheme={(theme: string) => changeTheme('timeline', theme)}
-                />
-                <Box
-                  mt="md"
-                  p="md"
-                  style={{
-                    background: bgColor,
-                    borderRadius: 8,
-                    minHeight: 240,
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
+                  background={bgColor}
                 >
-                  <AppContext.Provider value={{ timeline, pbTimeline, theme: timelineTheme, setting }}>
-                    <Timelines />
-                  </AppContext.Provider>
-                </Box>
+                  <Box
+                    p="md"
+                    style={{
+                      background: bgColor,
+                      borderRadius: 8,
+                      minHeight: 200,
+                      position: 'relative',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <AppContext.Provider value={{ timeline, pbTimeline, theme: timelineTheme, setting, iconSet: timelineIconSet }}>
+                      <Timelines />
+                    </AppContext.Provider>
+                  </Box>
+                </ThemeSelector>
               </div>
               <Card withBorder shadow="sm" radius="md" padding="md" w={280}>
                 <Title order={5} mb="sm">
@@ -177,18 +214,19 @@ export const TopPage = () => {
                   type="indicator"
                   theme={indicatorTheme}
                   onChangeTheme={(theme: string) => changeTheme('indicator', theme)}
-                />
-                <Box
-                  mt="md"
-                  p="md"
-                  style={{ background: bgColor, borderRadius: 8, minHeight: 240, overflow: 'hidden' }}
+                  background={bgColor}
                 >
-                  <AppContext.Provider value={{ timeline, pbTimeline, theme: indicatorTheme, setting }}>
-                    <div style={{ width: '80%', ['--id-width' as any]: '100%' }}>
-                      <Indicator />
-                    </div>
-                  </AppContext.Provider>
-                </Box>
+                  <Box
+                    p="md"
+                    style={{ background: bgColor, borderRadius: 8, minHeight: 200, overflow: 'hidden' }}
+                  >
+                    <AppContext.Provider value={{ timeline, pbTimeline, theme: indicatorTheme, setting, iconSet: indicatorIconSet }}>
+                      <div style={{ width: '80%', ['--id-width' as any]: '100%' }}>
+                        <Indicator />
+                      </div>
+                    </AppContext.Provider>
+                  </Box>
+                </ThemeSelector>
               </div>
               <Card withBorder shadow="sm" radius="md" padding="md" w={280}>
                 <Title order={5} mb="sm">
@@ -213,16 +251,17 @@ export const TopPage = () => {
                   type="segment"
                   theme={segmentTheme}
                   onChangeTheme={(theme: string) => changeTheme('segment', theme)}
-                />
-                <Box
-                  mt="md"
-                  p="md"
-                  style={{ background: bgColor, borderRadius: 8, minHeight: 240, overflow: 'hidden' }}
+                  background={bgColor}
                 >
-                  <AppContext.Provider value={{ timeline, pbTimeline, theme: segmentTheme, setting: segmentSetting ?? setting }}>
-                    <Segment />
-                  </AppContext.Provider>
-                </Box>
+                  <Box
+                    p="md"
+                    style={{ background: bgColor, borderRadius: 8, minHeight: 200, overflow: 'hidden' }}
+                  >
+                    <AppContext.Provider value={{ timeline, pbTimeline, theme: segmentTheme, setting: segmentSetting ?? setting, iconSet: segmentIconSet }}>
+                      <Segment />
+                    </AppContext.Provider>
+                  </Box>
+                </ThemeSelector>
               </div>
               <Card withBorder shadow="sm" radius="md" padding="md" w={280}>
                 <Title order={5} mb="sm">
@@ -254,11 +293,11 @@ export const TopPage = () => {
                 <List.Item>Choose a theme from the preview above</List.Item>
                 <List.Item>Copy the widget URL and add it as a Browser Source in OBS</List.Item>
               </List>
-              <Text size="xs" c="dimmed" mt="sm">
+              <Text size="sm" c="dimmed" mt="sm">
                 That is all you need. The widgets work without a personal best — set your PB splits from the Settings
                 GUI when you want to see the difference from it.
               </Text>
-              <Text size="xs" c="dimmed" mt="sm">
+              <Text size="sm" c="dimmed" mt="sm">
                 Tip: A Minecraft font is bundled. Use <Code>font-family: 'Minecraft-Regular'</Code> in your theme CSS
                 for a more authentic look.
               </Text>

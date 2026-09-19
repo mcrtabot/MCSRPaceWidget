@@ -3,6 +3,16 @@ html {
   background-color: transparent;
 }
 
+/*
+ * ウィジェットのページは配信に重ねるので背景を持たない。
+ * Mantine のスタイルシートが後から body に色を敷くため、打ち消しておく。
+ * OBS は既定のカスタムCSSで同じことをしているが、それを消す利用者もいるし、
+ * 一覧プレビューのように OBS 以外へ埋め込む場面でも効いてくる。
+ */
+body.mcsr-widget-page {
+  background: transparent !important;
+}
+
 body {
   font: normal bold 18px/1 sans-serif;
   color: #fff;

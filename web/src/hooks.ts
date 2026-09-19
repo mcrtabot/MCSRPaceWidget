@@ -244,6 +244,19 @@ const getTimelinePattern = (timeline: TimelineItem[]) => {
   return 'bf' as const;
 };
 
+/**
+ * ウィジェットのページであることを body に印す。
+ * 背景を透過に戻すために使う（Mantine が body に色を敷くため）。
+ */
+export const useWidgetPage = () => {
+  useEffect(() => {
+    document.body.classList.add('mcsr-widget-page');
+    return () => {
+      document.body.classList.remove('mcsr-widget-page');
+    };
+  }, []);
+};
+
 export const useThemeCSS = (theme: string, cssFile: 'timeline' | 'indicator' | 'segment') => {
   useEffect(() => {
     const head = document.head;

@@ -29,6 +29,8 @@ import com.oyaniwatori.mcsrwidget.Player;
 import com.oyaniwatori.mcsrwidget.Theme;
 
 public class Utils {
+    private static final String DEFAULT_THEME = "default";
+
     private static final Pattern UUID_PATTERN = Pattern
             .compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
@@ -56,8 +58,18 @@ public class Utils {
                     new File(file.getPath() + File.separator + "indicator.css").exists(),
                     new File(file.getPath() + File.separator + "segment.css").exists()));
         }
+        // 名前順。ただし default は最初に置く。迷ったときの出発点になるテーマなので
         Collections.sort(themes, new Comparator<Theme>() {
             public int compare(Theme t1, Theme t2) {
+                if (t1.name.equals(t2.name)) {
+                    return 0;
+                }
+                if (DEFAULT_THEME.equals(t1.name)) {
+                    return -1;
+                }
+                if (DEFAULT_THEME.equals(t2.name)) {
+                    return 1;
+                }
                 return t1.name.compareTo(t2.name);
             }
         });

@@ -10,18 +10,18 @@
 
   --id-font: normal bold 18px/1 sans-serif;
   --id-digits-font:
-    normal normal 22px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
+    normal normal 18px/1 Minecraft-Regular, Minecraft, monospace, sans-serif;
 
   --id-width: 100%;
   --id-offset: 80px;
 
-  --id-line-size: 24px;
-  --id-dot-size: 10px;
-  --id-face-icon-size: 48px;
-  --id-pb-icon-size: 48px;
-  --id-pace-icon-size: 48px;
+  --id-line-size: 20px;
+  --id-dot-size: 6px;
+  --id-face-icon-size: 32px;
+  --id-pb-icon-size: 24px;
+  --id-pace-icon-size: 32px;
 
-  --id-pb-icon-offset: -48px;
+  --id-pb-icon-offset: -32px;
   --id-pace-icon-offset: 0px;
 
   /* face setting */
@@ -30,11 +30,11 @@
   --id-face-sad-file: var(--mcsr-skin-face, url(/setting/face-sad.png));
   --id-face-smile-shadow-color: rgba(255, 128, 128, 1);
   /* --id-display-face-completed: none; */
-  --id-face-completed-offset: -48px;
+  --id-face-completed-offset: -32px;
 
   /* --id-display-indicator-empty: none; */
   /* --id-display-done-pb-item: none; */
-  --id-done-pb-icon-size: 32px;
+  --id-done-pb-icon-size: 24px;
 
   --id-highlighted-shadow-color: rgba(255, 128, 128, 1);
 
